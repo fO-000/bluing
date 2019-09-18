@@ -1,0 +1,8 @@
+#.gitignore
+bin/
+doc/
+.vscode/
+src/__pycache__/
+build/
+dist/
+bluescan.spec
