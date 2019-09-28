@@ -2,7 +2,7 @@ INSTALL_PATH = /bin
 PROMPT_PATH = /etc/bash_completion.d
 SRC = ./src
 MAIN_SCRIPT = $(SRC)/bluescan.py
-# BLUEPY_PATH = /usr/local/lib/python3.7/dist-packages/bluepy
+#BLUEPY_PATH = /usr/local/lib/python3.7/dist-packages/bluepy
 
 .PHONY: all
 all:

@@ -6,3 +6,4 @@ src/__pycache__/
 build/
 dist/
 bluescan.spec
+test/

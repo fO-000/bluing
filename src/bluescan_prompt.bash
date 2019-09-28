@@ -5,9 +5,10 @@ _bluescan() {
     pword=${COMP_WORDS[COMP_CWORD-1]}
     cword=${COMP_WORDS[COMP_CWORD]}
 
-    opts='-h --help -v --version -m -i --timeout= --le-scan-type='
-    modes='le br'
+    opts='-h --help -v --version -m -i --async --sort= --inquiry-len= --timeout= --le-scan-type='
+    modes='le br LE BR'
     le_scan_types='active passive'
+    sort_method='rssi RSSI'
 
     # echo -e '\n'
     # echo cmd: $cmd
@@ -30,6 +31,10 @@ _bluescan() {
         if [ $COMP_CWORD -gt 1 ] && [ ${COMP_WORDS[COMP_CWORD-2]} = --le-scan-type ]; then
             result=($(compgen -W "$le_scan_types" -- $cword))
         fi
+
+        if [ $COMP_CWORD -gt 1 ] && [ ${COMP_WORDS[COMP_CWORD-2]} = --sort ]; then
+            result=($(compgen -W "$sort_method" -- $cword))
+        fi        
         ;;
     esac
 

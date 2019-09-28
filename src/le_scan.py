@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
-import subprocess
-import time
-import re
 
-from bluetooth import discover_devices
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
+
 from termcolor import cprint
+import re
 
 
 # 这个字典暂时没用，以后可能用来判断收到的 advertising 类型
@@ -21,7 +18,7 @@ HCI_LE_ADVERTISING_REPORT_EVENT_EVENT_TYPE_DESCPS = {
 }
 
 
-class BlueScannerDelegate(DefaultDelegate):
+class LEDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
     
@@ -35,80 +32,33 @@ class BlueScannerDelegate(DefaultDelegate):
             pass
 
 
-class BlueScanner:
-    def __init__(self, scan_mode, iface='hci0', timeout=10, 
-        le_scan_type='active'
-    ):
-        """
-        scan_mode
-            可选 'le' 或 'br'
+class LEScanner:
+    def __init__(self, iface=0):
+        self.iface = iface
 
-        iface
-            该参数一般是一个 str 类型的 HCI device "hcixxxx"。
-            它最终会在内部被转换为 int 类型的 HCI device 编号 "x"。
-            如果给该参数传入 None，则 self.iface 使用默认值 0。
-
-        le_scan_type
+    def scan(self, timeout=8, scan_type='active', sort='rssi'):
+        '''        
+        scan_type
             指定执行的 LE scan，是 active scan 还是 passive scan。
-        """
-        self.scan_mode = scan_mode # "le" or "br"
-        self.timeout = timeout
-        self.le_scan_type = le_scan_type # "active" or "passive"
-
-        if iface is None:
-            self.iface = 0
-        else:
-            # 从 "hcixxxx" 中提取 HCI devive 的编号
-            regexp = "[0-9]+"
-            hci_num = re.findall(regexp, iface)
-            if len(hci_num) != 1:
-                raise ValueError("[ValueError] The BlueScanner constructor's iface argument contains more than one HCI device number.")
-            else:
-                self.iface = int(hci_num[-1])
-
-
-    def __br_scan(self, timeout=10):
         '''
-        由于 pybluez 0.22 的 bluetooth.discover_devices() 在内部并没有使用 
-        duration 参数，因此这里的 timeout 参数是无效的。        
-        '''
-        existing_devs = []
-
-        print("BR scanning...\n")
-        while True:
-            #print('[Debug] discover_devices()')
-            found_devs_info = discover_devices(duration=timeout,
-                lookup_names=True, lookup_class=True
-            )
-
-            for addr, name, dev_class in found_devs_info:
-                if addr not in existing_devs:
-                    print("[BR scan] discovered new device")
-                    print("addr: " + addr)
-                    print("name: " + name)
-                    print("class: " + "0x%06X" % dev_class + "\n\n")
-
-                    existing_devs.append(addr)
-
-            subprocess.run(['systemctl', 'restart', 'bluetooth.service'])
-            time.sleep(2)
-
-
-    def __le_scan(self, timeout=10):
-        ble_scanner = Scanner(self.iface).withDelegate(BlueScannerDelegate())
+        scanner = Scanner(self.iface).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
 
         # scan() 返回的 devs 是一系列 bluepy.ScanEntry objects。
-        if self.le_scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
+        if scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
             print("[Warnning] Before doing active scan, make sure you spoof your BD_ADDR.")
-            print("LE active scanning...\n")
-            devs = ble_scanner.scan(timeout)
-        elif self.le_scan_type == 'passive':
-            print("LE passive scanning...\n")
-            devs = ble_scanner.scan(timeout, passive=True)
+            print("LE active scanning on hci%d...timeout %d sec\n" % (self.iface, timeout))
+            devs = scanner.scan(timeout)
+        elif scan_type == 'passive':
+            print("LE passive scanning on hci%d...timeout %d sec\n" % (self.iface, timeout))
+            devs = scanner.scan(timeout, passive=True)
         else:
             print("[Error] Unknown LE scan type.")
             return
+
+        if sort == 'rssi':
+            devs=list(devs)
+            devs.sort(key=lambda d:d.rssi)
         
         for dev in devs:
             print("BD_ADDR:    ", dev.addr)
@@ -155,13 +105,8 @@ class BlueScanner:
             print("\n")
 
 
-    def scan(self):
-        if self.scan_mode == "br":
-            self.__br_scan(self.timeout)
-        elif self.scan_mode == "le":
-            self.__le_scan(self.timeout)
-        else:
-            print("[Error] invalid scan mode")
+    def gatt(self):
+        pass
 
 
 if __name__ == "__main__":
