@@ -19,6 +19,9 @@ OCF = {
     'HCI_Write_Scan_Enable': 0x001A 
 }
 
+class SDPScanner():
+    pass
+
 
 class BRDiscoverer(DeviceDiscoverer):
     def pre_inquiry(self):

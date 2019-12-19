@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from br_scan import BRScanner
-from le_scan import LEScanner
-from ui import parse_cmdline
+from bluescan.br_scan import BRScanner
+from bluescan.le_scan import LEScanner
+from bluescan.ui import parse_cmdline
 from bluepy.btle import BTLEException
 
 import subprocess

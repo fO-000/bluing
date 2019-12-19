@@ -2,8 +2,10 @@
 bin/
 doc/
 .vscode/
-src/__pycache__/
+__pycache__/
 build/
 dist/
 bluescan.spec
 test/
+bluescan.egg-info
+install.rec

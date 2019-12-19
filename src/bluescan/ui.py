@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.0.2
+r'''bluescan v0.0.3
 
 Usage:
     bluescan (-h | --help)
@@ -26,7 +26,7 @@ from docopt import docopt
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.0.2', options_first=True)
+    args = docopt(__doc__, version='v0.0.3', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()

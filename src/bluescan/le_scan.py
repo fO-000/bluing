@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
 
@@ -16,6 +15,9 @@ HCI_LE_ADVERTISING_REPORT_EVENT_EVENT_TYPE_DESCPS = {
     0x03: "Non connectable undirected advertising (ADV_NONCONN_IND, 0x03)",
     0x04: "Scan Response (SCAN_RSP, 0x04)"
 }
+
+class GattScanner():
+    pass
 
 
 class LEDelegate(DefaultDelegate):
@@ -44,7 +46,7 @@ class LEScanner:
         scanner = Scanner(self.iface).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
 
-        # scan() 返回的 devs 是一系列 bluepy.ScanEntry objects。
+        # scan() 返回的 devs 是 dictionary view。
         if scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
             print("[Warnning] Before doing active scan, make sure you spoof your BD_ADDR.")
             print("LE active scanning on hci%d...timeout %d sec\n" % (self.iface, timeout))
@@ -57,7 +59,7 @@ class LEScanner:
             return
 
         if sort == 'rssi':
-            devs=list(devs)
+            devs = list(devs) # 将 dictionary view 转换为 list
             devs.sort(key=lambda d:d.rssi)
         
         for dev in devs:
