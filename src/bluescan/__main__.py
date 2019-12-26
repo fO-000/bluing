@@ -2,6 +2,10 @@
 
 from bluescan.br_scan import BRScanner
 from bluescan.le_scan import LEScanner
+from bluescan.gatt_scan import GATTScanner
+from bluescan.sdp_scan import SDPScanner
+from bluescan.stack_scan import StackScanner
+
 from bluescan.ui import parse_cmdline
 from bluepy.btle import BTLEException
 
@@ -26,6 +30,12 @@ def main():
             LEScanner(args['-i']).scan(args['--timeout'], 
                 args['--le-scan-type'], args['--sort']
             )
+        elif args['-m'] == 'sdp':
+            SDPScanner(args['-i']).scan(args['BD_ADDR'])
+        elif args['-m'] == 'gatt':
+            GATTScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
+        elif args['-m'] == 'stack':
+            StackScanner(args['-i']).scan(args['BD_ADDR'])
         else:
             print("[Error] invalid scan mode")
     except (BTLEException, ValueError) as e:

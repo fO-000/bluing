@@ -2,8 +2,9 @@
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
-
+from bluescan import BlueScanner
 from termcolor import cprint
+
 import re
 
 
@@ -15,9 +16,6 @@ HCI_LE_ADVERTISING_REPORT_EVENT_EVENT_TYPE_DESCPS = {
     0x03: "Non connectable undirected advertising (ADV_NONCONN_IND, 0x03)",
     0x04: "Scan Response (SCAN_RSP, 0x04)"
 }
-
-class GattScanner():
-    pass
 
 
 class LEDelegate(DefaultDelegate):
@@ -34,10 +32,7 @@ class LEDelegate(DefaultDelegate):
             pass
 
 
-class LEScanner:
-    def __init__(self, iface=0):
-        self.iface = iface
-
+class LEScanner(BlueScanner):
     def scan(self, timeout=8, scan_type='active', sort='rssi'):
         '''        
         scan_type
@@ -105,10 +100,6 @@ class LEScanner:
                 # adtype 表示当前一条 GAP 数据（AD structure）的类型。
                 print("        " + desc + ' (' + '0x%02X' % adtype + '):', val)
             print("\n")
-
-
-    def gatt(self):
-        pass
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ from bluetooth import discover_devices
 from bluetooth import DeviceDiscoverer
 from bluetooth import _bluetooth
 
+from bluescan import BlueScanner
+
 import select
 import time
 import subprocess
@@ -18,9 +20,6 @@ OCF = {
     'HCI_Write_Current_IAC_LAP': 0x003A,
     'HCI_Write_Scan_Enable': 0x001A 
 }
-
-class SDPScanner():
-    pass
 
 
 class BRDiscoverer(DeviceDiscoverer):
@@ -45,10 +44,7 @@ class BRDiscoverer(DeviceDiscoverer):
         self.existing_devs.clear()
 
 
-class BRScanner:
-    def __init__(self, iface=0):
-        self.iface=iface
-
+class BRScanner(BlueScanner):
     def scan(self, inquiry_len=8, sort='rssi'):
         existing_devs = []
 
