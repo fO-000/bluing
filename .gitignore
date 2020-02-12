@@ -9,3 +9,5 @@ bluescan.spec
 test/
 bluescan.egg-info
 install.rec
+*.pyc
+bugs.md

@@ -5,6 +5,7 @@ from bluescan.le_scan import LEScanner
 from bluescan.gatt_scan import GATTScanner
 from bluescan.sdp_scan import SDPScanner
 from bluescan.stack_scan import StackScanner
+from bluescan.vuln_scan import VulnScanner
 
 from bluescan.ui import parse_cmdline
 from bluepy.btle import BTLEException
@@ -36,10 +37,14 @@ def main():
             GATTScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
         elif args['-m'] == 'stack':
             StackScanner(args['-i']).scan(args['BD_ADDR'])
+        elif args['-m'] == 'vuln':
+            VulnScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
         else:
             print("[Error] invalid scan mode")
     except (BTLEException, ValueError) as e:
         print(e)
+        if 'le on' in str(e):
+            print('No BLE adapter? or missing sudo ?')
     except KeyboardInterrupt:
         print("\n[i] " + args['-m'].upper() + " scan canceled\n")
 

@@ -41,16 +41,16 @@ class MyClean(clean):
 if __name__ == "__main__":
     setup(
         name='bluescan',
-        version='0.0.4',
-        packages=find_packages('src'),
-        package_dir={'':'src'},
+        version='0.0.5',
+        packages=find_packages('src'), # # include all packages under src
+        package_dir={'':'src'}, # tell distutils packages are under src
         entry_points={
             'console_scripts': [
                 'bluescan=bluescan.__main__:main'
             ]
         },
         package_data={
-
+            "bluescan": ["res/*.txt"]
         },
         #scripts=['src/bluescan/bluescan.py'],
 
