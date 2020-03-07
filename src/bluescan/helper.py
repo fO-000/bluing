@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 
 import re
+import sys
+
+import subprocess
+
+
+from bluescan.ui import WARNING
+from bluescan.ui import ERROR
+from bluescan.ui import INFO
+
 
 def valid_bdaddr(addr:str) -> bool:
     regexp = r'(?:[\da-fA-F]{2}:){5}[\da-fA-F]{2}'
@@ -11,14 +20,16 @@ def valid_bdaddr(addr:str) -> bool:
         return True
 
 
-def hcix2i(hcix:str) -> int:
-    '''Extract HCI devive number from hcixxxx'''
-    regexp = "[0-9]+"
-    hci_num = re.findall(regexp, hcix)
-    if len(hci_num) != 1:
-        raise ValueError("[ValueError] The BlueScanner constructor's iface argument contains more than one HCI device number.")
-    else:
-        return int(hci_num[-1])
+def find_rfkill_devid(dev='hci0') -> int:
+    exitcode, output = subprocess.getstatusoutput('rfkill --output ID,DEVICE -r')
+    for line in output.splitlines()[1:]:
+        id_dev = line.split()
+        if len(id_dev) == 2 and id_dev[1] == dev:
+            return int(id_dev[0])
+        else:
+            continue
+    
+    raise Exception(ERROR + "Can't find the ID of %s in rfkill" % dev)
 
 
 if __name__ == '__main__':

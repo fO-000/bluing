@@ -55,7 +55,7 @@ for line in descriptor_uuid_file:
 
 
 class GATTScanner(BlueScanner):
-    def scan(self, bdaddr, addr_type):
+    def scan(self, bdaddr, addr_type, include_descriptor:bool):
         #print("[Debug] target_addr:", self.target_bdaddr)
         #print("[Debug] iface:", self.iface)
         #print("[Debug] addr_type:", self.addr_type)
@@ -83,7 +83,12 @@ class GATTScanner(BlueScanner):
 
             # Show characteristic
             for characteristic in characteristics:
-                descriptors = characteristic.getDescriptors()
+                descriptors = []
+                # 对每个 characteristic 都获取 descriptor 会很耗时
+                # 有些设备会因此断开连接。于是这里提供了一个是否获取 descriptor 的选项
+                if include_descriptor:
+                    descriptors = characteristic.getDescriptors()
+                
                 try:
                     print("\x1B[1;33m    Characteristic declaration\x1B[0m", '(%s descriptors)' % len(descriptors))
                     #print('-'*8)

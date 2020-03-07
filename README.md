@@ -1,6 +1,6 @@
 # bluescan
 
-A useful Bluetooth scanner that supports scanning:
+A powerful Bluetooth scanner that supports scanning:
 
 * BR devices
 * LE devices
@@ -13,43 +13,50 @@ A useful Bluetooth scanner that supports scanning:
 ```sh
 sudo apt install libglib2.0-dev libbluetooth-dev
 
-# if you want to try vulnerabilities scanning, see requirements in
+# This tool is based on BlueZ, the official Linux Bluetooth stack.
+# If you want to try the vulnerabilities scanning, see requirements in
 # README.md of https://github.com/ojasookert/CVE-2017-0785
 ```
+
+The Bluetooth adapters using following chips are recommended:
+
+* Broadcom
+* CSR
 
 ## Install
 
 ```sh
-pip3 install bluescan
+sudo pip3 install bluescan
 ```
 
 ## Usage
 
 ```txt
-# bluescan -h
+$ bluescan -h
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)
     bluescan [-i <hcix>] -m br [--inquiry-len=<n>] [--async]
     bluescan [-i <hcix>] -m le [--timeout=<sec>] [--le-scan-type=<type>] [--sort=<key>]
     bluescan [-i <hcix>] -m sdp BD_ADDR
-    bluescan [-i <hcix>] -m gatt --addr-type=<type> BD_ADDR
+    bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
 Arguments:
     BD_ADDR    Target Bluetooth device address
 
 Options:
-    -h, --help               Display this help
-    -v, --version            Show the version
-    -i <hcix>                HCI device for scan [default: hci0]
-    -m <mode>                Scan mode, support BR, LE, SDP, GATT and vuln
-    --inquiry-len=<n>        Inquiry_Length parameter of HCI_Inquiry command [default: 8]
-    --timeout=<sec>          Duration of LE scan [default: 10]
-    --le-scan-type=<type>    Active or passive scan for LE scan [default: active]
-    --sort=<key>             Sort the discovered devices by key, only support RSSI now [default: rssi]
-    --async                  Asynchronous scan for BR scan
-    --addr-type=<type>       Public, random or BR
+    -h, --help                  Display this help
+    -v, --version               Show the version
+    -i <hcix>                   HCI device for scan [default: hci0]
+    -m <mode>                   Scan mode, support BR, LE, SDP, GATT and vuln
+    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command [default: 8]
+    --timeout=<sec>             Duration of LE scan [default: 10]
+    --le-scan-type=<type>       Active or passive scan for LE scan [default: active]
+    --sort=<key>                Sort the discovered devices by key, only support RSSI now [default: rssi]
+    --async                     Asynchronous scan for BR scan
+    --include-descriptor        Fetch descriptor information
+    --addr-type=<type>          Public, random or BR
 ```
 
 ## Example
@@ -57,7 +64,7 @@ Options:
 * Scan LE device
 
   ```txt
-  # bluescan -m le
+  $ sudo bluescan -m le
   [Warnning] Before doing active scan, make sure you spoof your BD_ADDR.
   LE active scanning on hci0...timeout 10 sec
 
@@ -85,7 +92,7 @@ Options:
 * Scan BR device
 
   ```txt
-  # bluescan -m br
+  $ sudo bluescan -m br
   BR scanning on hci0...timeout 10.24 sec
 
   [BR scan] discovered new device
@@ -105,7 +112,7 @@ Options:
 * Scan (Discover) GATT
 
   ```txt
-  # bluescan -m gatt --addr-type=random ??:??:??:??:??:??
+  $ sudo bluescan -m gatt --addr-type=random ??:??:??:??:??:??
   Number of services: 5
 
 
@@ -135,24 +142,26 @@ Options:
 * Scan (Discover) SDP
 
   ```txt
-  # bluescan -m sdp ??:??:??:??:??:??
-  Name: Headset Gateway
-  Protocol RFCOMM
-  Port 2
-  Service Class: ['1112', '1203']
-  Profiles: [('1108', 258)]
-  Description: None
-  Provider: None
-  Service-id None
-
-  Name: Handsfree Gateway
-  Protocol RFCOMM
-  Port 3
-  Service Class: ['111F', '1203']
-  Profiles: [('111E', 262)]
-  Description: None
-  Provider: None
-  Service-id None
+  $ sudo bluescan -m sdp ??:??:??:??:??:??
+  Service Record
+  0x0000: ServiceRecordHandle (uint32)
+      0x0001000a
+  0x0001: ServiceClassIDList (sequence)
+      uuid: 0x112f (Phonebook Access – PSE)
+  0x0004: ProtocolDescriptorList (sequence)
+      uuid: 0x0100 (L2CAP)
+      uuid: 0x0003 (RFCOMM)
+          channel: 0x13
+      uuid: 0x0008 (OBEX)
+  0x0005: BrowseGroupList (sequence)
+      uuid: 0x1002 (PublicBrowseRoot)
+  0x0009: BluetoothProfileDescriptorList (sequence)
+      uuid: 0x1130 (Phonebook Access)
+          <uint16 value="0x0101" />
+  0x0100: unknown
+      <text value="OBEX Phonebook Access Server " />
+  0x0314: unknown
+      <uint8 value="0x01" />
   
   ... ...
   ```
@@ -160,7 +169,7 @@ Options:
 * Vulnerability (demo)
 
   ```txt
-  bluescan -m vuln --addr-type=br ??:??:??:??:??:??
+  $ sudo bluescan -m vuln --addr-type=br ??:??:??:??:??:??
   ... ...
   CVE-2017-0785
   ```

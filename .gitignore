@@ -1,5 +1,6 @@
 #.gitignore
 bin/
+res/
 doc/
 .vscode/
 __pycache__/
