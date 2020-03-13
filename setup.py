@@ -41,7 +41,7 @@ class MyClean(clean):
 if __name__ == "__main__":
     setup(
         name='bluescan',
-        version='0.0.6',
+        version='0.0.7',
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
         entry_points={

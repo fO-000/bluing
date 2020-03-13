@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import io
+import re
 import sys
 import subprocess
 import pkg_resources
@@ -8,11 +9,20 @@ from xml.etree import ElementTree as ET
 
 from bluetooth import find_service
 
+# 仅供测试使用
 #sys.path.append('/mnt/hgfs/OneDrive/Projects/bluescan/src/')
+
 from bluescan import BlueScanner
 from bluescan.ui import blue
+from bluescan.ui import green
 from bluescan.ui import yellow
 from bluescan.ui import red
+from bluescan.ui import DEBUG
+from bluescan.ui import INFO
+from bluescan.ui import WARNING
+from bluescan.ui import ERROR
+
+from bluescan.map import MAP
 
 
 service_cls_profile_ids_file = pkg_resources.resource_stream(__name__, "res/sdp-service-class-and-profile-ids.txt")
@@ -85,9 +95,20 @@ universal_attrs = {
 }
 
 
-class SDPScanner(BlueScanner):
+SERVICE_NAME = 0x0000
+SERVICE_DESCRIPTION = 0x0001
+PROVIDER_NAME = 0x0002
 
+universal_attr_offsets = {
+    SERVICE_NAME:        'ServiceName',
+    SERVICE_DESCRIPTION: 'ServiceDescription',
+    PROVIDER_NAME:       'ProviderName'
+}
+
+
+class SDPScanner(BlueScanner):
     def scan(self, addr:str):
+        print(INFO, 'Scanning...')
         exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
         if exitcode != 0:
             sys.exit(exitcode)
@@ -111,12 +132,20 @@ class SDPScanner(BlueScanner):
 
     @classmethod
     def parse_sdptool_output(cls, output:str):
+        pattern = r'Failed to connect to SDP server on[\da-zA-Z :]*'
+        pattern = re.compile(pattern)
+        result = pattern.findall(output)
+        for i in result:
+            output = output.replace(i, '')
+
         record_xmls = output.split('<?xml version="1.0" encoding="UTF-8" ?>\n\n')[1:]
         print('Number of service records:', len(record_xmls), '\n\n')
-
         for record_xml in record_xmls:
             print(blue('Service Record'))
-            cls.pp_record_xml(record_xml)
+            try:
+                cls.pp_record_xml(record_xml)
+            except ET.ParseError as e:
+                print(record_xml)
             print('\n')
 
 
@@ -126,6 +155,11 @@ class SDPScanner(BlueScanner):
 
         xml -- xml for a single service record
         '''
+        # LanguageBaseAttributeIDList 中的 attribute ID base 仅对当前的 service
+        # record 有效
+        SDPParser.attr_id_bases.clear()
+        SDPParser.MSE = False
+
         root = ET.fromstring(xml)
         attrs = root.findall('./attribute')
         for attr in attrs:
@@ -162,14 +196,59 @@ class SDPScanner(BlueScanner):
                 elif attr_id == ADDITIONAL_PROTOCOL_DESCRIPTOR_LISTS:
                     print('(sequence)')
                     SDPParser.pp_additional_protocol_descp_lists(attr)
-
             except KeyError:
-                print(attr_id+': unknown')
-                for elem in list(attr):
-                    print('    '+ET.tostring(elem).decode().strip())
+                unknown = True
+                attr_id = int(attr_id[2:], base=16)
+                for base in SDPParser.attr_id_bases:
+                    if attr_id == base + SERVICE_NAME:
+                        unknown = False
+                        name = attr.find('./text').attrib['value']
+                        print('0x%04x: ServiceName'%attr_id)
+                        print('    '+name)
+                    elif attr_id == base + SERVICE_DESCRIPTION:
+                        unknown = False
+                        description = attr.find('./text').attrib['value']
+                        print('0x%04x: ServiceDescription'%attr_id)
+                        print('    '+description)
+                    elif attr_id == base + PROVIDER_NAME:
+                        print('0x%04x: ProviderName'%attr_id)
+                        unknown = False
+
+                if unknown:
+                    if attr_id == 0x0100 + SERVICE_NAME:
+                        unknown = False
+                        name = attr.find('./text').attrib['value']
+                        print('0x%04x: ServiceName (guess)'%attr_id)
+                        print('    '+name)
+                    elif attr_id == 0x0100 + SERVICE_DESCRIPTION:
+                        unknown = False
+                        description = attr.find('./text').attrib['value']
+                        print('0x%04x: ServiceDescription (guess)'%attr_id)
+                        print('    '+description)
+                    elif attr_id == 0x0100 + PROVIDER_NAME:
+                        print('0x%04x: ProviderName (guess)'%attr_id)
+                        unknown = False
+                    elif SDPParser.MSE:
+                        if attr_id == 0x0316:
+                            value = int(attr.find('./uint8').attrib['value'][2:], base=16)
+                            print('0x%04x: SupportedMessageTypes'%attr_id, '0x%02x'%value)
+                            MAP.parse_supported_msg_types(value)
+                        elif attr_id == 0x0317:
+                            value = int(attr.find('./uint32').attrib['value'][2:], base=16)
+                            print('0x%04x: MapSupportedFeatures'%attr_id, '0x%08x'%value)
+                            MAP.parse_map_supported_features(value)
+                    else:
+                        print('0x%04x: unknown'%attr_id)
+                        for elem in list(attr):
+                            s = ET.tostring(elem).decode().strip().replace('\t', '').split('\n')
+                            for i in s:
+                                print('    '+i)
 
 
 class SDPParser:
+    attr_id_bases = []
+    MSE = False
+
     @classmethod
     def pp_service_record_hdl(cls, attr:ET.Element):
         handle = attr.find('./uint32')
@@ -184,11 +263,19 @@ class SDPParser:
             try:
                 print('    uuid:', uuid, end=' ')
                 if 'Service Class' in service_cls_profile_ids[uuid]['Allowed Usage']:
-                    print('('+service_cls_profile_ids[uuid]['Name']+')')
+                    name = service_cls_profile_ids[uuid]['Name']
+                    if name == 'Message Access Server':
+                        cls.MSE = True
+                    print('('+green(name)+')')
                 else:
-                    print('(Unknown)')
+                    print('('+red('Unknown')+')')
             except KeyError:
-                print('(Unknown)')
+                if uuid == '0x1800':
+                    print('('+green('Generic Access')+')')
+                elif uuid == '0x1801':
+                    print('('+green('Generic Attribute')+')')
+                else:
+                    print('('+red('Unknown')+')')
 
     @classmethod
     def pp_protocol_descp_list(cls, attr:ET.Element):
@@ -214,9 +301,17 @@ class SDPParser:
                     # Stream End Point 
                     sep = protocol.find('./uint16').attrib['value']
                     print(' '*8+'SEP:', sep)
+                elif name in ('BNEP'):
+                    version = protocol.find('./uint16').attrib['value']
+                    print(' '*8+'version:', version)
+                    uint16s = protocol.find('./sequence').findall('./uint16')
+                    for val in uint16s:
+                        print(' '*8+'uint16:', val.attrib['value'])
                 else:
                     for elem in list(protocol)[1:]:
-                        print(' '*8+ET.tostring(elem).decode().strip())
+                        s = ET.tostring(elem).decode().strip().replace('\t', '').split('\n')
+                        for i in s:
+                            print(' '*8+i)
             except KeyError:
                 print('(Unknown)')
 
@@ -241,19 +336,32 @@ class SDPParser:
             try:
                 print('    uuid:', uuid, end=' ')
                 if 'Profile' in service_cls_profile_ids[uuid]['Allowed Usage']:
-                    print('('+service_cls_profile_ids[uuid]['Name']+')')
+                    name = service_cls_profile_ids[uuid]['Name']
+                    print('('+green(name)+')', end=' ')
                     # print('         ', service_cls_profile_ids[uuid]['Specification'])
                 else:
-                    print('(Unknown)')
-                value = profile.find('./uint16')
-                print(' '*8+ET.tostring(value).decode().strip())
+                    print('('+red('Unknown')+')', end=' ')
+                version = int(profile.find('./uint16').attrib['value'][2:], base=16)
+                print('v%d.%d'%(version>>8, version&0xFF))
             except KeyError:
-                print('(Unknown)')
+                print('('+red('Unknown')+')')
 
     @classmethod
     def pp_lang_base_attr_id_list(cls, attr:ET.Element):
-        for elem in list(attr):
-            print(' '*4+ET.tostring(elem).decode().strip())
+        values = attr.find('./sequence').findall('./uint16')
+        triplets = []
+        for i in range(0, len(values), 3):
+            triplets.append(values[i:i+3])
+        #print(triplets)
+        
+        for triplet in triplets:
+            lang_name = triplet[0].attrib['value']
+            encoding = triplet[1].attrib['value']
+            base = triplet[2].attrib['value']
+            print('    language name:', lang_name)
+            print('    encoding:', encoding)
+            print('    attribute ID base:', base)
+            cls.attr_id_bases.append(int(base[2:], base=16))
 
     @classmethod
     def pp_additional_protocol_descp_lists(cls, attr:ET.Element):
@@ -265,12 +373,10 @@ class SDPParser:
 
 
 def test():
-    sys.path.append('/mnt/hgfs/OneDrive/Projects/bluescan/src/')
-    with open('./res/xml_records_sample.xml') as f:
+    with open('../../res/sdp_record_xml_sample/3.xml') as f:
         records_xml = f.read()
         SDPScanner.parse_sdptool_output(records_xml)
 
 
 if __name__ == "__main__":
     test()
-

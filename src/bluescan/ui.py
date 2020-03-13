@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.0.6
+r'''bluescan v0.0.7
 
 Usage:
     bluescan (-h | --help)
@@ -28,7 +28,7 @@ Options:
     --addr-type=<type>          Public, random or BR
 '''
 
-
+green  = lambda text: '\x1B[1;32m' + text + '\x1B[0m'
 blue   = lambda text: '\x1B[1;34m' + text + '\x1B[0m'
 yellow = lambda text: '\x1B[1;33m' + text + '\x1B[0m'
 red    = lambda text: '\x1B[1;31m' + text + '\x1B[0m'
@@ -43,7 +43,7 @@ from bluescan.helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.0.6', options_first=True)
+    args = docopt(__doc__, version='v0.0.7', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()
