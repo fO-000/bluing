@@ -9,11 +9,13 @@ from bluetooth import DeviceDiscoverer
 from bluetooth import _bluetooth
 
 from bluescan import BlueScanner
-from bluescan.ui import DEBUG
-from bluescan.ui import INFO
-from bluescan.ui import WARNING
-from bluescan.ui import ERROR
-from bluescan.hci import hci_inquiry_cancel
+from .ui import DEBUG
+from .ui import INFO
+from .ui import WARNING
+from .ui import ERROR
+from .ui import blue
+
+from .hci import HCI
 
 
 major_dev_clses = {
@@ -30,8 +32,8 @@ major_dev_clses = {
     0b11111: 'Uncategorized'
 }
 
-
-class BRDiscoverer(DeviceDiscoverer): # DeviceDiscoverer is in bluetooth/bluez.py
+# DeviceDiscoverer is in bluetooth/bluez.py
+class BRDiscoverer(DeviceDiscoverer):
     def pre_inquiry(self):
         '''Called when find_devices() returned'''
         self.existing_devs = []
@@ -40,8 +42,8 @@ class BRDiscoverer(DeviceDiscoverer): # DeviceDiscoverer is in bluetooth/bluez.p
     def device_discovered(self, address, device_class, rssi, name):
         if address not in self.existing_devs:
             self.existing_devs.append(address)
-            print('addr:', address)
-            print('name:', name.decode())
+            print('addr:', blue(address))
+            print('name:', blue(name.decode()))
             print('class: 0x%06X' % device_class)
             pp_cod(device_class)
             print('rssi:', rssi, '\n')
@@ -49,43 +51,43 @@ class BRDiscoverer(DeviceDiscoverer): # DeviceDiscoverer is in bluetooth/bluez.p
     def inquiry_complete(self):
         '''HCI_Inquiry_Complete 与 HCI_Command_Complete 都会导致该函数被回调'''
         self.done = True
-        self.existing_devs.clear()
 
 
 class BRScanner(BlueScanner):
-    def scan(self, inquiry_len=8, sort='rssi'):
-        existing_devs = []
+    # def scan(self, inquiry_len=8, sort='rssi'):
 
-        print(INFO, 'BR scanning on \x1B[1;34mhci%d\x1B[0m with timeout \x1B[1;34m%.2f sec\x1B[0m\n' % (self.iface, inquiry_len*1.28))
-        try:
-            #print('[Debug] Call discover_devices()')
-            found_devs_info = discover_devices(duration=inquiry_len, 
-                flush_cache=False, lookup_names=True, lookup_class=True, 
-                device_id=self.iface)
-        except KeyboardInterrupt:
-            print(INFO, 'Send HCI_Inquiry_Cancel')
-            hci_inquiry_cancel()
-            return
+    #     print(INFO, 'BR scanning on \x1B[1;34mhci%d\x1B[0m with timeout \x1B[1;34m%.2f sec\x1B[0m\n' % (self.devid, inquiry_len*1.28))
 
-        # found_devs_info.sort(key=lambda i:i)
+    #     existing_devs = []
+    #     found_devs_info = []
 
-        for addr, name, dev_class in found_devs_info:
-            if addr not in existing_devs:
-                print("addr: " + addr)
-                print("name: " + name)
-                print("class: " + "0x%06X" % dev_class + "\n")
-                pp_cod(dev_class)
+    #     try:
+    #         # When using BlueZ, discover_devices() is in bluetooth/bluez.py
+    #         found_devs_info = discover_devices(duration=inquiry_len, 
+    #             lookup_names=True, lookup_class=True, device_id=self.devid)
+    #     except KeyboardInterrupt:
+    #         HCI(self.iface).inquiry_cancel()
 
-                existing_devs.append(addr)
+    #     # found_devs_info.sort(key=lambda i:i)
 
+    #     for addr, name, dev_class in found_devs_info:
+    #         if addr not in existing_devs:
+    #             print("addr: " + blue(addr))
+    #             print("name: " + blue(name))
+    #             print("class: " + "0x%06X" % dev_class)
+    #             pp_cod(dev_class)
+    #             print()
 
-    def async_scan(self, inquiry_len=8):
-        print(INFO, "BR asynchronous scanning on \x1B[1;34mhci%d\x1B[0m with timeout \x1B[1;34m%.2f sec\x1B[0m\n" % (
-            self.iface, inquiry_len*1.28))
+    #             existing_devs.append(addr)
 
-        br_discover = BRDiscoverer(self.iface)
+    def scan(self, inquiry_len=8):
+        '''timeout = inquiry_len * 1.28 s'''
+        print(INFO, "BR scanning on \x1B[1;34mhci%d\x1B[0m with timeout \x1B[1;34m%.2f sec\x1B[0m\n" % (
+            self.devid, inquiry_len*1.28))
 
-        # find_devices() 会立即返回，期间 HCI_Inquiry 也会被发送。
+        br_discover = BRDiscoverer(self.devid)
+
+        # find_devices() 会立即返回，期间 HCI_Inquiry command 也会被发送。
         # flush_cache=False 不让之前 inquiry 发现的设备影响本次扫描结果
         br_discover.find_devices(
             lookup_names=True, duration=inquiry_len, flush_cache=False
@@ -119,7 +121,7 @@ def pp_cod(cod:int):
     elif cod & 0x000003 != 0:
         print(WARNING, "CoD's Format Type is not format #1")
         return
-    
+
     print('    Service Class: %s' % bin(cod>>13))
     information = lambda b: (b >> 23) & 1
     telephony = lambda b: (b >> 22) & 1
@@ -134,28 +136,28 @@ def pp_cod(cod:int):
     # Parse Service Class Field
     if information(cod):
         print(' '*8+'Information (WEB-server, WAP-server, ...)')
-    
+
     if telephony(cod):
         print(' '*8+'Telephony (Cordless telephony, Modem, Headset service, ...)')
 
     if audio(cod):
         print(' '*8+'Audio (Cordless telephony, Modem, Headset service, ...)')
-    
+
     if object_transfer(cod):
         print(' '*8+'Object Transfer (v-Inbox, v-Folder, ...)')
-    
+
     if capturing(cod):
         print(' '*8+'Capturing (Scanner, Microphone, ...)')
-    
+
     if rendering(cod):
         print(' '*8+'Rendering (Printing, Speaker, ...)')
-    
+
     if networking(cod):
         print(' '*8+'Networking (LAN, Ad hoc, ...)')
-    
+
     if positioning(cod):
         print(' '*8+'Positioning (Location identification)')
-    
+
     if limited_discoverable_mode(cod):
         print(' '*8+'Limited Discoverable Mode')
 
@@ -171,10 +173,10 @@ def pp_minor_dev_cls(val:int, major_dev_cls:int):
     pass
 
 
-def test():
+def __test():
     #BRScanner().scan(4)
     pp_minor_dev_cls(0x002540)
 
 
 if __name__ == "__main__":
-    test()
+    __test()

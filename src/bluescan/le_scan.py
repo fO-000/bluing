@@ -5,6 +5,10 @@ from bluepy.btle import DefaultDelegate
 from bluescan import BlueScanner
 from termcolor import cprint
 
+from .ui import INFO
+from .ui import WARNING
+from .ui import ERROR
+
 import re
 
 
@@ -38,19 +42,19 @@ class LEScanner(BlueScanner):
         scan_type
             指定执行的 LE scan，是 active scan 还是 passive scan。
         '''
-        scanner = Scanner(self.iface).withDelegate(LEDelegate())
+        scanner = Scanner(self.devid).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
 
         # scan() 返回的 devs 是 dictionary view。
         if scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
-            print("[Warnning] Before doing active scan, make sure you spoof your BD_ADDR.")
-            print("LE active scanning on hci%d...timeout %d sec\n" % (self.iface, timeout))
+            print(WARNING, 'Before doing active scan, make sure you spoof your BD_ADDR.')
+            print(INFO, "LE active scanning on \x1B[1;34mhci%d\x1B[0m with timeout %d sec\n" % (self.devid, timeout))
             devs = scanner.scan(timeout)
         elif scan_type == 'passive':
-            print("LE passive scanning on hci%d...timeout %d sec\n" % (self.iface, timeout))
+            print("LE passive scanning on \x1B[1;34mhci%d\x1B[0m with timeout %d sec\n" % (self.deivd, timeout))
             devs = scanner.scan(timeout, passive=True)
         else:
-            print("[Error] Unknown LE scan type.")
+            print(ERROR, "Unknown LE scan type.")
             return
 
         if sort == 'rssi':
@@ -98,9 +102,13 @@ class LEScanner(BlueScanner):
                 # 另外 getScanData() 返回的 desc 还可以通过 ScanEntry.getDescription() 
                 # 单独获取；val 还可以通过 ScanEntry.getValueText() 单独获取；
                 # adtype 表示当前一条 GAP 数据（AD structure）的类型。
-                print("        " + desc + ' (' + '0x%02X' % adtype + '):', val)
+                print("    " + desc + ' (' + '0x%02X' % adtype + '):', val)
             print("\n")
 
 
-if __name__ == "__main__":
+def __test():
     pass
+
+
+if __name__ == "__main__":
+    __test()

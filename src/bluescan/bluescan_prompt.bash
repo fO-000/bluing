@@ -5,7 +5,7 @@ _bluescan() {
     pword=${COMP_WORDS[COMP_CWORD-1]}
     cword=${COMP_WORDS[COMP_CWORD]}
 
-    opts='-h --help -v --version -m -i --async --sort= --inquiry-len= --timeout= --le-scan-type='
+    opts='-h --help -v --version -m -i --sort= --inquiry-len= --timeout= --le-scan-type='
     modes='le br LE BR'
     le_scan_types='active passive'
     sort_method='rssi RSSI'

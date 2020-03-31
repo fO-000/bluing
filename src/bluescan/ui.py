@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.0.7
+r'''bluescan v0.0.8
 
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)
-    bluescan [-i <hcix>] -m br [--inquiry-len=<n>] [--async]
-    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--le-scan-type=<type>] [--sort=<key>]
+    bluescan [-i <hcix>] -m br [--inquiry-len=<n>]
+    bluescan [-i <hcix>] -m lmp BD_ADDR
     bluescan [-i <hcix>] -m sdp BD_ADDR
+    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--le-scan-type=<type>] [--sort=<key>]
     bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
@@ -18,12 +19,11 @@ Options:
     -h, --help                  Display this help
     -v, --version               Show the version
     -i <hcix>                   HCI device for scan [default: hci0]
-    -m <mode>                   Scan mode, support BR, LE, SDP, GATT and vuln
+    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln
     --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command [default: 8]
     --timeout=<sec>             Duration of LE scan [default: 10]
     --le-scan-type=<type>       Active or passive scan for LE scan [default: active]
     --sort=<key>                Sort the discovered devices by key, only support RSSI now [default: rssi]
-    --async                     Asynchronous scan for BR scan
     --include-descriptor        Fetch descriptor information
     --addr-type=<type>          Public, random or BR
 '''
@@ -39,11 +39,11 @@ WARNING = '['+yellow('WARNING')+']'
 ERROR = '['+red('ERROR')+']'
 
 from docopt import docopt
-from bluescan.helper import valid_bdaddr
+from .helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.0.7', options_first=True)
+    args = docopt(__doc__, version='v0.0.8', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()
@@ -77,9 +77,9 @@ def parse_cmdline() -> dict:
     return args
 
 
-def test():
+def __test():
     pass
 
 
 if __name__ == "__main__":
-    test()
+    __test()

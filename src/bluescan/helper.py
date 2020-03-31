@@ -5,10 +5,9 @@ import sys
 
 import subprocess
 
-
-from bluescan.ui import WARNING
-from bluescan.ui import ERROR
-from bluescan.ui import INFO
+from .ui import WARNING
+from .ui import ERROR
+from .ui import INFO
 
 
 def valid_bdaddr(addr:str) -> bool:
@@ -29,8 +28,16 @@ def find_rfkill_devid(dev='hci0') -> int:
         else:
             continue
     
-    raise Exception(ERROR + "Can't find the ID of %s in rfkill" % dev)
+    raise Exception("Can't find the ID of %s in rfkill" % dev)
+
+
+def __test():
+    valid_bdaddr('11:22:33:44:55:66')
+    pp_lmp_features(b'\xbf\xfeO\xfe\xdb\xff[\x87')
+    pp_ext_lmp_features(b'\xbf\xfe\xcf\xfe\xdb\xff{\x87', 0)
+    pp_ext_lmp_features(b'\x0f\x00\x00\x00\x00\x00\x00\x00', 1)
+    pp_ext_lmp_features(b'0\x0b\x00\x00\x00\x00\x00\x00', 2)
 
 
 if __name__ == '__main__':
-    valid_bdaddr('11:22:33:44:55:66')
+    __test()

@@ -41,7 +41,8 @@ class MyClean(clean):
 if __name__ == "__main__":
     setup(
         name='bluescan',
-        version='0.0.7',
+        version='0.0.8',
+        license = "BSD",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
         entry_points={
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         # metadata to display on PyPI
         author="fO_000",
         author_email="fO_000@protonmail.com",
-        description='A powerful Bluetooth scanner for scanning BR/LE devices, GATT, SDP and vulnerabilities!',
+        description='A powerful Bluetooth scanner for scanning BR/LE devices, LMP, SDP, GATT and vulnerabilities!',
         long_description=read('README.md'),
         long_description_content_type='text/markdown',
         url='https://github.com/fO-000/bluescan',

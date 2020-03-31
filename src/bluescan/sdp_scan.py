@@ -13,16 +13,16 @@ from bluetooth import find_service
 #sys.path.append('/mnt/hgfs/OneDrive/Projects/bluescan/src/')
 
 from bluescan import BlueScanner
-from bluescan.ui import blue
-from bluescan.ui import green
-from bluescan.ui import yellow
-from bluescan.ui import red
-from bluescan.ui import DEBUG
-from bluescan.ui import INFO
-from bluescan.ui import WARNING
-from bluescan.ui import ERROR
+from .ui import blue
+from .ui import green
+from .ui import yellow
+from .ui import red
+from .ui import DEBUG
+from .ui import INFO
+from .ui import WARNING
+from .ui import ERROR
 
-from bluescan.map import MAP
+from .map import MAP
 
 
 service_cls_profile_ids_file = pkg_resources.resource_stream(__name__, "res/sdp-service-class-and-profile-ids.txt")
@@ -298,9 +298,10 @@ class SDPParser:
                     channel = protocol.find('./uint8').attrib['value']
                     print(' '*8+'channel:', channel)
                 elif name in ('AVDTP', 'AVCTP'): # 音频分发、音频控制
+                    version = int(protocol.find('./uint16').attrib['value'][2:], base=16)
+                    print(' '*8+'v%d.%d'%(version>>8, version&0xFF))
                     # Stream End Point 
-                    sep = protocol.find('./uint16').attrib['value']
-                    print(' '*8+'SEP:', sep)
+                    #print(' '*8+'SEP:', sep)
                 elif name in ('BNEP'):
                     version = protocol.find('./uint16').attrib['value']
                     print(' '*8+'version:', version)
@@ -372,11 +373,11 @@ class SDPParser:
             cls.pp_protocol_descp_list(pseudo_attr)
 
 
-def test():
+def __test():
     with open('../../res/sdp_record_xml_sample/3.xml') as f:
         records_xml = f.read()
         SDPScanner.parse_sdptool_output(records_xml)
 
 
 if __name__ == "__main__":
-    test()
+    __test()

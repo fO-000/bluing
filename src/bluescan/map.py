@@ -110,7 +110,7 @@ class MAP:
         print('    Bit 0 = Notification Registration Feature', value&0x00000001)
 
 
-def test():
+def __test():
     xml_str = '''<?xml version="1.0" encoding="UTF-8" ?>
 <record>
     <attribute id="0x0000">
@@ -169,4 +169,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    __test()

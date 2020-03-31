@@ -3,61 +3,70 @@
 import os
 import sys
 import time
+import traceback
 import subprocess
 from pathlib import PosixPath
 
 from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
-from bluescan.br_scan import BRScanner
-from bluescan.le_scan import LEScanner
-from bluescan.gatt_scan import GATTScanner
-from bluescan.sdp_scan import SDPScanner
-from bluescan.stack_scan import StackScanner
-from bluescan.vuln_scan import VulnScanner
+from .ui import parse_cmdline
+from .ui import blue
+from .ui import INFO
+from .ui import WARNING
+from .ui import ERROR
+from .helper import find_rfkill_devid
 
-from bluescan.ui import parse_cmdline
-from bluescan.ui import WARNING
-from bluescan.ui import ERROR
-from bluescan.ui import INFO
-from bluescan.helper import find_rfkill_devid
+from .br_scan import BRScanner
+from .le_scan import LEScanner
+from .gatt_scan import GATTScanner
+from .sdp_scan import SDPScanner
+from .stack_scan import StackScanner
+from .vuln_scan import VulnScanner
+from .lmp_scan import LMPScanner
 
-from bluescan.hci import hcix2devid
-from bluescan.hci import hci_reset
-from bluescan.hci import hci_inquiry_cancel
-from bluescan.hci import hci_exit_periodic_inquiry_mode
-from bluescan.hci import hci_write_scan_enable
-from bluescan.hci import hci_write_inquiry_mode
-from bluescan.hci import hci_set_event_filter
-from bluescan.hci import hci_le_set_advertising_enable
-from bluescan.hci import hci_le_set_scan_enable
-from bluescan.hci import hci_read_bd_addr
+from .hci import HCI
 
 
 def init(iface='hci0'):
+    hci = HCI(iface)
+
     exitcode, output = subprocess.getstatusoutput(
         'rfkill unblock %d' % find_rfkill_devid(iface))
     if exitcode != 0:
-        print('[\x1B[1;31mERROR\x1B[0m] rfkill: ', output)
+        print(ERROR, 'rfkill:', output)
         sys.exit(exitcode)
 
-    #hci_reset(iface)
-    hci_inquiry_cancel(iface)
-    hci_exit_periodic_inquiry_mode(iface)
-    hci_write_scan_enable(iface) # No scan enabled
-    hci_le_set_advertising_enable(iface) # disable adv
+    # hci.reset()
+    hci.inquiry_cancel()
+    hci.exit_periodic_inquiry_mode()
 
-    # disable scan; enabled filter duplicates, but ignored here
-    hci_le_set_scan_enable(iface, b'\x00', b'\x01')
+    hci.write_scan_enable() # No scan enabled
 
-    # Ony for inquiry result and return responses from all devices during the Inquiry process
-    hci_set_event_filter(iface, b'\x01', b'\x00')
+    event_params = hci.le_set_advertising_enable() # Advertising is disabled
+    if event_params['Status'] != 0x00:
+        #print(WARNING, 'Status of HCI_LE_Set_Advertising_Enable command: 0x%02x'%event_params['Status'])
+        pass
     
-    # Inquiry Result with RSSI format or Extended Inquiry Result format
-    hci_write_inquiry_mode(iface, b'\x02')
+    try:
+        hci.le_set_scan_enable({
+            'LE_Scan_Enable': 0x00, # Scanning disabled
+            'Filter_Duplicates': 0x01 # Ignored
+        })
+    except RuntimeError as e:
+        #print(WARNING, e)
+        pass
 
-    # clear cache
-    cache_path = PosixPath('/var/lib/bluetooth/') / hci_read_bd_addr(iface) / 'cache'
+    hci.set_event_filter({'Filter_Type': 0x00}) # Clear All Filters
+
+    event_params = hci.read_bd_addr()
+    if event_params['Status'] != 0:
+        raise RuntimeError
+    else:
+        local_bd_addr = event_params['BD_ADDR'].upper()
+
+    # Clear bluetoothd cache
+    cache_path = PosixPath('/var/lib/bluetooth/') / local_bd_addr / 'cache'
     if cache_path.exists():
         for file in cache_path.iterdir():
             os.remove(file)
@@ -66,21 +75,13 @@ def init(iface='hci0'):
 def main():
     try:
         args = parse_cmdline()
-
         init(args['-i'])
-        args['-i'] = hcix2devid(args['-i'])
 
         if args['-m'] == 'br':
             br_scanner = BRScanner(args['-i'])
-            try:
-                if args['--async']:
-                    br_scanner.async_scan(args['--inquiry-len'])
-                else:
-                    br_scanner.scan(args['--inquiry-len'], sort=args['--sort'])
-            except BluetoothError as e:
-                print("[\x1B[1;31mERROR\x1B[0m]", e)
-                sys.exit(1)
-
+            br_scanner.scan(args['--inquiry-len'])
+        elif args['-m'] == 'lmp':
+            LMPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'le':
             LEScanner(args['-i']).scan(args['--timeout'], 
                 args['--le-scan-type'], args['--sort']
@@ -95,15 +96,18 @@ def main():
         elif args['-m'] == 'vuln':
             VulnScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
         else:
-            print("[Error] invalid scan mode")
+            print(ERROR, "invalid scan mode")
+    except BluetoothError as e:
+        print(ERROR, e)
     except (BTLEException, ValueError) as e:
-        print(e)
+        print(ERROR, e)
         if 'le on' in str(e):
-            print(ERROR+'No BLE adapter? or missing sudo ?')
+            print('        No BLE adapter? or missing sudo ?')
     except KeyboardInterrupt:
-        print("\n[i] " + args['-m'].upper() + " scan canceled\n")
+        print(INFO, args['-m'].upper() + " scan canceled\n")
     except Exception as e:
-        print(e)
+        #traceback.print_exc()
+        print(ERROR, e)
 
 
 if __name__ == "__main__":

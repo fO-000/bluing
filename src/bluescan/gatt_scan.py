@@ -59,7 +59,7 @@ class GATTScanner(BlueScanner):
         #print("[Debug] target_addr:", self.target_bdaddr)
         #print("[Debug] iface:", self.iface)
         #print("[Debug] addr_type:", self.addr_type)
-        target = Peripheral(bdaddr, iface=self.iface, addrType=addr_type)
+        target = Peripheral(bdaddr, iface=self.devid, addrType=addr_type)
         #print("[Debug] target", target)
 
         services = target.getServices()
