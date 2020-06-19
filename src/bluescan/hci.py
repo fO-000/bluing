@@ -488,7 +488,7 @@ class HCI:
         hci_send_cmd(dd, OGF_HOST_CTL, OCF_READ_LOCAL_NAME)
 
         event_params = dd.recv(3+EVT_CMD_COMPLETE_SIZE+249)[3:]
-        num_hci_cmd_pkts, cmd_opcode, status, local_name = struct.unpack('<BHB248s', hci_cmd_complete)
+        num_hci_cmd_pkts, cmd_opcode, status, local_name = struct.unpack('<BHB248s', event_params)
         event_params = {
             'Num_HCI_Command_Packets': num_hci_cmd_pkts,
             'Command_Opcode': cmd_opcode,
@@ -776,6 +776,31 @@ class HCI:
         return event_params
 
 
+    def le_set_advertising_enable(self, cmd_params={'Advertising_Enable': 0x00}) -> dict:
+        dd = hci_open_dev(self.devid)
+
+        bin_cmd_params = cmd_params['Advertising_Enable'].to_bytes(1, 'little')
+
+        flt = hci_filter_new()
+        hci_filter_set_ptype(flt, HCI_EVENT_PKT)
+        hci_filter_set_event(flt, EVT_CMD_COMPLETE)
+        hci_filter_set_opcode(
+            flt, cmd_opcode_pack(OGF_LE_CTL, OCF_LE_SET_ADVERTISING_ENABLE))
+        dd.setsockopt(SOL_HCI, HCI_FILTER, flt)
+
+        hci_send_cmd(dd, OGF_LE_CTL, OCF_LE_SET_ADVERTISING_ENABLE, bin_cmd_params)
+        event_params = dd.recv(3+EVT_CMD_COMPLETE_SIZE+1)[3:]
+        num_hci_cmd_pkts, cmd_opcode, status = struct.unpack('<BHB', event_params)
+        event_params = {
+            'Num_HCI_Command_Packets': num_hci_cmd_pkts,
+            'Command_Opcode': cmd_opcode,
+            'Status': status
+        }
+        
+        hci_close_dev(dd.fileno())
+        return event_params
+
+
     def le_set_scan_enable(self, cmd_params:dict):
         '''
         cmd_params -- {
@@ -831,32 +856,27 @@ class HCI:
 
         hci_close_dev(dd.fileno())
         return event_params
-
-
-    def le_set_advertising_enable(self, cmd_params={'Advertising_Enable': 0x00}) -> dict:
-        dd = hci_open_dev(self.devid)
-
-        bin_cmd_params = cmd_params['Advertising_Enable'].to_bytes(1, 'little')
-
-        flt = hci_filter_new()
-        hci_filter_set_ptype(flt, HCI_EVENT_PKT)
-        hci_filter_set_event(flt, EVT_CMD_COMPLETE)
-        hci_filter_set_opcode(
-            flt, cmd_opcode_pack(OGF_LE_CTL, OCF_LE_SET_ADVERTISING_ENABLE))
-        dd.setsockopt(SOL_HCI, HCI_FILTER, flt)
-
-        hci_send_cmd(dd, OGF_LE_CTL, OCF_LE_SET_ADVERTISING_ENABLE, bin_cmd_params)
-        event_params = dd.recv(3+EVT_CMD_COMPLETE_SIZE+1)[3:]
-        num_hci_cmd_pkts, cmd_opcode, status = struct.unpack('<BHB', event_params)
-        event_params = {
-            'Num_HCI_Command_Packets': num_hci_cmd_pkts,
-            'Command_Opcode': cmd_opcode,
-            'Status': status
+    
+    
+    def le_create_connection(self, cmd_params:dict) -> dict:
+        '''
+        cmd_params -- {
+            'LE_Scan_Interval': ,
+            'LE_Scan_Window': ,
+            'Initiator_Filter_Policy': ,
+            'Peer_Address_Type': ,
+            'Peer_Address': ,
+            'Own_Address_Type': ,
+            'Connection_Interval_Min': ,
+            'Connection_Interval_Max': ,
+            'Connection_Latency': ,
+            'Supervision_Timeout': ,
+            'Min_CE_Length': ,
+            'Max_CE_Lengt':
         }
+        '''
+        pass
         
-        hci_close_dev(dd.fileno())
-        return event_params
-
 
 def hci_write_local_name(params:bytes, iface='hci0'):
     ogf = HCI_CTRL_BASEBAND_CMD_OGF
@@ -968,12 +988,12 @@ def gen_hcitool_cmd(ogf:int, ocf:int, params:str, iface='hci0') -> str:
 
 class __Test:
     @classmethod
-    def scan_undiscoverable_dev():
+    def scan_undiscoverable_dev(cls):
         import multiprocessing
 
-        hci_read_page_timeout()
-        hci_write_page_timeout(0x0200) # 0x0500 较稳定
-        hci_read_page_timeout()
+        #hci_read_page_timeout()
+        #hci_write_page_timeout(0x0200) # 0x0500 较稳定
+        #hci_read_page_timeout()
 
         # p1 = multiprocessing.Process(target=job,args=(1,2))
 
@@ -985,13 +1005,13 @@ class __Test:
             print(addr)
             #print('HCI connect', addr)
             #status, bdaddr = hci_create_connection(addr)
-            hci_create_connection(addr)
+            #hci_create_connection(addr)
             time.sleep(0.5)
             # if status == 0:
             #     print(status, bdaddr)
 
     @classmethod
-    def pp_le_scanner_addr():
+    def pp_le_scanner_addr(cls):
         hci = HCI('hci0')
         hci.le_set_advertising_parameters()
 
@@ -1008,33 +1028,33 @@ class __Test:
 
         hci.le_set_advertising_enable({'Advertising_Enable': 0x01})
 
-        # dd = hci_open_dev(0)
+        dd = hci_open_dev(0)
 
-        # flt = hci_filter_new()
-        # hci_filter_set_ptype(flt, HCI_EVENT_PKT)
-        # hci_filter_set_event(flt, EVT_LE_META)
-        # dd.setsockopt(SOL_HCI, HCI_FILTER, flt)
+        flt = hci_filter_new()
+        hci_filter_set_ptype(flt, HCI_EVENT_PKT)
+        hci_filter_set_event(flt, EVT_LE_META)
+        dd.setsockopt(SOL_HCI, HCI_FILTER, flt)
 
-        # while True:
-        #     event_params = dd.recv(3+SUBEVT_LE_SCAN_REQUEST_RECEIVED_SIZE)[3:]
-        #     if event_params[0] != SUBEVT_LE_SCAN_REQUEST_RECEIVED:
-        #         continue
+        while True:
+            event_params = dd.recv(3+SUBEVT_LE_SCAN_REQUEST_RECEIVED_SIZE)[3:]
+            if event_params[0] != SUBEVT_LE_SCAN_REQUEST_RECEIVED:
+                continue
             
-        #     subevt_code, adv_handle, scanner_addr_type, scanner_addr = struct.unpack('<BBB6s', event_params)
-        #     event_params = {
-        #         'Subevent_Code': subevt_code,
-        #         'Advertising_Handle': adv_handle,
-        #         'Scanner_Address_Type': scanner_addr_type,
-        #         'Scanner_Address': scanner_addr
-        #     }
+            subevt_code, adv_handle, scanner_addr_type, scanner_addr = struct.unpack('<BBB6s', event_params)
+            event_params = {
+                'Subevent_Code': subevt_code,
+                'Advertising_Handle': adv_handle,
+                'Scanner_Address_Type': scanner_addr_type,
+                'Scanner_Address': scanner_addr
+            }
 
-        #     print(event_params)
+            print(event_params)
 
         hci_close_dev(dd.fileno())
 
 
 if __name__ == '__main__':
-    print(EVT_READ_REMOTE_VERSION_COMPLETE)
-    print(EVT_READ_REMOTE_VERSION_COMPLETE_SIZE)
-    __Test.scan_undiscoverable_dev()
+    # print(EVT_READ_REMOTE_VERSION_COMPLETE)
+    # print(EVT_READ_REMOTE_VERSION_COMPLETE_SIZE)
+    # __Test.scan_undiscoverable_dev()
     __Test.pp_le_scanner_addr()

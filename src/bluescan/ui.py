@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.0.8
+r'''bluescan v0.0.9
 
 Usage:
     bluescan (-h | --help)
@@ -43,7 +43,7 @@ from .helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.0.8', options_first=True)
+    args = docopt(__doc__, version='v0.0.9', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()
@@ -60,14 +60,13 @@ def parse_cmdline() -> dict:
                 args['BD_ADDR'] = args['BD_ADDR'].lower()
                 if not valid_bdaddr(args['BD_ADDR']):
                     raise ValueError(
-                        ERROR + 'Invalid BD_ADDR: ' + args['BD_ADDR']
+                        ERROR + ' ' + 'Invalid BD_ADDR: ' + args['BD_ADDR']
                     )
 
         if args['-m'] == 'gatt':
-            if args['--addr-type'] != 'public' and \
-               args['--addr-type'] != 'random':
+            if args['--addr-type'] not in ('public', 'random'):
                 raise ValueError(
-                    ERROR + 'Invalid --addr-type, must be public or random'
+                    ERROR + ' ' + 'Invalid address type, must be public or random'
                 )
             args['--addr-type'] = args['--addr-type'].lower()
     except ValueError as e:

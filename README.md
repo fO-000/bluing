@@ -34,6 +34,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
+
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)

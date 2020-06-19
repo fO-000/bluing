@@ -10,4 +10,4 @@ class VulnScanner(BlueScanner):
 
     @classmethod
     def scan(cls, addr, addr_type):
-        subprocess.run([cls.test_poc, 'TARGET='+addr])
+        subprocess.run([cls.test_poc, 'BD_ADDR='+addr])
