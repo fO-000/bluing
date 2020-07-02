@@ -1,0 +1,4 @@
+Characteristic Declaration	org.bluetooth.attribute.gatt_.characteristic_declaration	0x2803	GSS
+Include	org.bluetooth.attribute.gatt_.include_declaration	0x2802	GSS
+Primary Service	org.bluetooth.attribute.gatt_.primary_service_declaration	0x2800	GSS
+Secondary Service	org.bluetooth.attribute.gatt_.secondary_service_declaration	0x2801	GSS

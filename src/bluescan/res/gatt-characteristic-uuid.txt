@@ -1,0 +1,234 @@
+Aerobic Heart Rate Lower Limit	org.bluetooth.characteristic.aerobic_heart_rate_lower_limit	0x2A7E	GSS
+Aerobic Heart Rate Upper Limit	org.bluetooth.characteristic.aerobic_heart_rate_upper_limit	0x2A84	GSS
+Aerobic Threshold	org.bluetooth.characteristic.aerobic_threshold	0x2A7F	GSS
+Age	org.bluetooth.characteristic.age	0x2A80	GSS
+Aggregate	org.bluetooth.characteristic.aggregate	0x2A5A	GSS
+Alert Category ID	org.bluetooth.characteristic.alert_category_id	0x2A43	GSS
+Alert Category ID Bit Mask	org.bluetooth.characteristic.alert_category_id_bit_mask	0x2A42	GSS
+Alert Level	org.bluetooth.characteristic.alert_level	0x2A06	GSS
+Alert Notification Control Point	org.bluetooth.characteristic.alert_notification_control_point	0x2A44	GSS
+Alert Status	org.bluetooth.characteristic.alert_status	0x2A3F	GSS
+Altitude	org.bluetooth.characteristic.altitude	0x2AB3	GSS
+Anaerobic Heart Rate Lower Limit	org.bluetooth.characteristic.anaerobic_heart_rate_lower_limit	0x2A81	GSS
+Anaerobic Heart Rate Upper Limit	org.bluetooth.characteristic.anaerobic_heart_rate_upper_limit	0x2A82	GSS
+Anaerobic Threshold	org.bluetooth.characteristic.anaerobic_threshold	0x2A83	GSS
+Analog	org.bluetooth.characteristic.analog	0x2A58	GSS
+Analog Output	org.bluetooth.characteristic.analog_output	0x2A59	GSS
+Apparent Wind Direction	org.bluetooth.characteristic.apparent_wind_direction	0x2A73	GSS
+Apparent Wind Speed	org.bluetooth.characteristic.apparent_wind_speed	0x2A72	GSS
+Appearance	org.bluetooth.characteristic.gap.appearance	0x2A01	Core 4.0
+Barometric Pressure Trend	org.bluetooth.characteristic.barometric_pressure_trend	0x2AA3	GSS
+Battery Level	org.bluetooth.characteristic.battery_level	0x2A19	GSS
+Battery Level State	org.bluetooth.characteristic.battery_level_state	0x2A1B	GSS
+Battery Power State	org.bluetooth.characteristic.battery_power_state	0x2A1A	GSS
+Blood Pressure Feature	org.bluetooth.characteristic.blood_pressure_feature	0x2A49	GSS
+Blood Pressure Measurement	org.bluetooth.characteristic.blood_pressure_measurement	0x2A35	GSS
+Body Composition Feature	org.bluetooth.characteristic.body_composition_feature	0x2A9B	GSS
+Body Composition Measurement	org.bluetooth.characteristic.body_composition_measurement	0x2A9C	GSS
+Body Sensor Location	org.bluetooth.characteristic.body_sensor_location	0x2A38	GSS
+Bond Management Control Point	org.bluetooth.characteristic.bond_management_control_point	0x2AA4	GSS
+Bond Management Features	org.bluetooth.characteristic.bond_management_feature	0x2AA5	GSS
+Boot Keyboard Input Report	org.bluetooth.characteristic.boot_keyboard_input_report	0x2A22	GSS
+Boot Keyboard Output Report	org.bluetooth.characteristic.boot_keyboard_output_report	0x2A32	GSS
+Boot Mouse Input Report	org.bluetooth.characteristic.boot_mouse_input_report	0x2A33	GSS
+BSS Control Point	GATT Characteristic UUID	0x2B2B	BSS
+BSS Response	GATT Characteristic UUID	0x2B2C	BSS
+CGM Feature	org.bluetooth.characteristic.cgm_feature	0x2AA8	GSS
+CGM Measurement	org.bluetooth.characteristic.cgm_measurement	0x2AA7	GSS
+CGM Session Run Time	org.bluetooth.characteristic.cgm_session_run_time	0x2AAB	GSS
+CGM Session Start Time	org.bluetooth.characteristic.cgm_session_start_time	0x2AAA	GSS
+CGM Specific Ops Control Point	org.bluetooth.characteristic.cgm_specific_ops_control_point	0x2AAC	GSS
+CGM Status	org.bluetooth.characteristic.cgm_status	0x2AA9	GSS
+Client Supported Features	GATT Characteristic UUID	0x2B29	Core 5.1
+Cross Trainer Data	org.bluetooth.characteristic.cross_trainer_data	0x2ACE	GSS
+CSC Feature	org.bluetooth.characteristic.csc_feature	0x2A5C	GSS
+CSC Measurement	org.bluetooth.characteristic.csc_measurement	0x2A5B	GSS
+Current Time	org.bluetooth.characteristic.current_time	0x2A2B	GSS
+Cycling Power Control Point	org.bluetooth.characteristic.cycling_power_control_point	0x2A66	GSS
+Cycling Power Feature	org.bluetooth.characteristic.cycling_power_feature	0x2A65	GSS
+Cycling Power Measurement	org.bluetooth.characteristic.cycling_power_measurement	0x2A63	GSS
+Cycling Power Vector	org.bluetooth.characteristic.cycling_power_vector	0x2A64	GSS
+Database Change Increment	org.bluetooth.characteristic.database_change_increment	0x2A99	GSS
+Database Hash	GATT Characteristic UUID	0x2B2A	Core 5.1 or later
+Date of Birth	org.bluetooth.characteristic.date_of_birth	0x2A85	GSS
+Date of Threshold Assessment	org.bluetooth.characteristic.date_of_threshold_assessment	0x2A86	GSS
+Date Time	org.bluetooth.characteristic.date_time	0x2A08	GSS
+Date UTC	org.bluetooth.characteristic.date_utc	0x2AED	GSS
+Day Date Time	org.bluetooth.characteristic.day_date_time	0x2A0A	GSS
+Day of Week	org.bluetooth.characteristic.day_of_week	0x2A09	GSS
+Descriptor Value Changed	org.bluetooth.characteristic.descriptor_value_changed	0x2A7D	GSS
+Dew Point	org.bluetooth.characteristic.dew_point	0x2A7B	GSS
+Digital	org.bluetooth.characteristic.digital	0x2A56	GSS
+Digital Output	org.bluetooth.characteristic.digital_output	0x2A57	GSS
+DST Offset	org.bluetooth.characteristic.dst_offset	0x2A0D	GSS
+Elevation	org.bluetooth.characteristic.elevation	0x2A6C	GSS
+Email Address	org.bluetooth.characteristic.email_address	0x2A87	GSS
+Emergency ID	GATT Characteristic UUID	0x2B2D	EMCS
+Emergency Text	GATT Characteristic UUID	0x2B2E	EMCS
+Exact Time 100	org.bluetooth.characteristic.exact_time_100	0x2A0B	GSS
+Exact Time 256	org.bluetooth.characteristic.exact_time_256	0x2A0C	GSS
+Fat Burn Heart Rate Lower Limit	org.bluetooth.characteristic.fat_burn_heart_rate_lower_limit	0x2A88	GSS
+Fat Burn Heart Rate Upper Limit	org.bluetooth.characteristic.fat_burn_heart_rate_upper_limit	0x2A89	GSS
+Firmware Revision String	org.bluetooth.characteristic.firmware_revision_string	0x2A26	GSS
+First Name	org.bluetooth.characteristic.first_name	0x2A8A	GSS
+Fitness Machine Control Point	org.bluetooth.characteristic.fitness_machine_control_point	0x2AD9	GSS
+Fitness Machine Feature	org.bluetooth.characteristic.fitness_machine_feature	0x2ACC	GSS
+Fitness Machine Status	org.bluetooth.characteristic.fitness_machine_status	0x2ADA	GSS
+Five Zone Heart Rate Limits	org.bluetooth.characteristic.five_zone_heart_rate_limits	0x2A8B	GSS
+Floor Number	org.bluetooth.characteristic.floor_number	0x2AB2	GSS
+Central Address Resolution	org.bluetooth.characteristic.gap.central_address_resolution	0x2AA6	Core 4.2
+Device Name	org.bluetooth.characteristic.gap.device_name	0x2A00	Core 4.0
+Peripheral Preferred Connection Parameters	org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters	0x2A04	Core 4.0
+Peripheral Privacy Flag	org.bluetooth.characteristic.gap.peripheral_privacy_flag	0x2A02	Core 4.0
+Reconnection Address	org.bluetooth.characteristic.gap.reconnection_address	0x2A03	Core 4.0
+Service Changed	org.bluetooth.characteristic.gatt.service_changed	0x2A05	Core 4.0
+Gender	org.bluetooth.characteristic.gender	0x2A8C	GSS
+Glucose Feature	org.bluetooth.characteristic.glucose_feature	0x2A51	GSS
+Glucose Measurement	org.bluetooth.characteristic.glucose_measurement	0x2A18	GSS
+Glucose Measurement Context	org.bluetooth.characteristic.glucose_measurement_context	0x2A34	GSS
+Gust Factor	org.bluetooth.characteristic.gust_factor	0x2A74	GSS
+Hardware Revision String	org.bluetooth.characteristic.hardware_revision_string	0x2A27	GSS
+Heart Rate Control Point	org.bluetooth.characteristic.heart_rate_control_point	0x2A39	GSS
+Heart Rate Max	org.bluetooth.characteristic.heart_rate_max	0x2A8D	GSS
+Heart Rate Measurement	org.bluetooth.characteristic.heart_rate_measurement	0x2A37	GSS
+Heat Index	org.bluetooth.characteristic.heat_index	0x2A7A	GSS
+Height	org.bluetooth.characteristic.height	0x2A8E	GSS
+HID Control Point	org.bluetooth.characteristic.hid_control_point	0x2A4C	GSS
+HID Information	org.bluetooth.characteristic.hid_information	0x2A4A	GSS
+Hip Circumference	org.bluetooth.characteristic.hip_circumference	0x2A8F	GSS
+HTTP Control Point	org.bluetooth.characteristic.http_control_point	0x2ABA	GSS
+HTTP Entity Body	org.bluetooth.characteristic.http_entity_body	0x2AB9	GSS
+HTTP Headers	org.bluetooth.characteristic.http_headers	0x2AB7	GSS
+HTTP Status Code	org.bluetooth.characteristic.http_status_code	0x2AB8	GSS
+HTTPS Security	org.bluetooth.characteristic.https_security	0x2ABB	GSS
+Humidity	org.bluetooth.characteristic.humidity	0x2A6F	GSS
+IDD Annunciation Status	org.bluetooth.characteristic.idd_annunciation_status	0x2B22	GSS
+IDD Command Control Point	org.bluetooth.characteristic.idd_command_control_point	0x2B25	GSS
+IDD Command Data	org.bluetooth.characteristic.idd_command_data	0x2B26	GSS
+IDD Features	org.bluetooth.characteristic.idd_features	0x2B23	GSS
+IDD History Data	org.bluetooth.characteristic.idd_history_data	0x2B28	GSS
+IDD Record Access Control Point	org.bluetooth.characteristic.idd_record_access_control_point	0x2B27	GSS
+IDD Status	org.bluetooth.characteristic.idd_status	0x2B21	GSS
+IDD Status Changed	org.bluetooth.characteristic.idd_status_changed	0x2B20	GSS
+IDD Status Reader Control Point	org.bluetooth.characteristic.idd_status_reader_control_point	0x2B24	GSS
+IEEE 11073-20601 Regulatory Certification Data List	org.bluetooth.characteristic.ieee_11073-20601_regulatory_certification_data_list	0x2A2A	GSS
+Indoor Bike Data	org.bluetooth.characteristic.indoor_bike_data	0x2AD2	GSS
+Indoor Positioning Configuration	org.bluetooth.characteristic.indoor_positioning_configuration	0x2AAD	GSS
+Intermediate Cuff Pressure	org.bluetooth.characteristic.intermediate_cuff_pressure	0x2A36	GSS
+Intermediate Temperature	org.bluetooth.characteristic.intermediate_temperature	0x2A1E	GSS
+Irradiance	org.bluetooth.characteristic.irradiance	0x2A77	GSS
+Language	org.bluetooth.characteristic.language	0x2AA2	GSS
+Last Name	org.bluetooth.characteristic.last_name	0x2A90	GSS
+Latitude	org.bluetooth.characteristic.latitude	0x2AAE	GSS
+LN Control Point	org.bluetooth.characteristic.ln_control_point	0x2A6B	GSS
+LN Feature	org.bluetooth.characteristic.ln_feature	0x2A6A	GSS
+Local East Coordinate	org.bluetooth.characteristic.local_east_coordinate	0x2AB1	GSS
+Local North Coordinate	org.bluetooth.characteristic.local_north_coordinate	0x2AB0	GSS
+Local Time Information	org.bluetooth.characteristic.local_time_information	0x2A0F	GSS
+Location and Speed Characteristic	org.bluetooth.characteristic.location_and_speed	0x2A67	GSS
+Location Name	org.bluetooth.characteristic.location_name	0x2AB5	GSS
+Longitude	org.bluetooth.characteristic.Longitude	0x2AAF	GSS
+Magnetic Declination	org.bluetooth.characteristic.magnetic_declination	0x2A2C	GSS
+Magnetic Flux Density – 2D	org.bluetooth.characteristic.Magnetic_flux_density_2D	0x2AA0	GSS
+Magnetic Flux Density – 3D	org.bluetooth.characteristic.Magnetic_flux_density_3D	0x2AA1	GSS
+Manufacturer Name String	org.bluetooth.characteristic.manufacturer_name_string	0x2A29	GSS
+Maximum Recommended Heart Rate	org.bluetooth.characteristic.maximum_recommended_heart_rate	0x2A91	GSS
+Measurement Interval	org.bluetooth.characteristic.measurement_interval	0x2A21	GSS
+Model Number String	org.bluetooth.characteristic.model_number_string	0x2A24	GSS
+Navigation	org.bluetooth.characteristic.navigation	0x2A68	GSS
+Network Availability	org.bluetooth.characteristic.network_availability	0x2A3E	GSS
+New Alert	org.bluetooth.characteristic.new_alert	0x2A46	GSS
+Object Action Control Point	org.bluetooth.characteristic.object_action_control_point	0x2AC5	GSS
+Object Changed	org.bluetooth.characteristic.object_changed	0x2AC8	GSS
+Object First-Created	org.bluetooth.characteristic.object_first_created	0x2AC1	GSS
+Object ID	org.bluetooth.characteristic.object_id	0x2AC3	GSS
+Object Last-Modified	org.bluetooth.characteristic.object_last_modified	0x2AC2	GSS
+Object List Control Point	org.bluetooth.characteristic.object_list_control_point	0x2AC6	GSS
+Object List Filter	org.bluetooth.characteristic.object_list_filter	0x2AC7	GSS
+Object Name	org.bluetooth.characteristic.object_name	0x2ABE	GSS
+Object Properties	org.bluetooth.characteristic.object_properties	0x2AC4	GSS
+Object Size	org.bluetooth.characteristic.object_size	0x2AC0	GSS
+Object Type	org.bluetooth.characteristic.object_type	0x2ABF	GSS
+OTS Feature	org.bluetooth.characteristic.ots_feature	0x2ABD	GSS
+PLX Continuous Measurement Characteristic	org.bluetooth.characteristic.plx_continuous_measurement	0x2A5F	GSS
+PLX Features	org.bluetooth.characteristic.plx_features	0x2A60	GSS
+PLX Spot-Check Measurement	org.bluetooth.characteristic.plx_spot_check_measurement	0x2A5E	GSS
+PnP ID	org.bluetooth.characteristic.pnp_id	0x2A50	GSS
+Pollen Concentration	org.bluetooth.characteristic.pollen_concentration	0x2A75	GSS
+Position 2D	org.bluetooth.characteristic.position_2d	0x2A2F	GSS
+Position 3D	org.bluetooth.characteristic.position_3d	0x2A30	GSS
+Position Quality	org.bluetooth.characteristic.position_quality	0x2A69	GSS
+Pressure	org.bluetooth.characteristic.pressure	0x2A6D	GSS
+Protocol Mode	org.bluetooth.characteristic.protocol_mode	0x2A4E	GSS
+Pulse Oximetry Control Point	org.bluetooth.characteristic.pulse_oximetry_control_point	0x2A62	GSS
+Rainfall	org.bluetooth.characteristic.rainfall	0x2A78	GSS
+RC Feature	org.bluetooth.characteristic.rc_feature	0x2B1D	GSS
+RC Settings	org.bluetooth.characteristic.rc_settings	0x2B1E	GSS
+Reconnection Configuration Control Point	org.bluetooth.characteristic.reconnection_configuration_control_point	0x2B1F	GSS
+Record Access Control Point	org.bluetooth.characteristic.record_access_control_point	0x2A52	GSS
+Reference Time Information	org.bluetooth.characteristic.reference_time_information	0x2A14	GSS
+Registered User Characteristic	GATT Characteristic UUID	0x2B37	UDS 1.1
+Removable	org.bluetooth.characteristic.removable	0x2A3A	GSS
+Report	org.bluetooth.characteristic.report	0x2A4D	GSS
+Report Map	org.bluetooth.characteristic.report_map	0x2A4B	GSS
+Resolvable Private Address Only	org.bluetooth.characteristic.resolvable_private_address_only	0x2AC9	Core 5.0
+Resting Heart Rate	org.bluetooth.characteristic.resting_heart_rate	0x2A92	GSS
+Ringer Control point	org.bluetooth.characteristic.ringer_control_point	0x2A40	GSS
+Ringer Setting	org.bluetooth.characteristic.ringer_setting	0x2A41	GSS
+Rower Data	org.bluetooth.characteristic.rower_data	0x2AD1	GSS
+RSC Feature	org.bluetooth.characteristic.rsc_feature	0x2A54	GSS
+RSC Measurement	org.bluetooth.characteristic.rsc_measurement	0x2A53	GSS
+SC Control Point	org.bluetooth.characteristic.sc_control_point	0x2A55	GSS
+Scan Interval Window	org.bluetooth.characteristic.scan_interval_window	0x2A4F	GSS
+Scan Refresh	org.bluetooth.characteristic.scan_refresh	0x2A31	GSS
+Scientific Temperature Celsius	org.bluetooth.characteristic.scientific_temperature_celsius	0x2A3C	GSS
+Secondary Time Zone	org.bluetooth.characteristic.secondary_time_zone	0x2A10	GSS
+Sensor Location	org.bluetooth.characteristic.sensor_location	0x2A5D	GSS
+Serial Number String	org.bluetooth.characteristic.serial_number_string	0x2A25	GSS
+Server Supported Features	GATT Characteristic UUID	0x2B3A	Core 5.2
+Service Required	org.bluetooth.characteristic.service_required	0x2A3B	GSS
+Software Revision String	org.bluetooth.characteristic.software_revision_string	0x2A28	GSS
+Sport Type for Aerobic and Anaerobic Thresholds	org.bluetooth.characteristic.sport_type_for_aerobic_and_anaerobic_thresholds	0x2A93	GSS
+Stair Climber Data	org.bluetooth.characteristic.stair_climber_data	0x2AD0	GSS
+Step Climber Data	org.bluetooth.characteristic.step_climber_data	0x2ACF	GSS
+String	org.bluetooth.characteristic.string	0x2A3D	GSS
+Supported Heart Rate Range	org.bluetooth.characteristic.supported_heart_rate_range	0x2AD7	GSS
+Supported Inclination Range	org.bluetooth.characteristic.supported_inclination_range	0x2AD5	GSS
+Supported New Alert Category	org.bluetooth.characteristic.supported_new_alert_category	0x2A47	GSS
+Supported Power Range	org.bluetooth.characteristic.supported_power_range	0x2AD8	GSS
+Supported Resistance Level Range	org.bluetooth.characteristic.supported_resistance_level_range	0x2AD6	GSS
+Supported Speed Range	org.bluetooth.characteristic.supported_speed_range	0x2AD4	GSS
+Supported Unread Alert Category	org.bluetooth.characteristic.supported_unread_alert_category	0x2A48	GSS
+System ID	org.bluetooth.characteristic.system_id	0x2A23	GSS
+TDS Control Point	org.bluetooth.characteristic.tds_control_point	0x2ABC	GSS
+Temperature	org.bluetooth.characteristic.temperature	0x2A6E	GSS
+Temperature Celsius	org.bluetooth.characteristic.temperature_celsius	0x2A1F	GSS
+Temperature Fahrenheit	org.bluetooth.characteristic.temperature_fahrenheit	0x2A20	GSS
+Temperature Measurement	org.bluetooth.characteristic.temperature_measurement	0x2A1C	GSS
+Temperature Type	org.bluetooth.characteristic.temperature_type	0x2A1D	GSS
+Three Zone Heart Rate Limits	org.bluetooth.characteristic.three_zone_heart_rate_limits	0x2A94	GSS
+Time Accuracy	org.bluetooth.characteristic.time_accuracy	0x2A12	GSS
+Time Broadcast	org.bluetooth.characteristic.time_broadcast	0x2A15	GSS
+Time Source	org.bluetooth.characteristic.time_source	0x2A13	GSS
+Time Update Control Point	org.bluetooth.characteristic.time_update_control_point	0x2A16	GSS
+Time Update State	org.bluetooth.characteristic.time_update_state	0x2A17	GSS
+Time with DST	org.bluetooth.characteristic.time_with_dst	0x2A11	GSS
+Time Zone	org.bluetooth.characteristic.time_zone	0x2A0E	GSS
+Training Status	org.bluetooth.characteristic.training_status	0x2AD3	GSS
+Treadmill Data	org.bluetooth.characteristic.treadmill_data	0x2ACD	GSS
+True Wind Direction	org.bluetooth.characteristic.true_wind_direction	0x2A71	GSS
+True Wind Speed	org.bluetooth.characteristic.true_wind_speed	0x2A70	GSS
+Two Zone Heart Rate Limit	org.bluetooth.characteristic.two_zone_heart_rate_limit	0x2A95	GSS
+Tx Power Level	org.bluetooth.characteristic.tx_power_level	0x2A07	GSS
+Uncertainty	org.bluetooth.characteristic.uncertainty	0x2AB4	GSS
+Unread Alert Status	org.bluetooth.characteristic.unread_alert_status	0x2A45	GSS
+URI	org.bluetooth.characteristic.uri	0x2AB6	GSS
+User Control Point	org.bluetooth.characteristic.user_control_point	0x2A9F	GSS
+User Index	org.bluetooth.characteristic.user_index	0x2A9A	GSS
+UV Index	org.bluetooth.characteristic.uv_index	0x2A76	GSS
+VO2 Max	org.bluetooth.characteristic.vo2_max	0x2A96	GSS
+Waist Circumference	org.bluetooth.characteristic.waist_circumference	0x2A97	GSS
+Weight	org.bluetooth.characteristic.weight	0x2A98	GSS
+Weight Measurement	org.bluetooth.characteristic.weight_measurement	0x2A9D	GSS
+Weight Scale Feature	org.bluetooth.characteristic.weight_scale_feature	0x2A9E	GSS
+Wind Chill	org.bluetooth.characteristic.wind_chill	0x2A79	GSS
