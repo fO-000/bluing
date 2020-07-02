@@ -1,5 +1,7 @@
 # bluescan：一个强大的蓝牙扫描器
 
+> bluescan 是一个由 Sourcell Xu（杭州安恒信息 海特实验室）维护的开源项目。任何人都可以在 GPL-3.0 许可下分享该项目的源码。
+
 先前的蓝牙扫描工具都是零零散散，而且年久失修对吗？于是我们有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
 
 在测试新的蓝牙目标时，该扫描器可以帮助我们做好情报收集工作，比如：
@@ -33,9 +35,13 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.1.0
+bluescan v0.1.1
 
 A powerful Bluetooth scanner.
+
+Author: Sourcell Xu from DBAPP Security HatLab.
+
+License: GPL-3.0
 
 Usage:
     bluescan (-h | --help)

@@ -1,6 +1,8 @@
 # bluescan ---- A powerful Bluetooth scanner
 
 > This document is also available in Chinese. See [README-Chinese.md](https://github.com/fO-000/bluescan/blob/master/README-Chinese.md)
+>
+> bluescan is a open source project by Sourcell Xu from DBAPP Security HatLab. Anyone may redistribute copies of bluescan to anyone under the terms stated in the GPL-3.0 license.
 
 Aren't the previous Bluetooth scanning tools scattered and in disrepair? So we have this powerful Bluetooth scanner based on modern Python 3 ---- bluescan.
 
@@ -35,9 +37,13 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.1.0
+bluescan v0.1.1
 
 A powerful Bluetooth scanner.
+
+Author: Sourcell Xu from DBAPP Security HatLab.
+
+License: GPL-3.0
 
 Usage:
     bluescan (-h | --help)
