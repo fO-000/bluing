@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-from .ui import green
-from .ui import blue
-from .ui import red
-from .ui import WARNING
+from pyclui import blue, green, blue, red, \
+    DEBUG, INFO, WARNING, ERROR
+
+from bthci import HCI
 
 from . import BlueScanner
-from .hci import HCI
-
 from .ll import ll_vers
 
 

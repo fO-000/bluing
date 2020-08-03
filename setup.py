@@ -38,10 +38,10 @@ class MyClean(clean):
             shutil.rmtree(d, ignore_errors=True)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     setup(
         name='bluescan',
-        version='0.1.1',
+        version='0.2.0',
         license = "GPL-3.0",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
@@ -56,8 +56,8 @@ if __name__ == "__main__":
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
-            'pybluez>=0.23', 'bluepy>=1.3.0', 'docopt>=0.6.2', 
-            'termcolor>=1.1.0'
+            'bthci>=0.0.2', 'pyclui>=0.0.2',
+            'pybluez>=0.23', 'bluepy>=1.3.0', 'docopt>=0.6.2'
         ],
 
         # metadata to display on PyPI

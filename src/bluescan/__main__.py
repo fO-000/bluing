@@ -10,11 +10,11 @@ from pathlib import PosixPath
 from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
+from bthci import HCI
+from pyclui import blue, green, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
+
 from .ui import parse_cmdline
-from .ui import blue
-from .ui import INFO
-from .ui import WARNING
-from .ui import ERROR
 from .helper import find_rfkill_devid
 
 from .br_scan import BRScanner
@@ -24,8 +24,6 @@ from .sdp_scan import SDPScanner
 from .stack_scan import StackScanner
 from .vuln_scan import VulnScanner
 from .lmp_scan import LMPScanner
-
-from .hci import HCI
 
 
 def init(iface='hci0'):
@@ -59,7 +57,7 @@ def init(iface='hci0'):
 
     hci.set_event_filter({'Filter_Type': 0x00}) # Clear All Filters
 
-    event_params = hci.read_bd_addr()
+    event_params = hci.read_bdaddr()
     if event_params['Status'] != 0:
         raise RuntimeError
     else:
@@ -79,7 +77,7 @@ def main():
 
         if args['-m'] == 'br':
             br_scanner = BRScanner(args['-i'])
-            br_scanner.scan(args['--inquiry-len'])
+            br_scanner.inquiry(inquiry_len=args['--inquiry-len'])
         elif args['-m'] == 'lmp':
             LMPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'le':
@@ -100,14 +98,15 @@ def main():
     except BluetoothError as e:
         print(ERROR, e)
     except (BTLEException, ValueError) as e:
+        # print('__main__')
         print(ERROR, e)
         if 'le on' in str(e):
             print('        No BLE adapter? or missing sudo ?')
     except KeyboardInterrupt:
         print(INFO, args['-m'].upper() + " scan canceled\n")
-    except Exception as e:
-        #traceback.print_exc()
-        print(ERROR, e)
+    # except Exception as e:
+    #     #traceback.print_exc()
+    #     print(ERROR, e)
 
 
 if __name__ == "__main__":

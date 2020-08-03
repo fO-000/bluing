@@ -6,6 +6,8 @@
 /doc/private/
 /res/private/
 /src/bluescan/upper/
+/src/bluescan/inquiry.c
+/src/bluescan/inquiry.h
 /src/firmware/
 /src/bluescan/poc/bugs.md
 /test/
@@ -14,6 +16,7 @@
 /install.rec
 /Makefile
 /module.json
+/yotta_targets
 
 __pycache__/
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from .ui import green
+from pyclui import blue, green, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
 
 ll_vers = {
     0:  'Reserved',

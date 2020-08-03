@@ -6,7 +6,7 @@ import io
 from bluepy.btle import Peripheral
 from bluepy.btle import BTLEException
 
-from bluescan import BlueScanner
+from . import BlueScanner
 
 import pkg_resources
 

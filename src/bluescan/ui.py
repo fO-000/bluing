@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.1.1
+r'''bluescan v0.2.0
 
 A powerful Bluetooth scanner.
 
@@ -22,34 +22,27 @@ Arguments:
     BD_ADDR    Target Bluetooth device address
 
 Options:
-    -h, --help                  Display this help
-    -v, --version               Show the version
-    -i <hcix>                   HCI device for scan [default: hci0]
-    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln
-    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command [default: 8]
-    --timeout=<sec>             Duration of LE scan [default: 10]
-    --le-scan-type=<type>       Active or passive scan for LE scan [default: active]
-    --sort=<key>                Sort the discovered devices by key, only support RSSI now [default: rssi]
-    --include-descriptor        Fetch descriptor information
-    --addr-type=<type>          Public, random or BR
+    -h, --help                  Display this help.
+    -v, --version               Show the version.
+    -i <hcix>                   HCI device for scan. [default: hci0]
+    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
+    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --timeout=<sec>             Duration of LE scan. [default: 10]
+    --le-scan-type=<type>       Active or passive scan for LE scan. [default: active]
+    --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
+    --include-descriptor        Fetch descriptor information.
+    --addr-type=<type>          Public, random or BR.
 '''
 
-green  = lambda text: '\x1B[1;32m' + text + '\x1B[0m'
-blue   = lambda text: '\x1B[1;34m' + text + '\x1B[0m'
-yellow = lambda text: '\x1B[1;33m' + text + '\x1B[0m'
-red    = lambda text: '\x1B[1;31m' + text + '\x1B[0m'
-
-DEBUG = '[DEBUG]'
-INFO = '['+blue('INFO')+']'
-WARNING = '['+yellow('WARNING')+']'
-ERROR = '['+red('ERROR')+']'
+from pyclui import green, blue, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
 
 from docopt import docopt
 from .helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.1.1', options_first=True)
+    args = docopt(__doc__, version='v0.2.0', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()

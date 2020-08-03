@@ -23,7 +23,7 @@ This tool is based on BlueZ, the official Linux Bluetooth stack. The following p
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-When you play this tool in a Linux virtual machine, connecting a USB Bluetooth adapter using a Broadcom or CSR chip is recommended, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail). And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785).
+When you play this tool in a Linux virtual machine, making a USB Bluetooth adapter exclusive to it is recommended, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB. Of course, the best one to use is the little bit expensive [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail), 560 RMB. And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785).
 
 ## Install
 
@@ -37,7 +37,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.1.1
+bluescan v0.2.0
 
 A powerful Bluetooth scanner.
 
@@ -59,16 +59,16 @@ Arguments:
     BD_ADDR    Target Bluetooth device address
 
 Options:
-    -h, --help                  Display this help
-    -v, --version               Show the version
-    -i <hcix>                   HCI device for scan [default: hci0]
-    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln
-    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command [default: 8]
-    --timeout=<sec>             Duration of LE scan [default: 10]
-    --le-scan-type=<type>       Active or passive scan for LE scan [default: active]
-    --sort=<key>                Sort the discovered devices by key, only support RSSI now [default: rssi]
-    --include-descriptor        Fetch descriptor information
-    --addr-type=<type>          Public, random or BR
+    -h, --help                  Display this help.
+    -v, --version               Show the version.
+    -i <hcix>                   HCI device for scan. [default: hci0]
+    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
+    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --timeout=<sec>             Duration of LE scan. [default: 10]
+    --le-scan-type=<type>       Active or passive scan for LE scan. [default: active]
+    --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
+    --include-descriptor        Fetch descriptor information.
+    --addr-type=<type>          Public, random or BR.
 ```
 
 ### Scan BR devices `-m br`
@@ -77,7 +77,7 @@ Classic Bluetooth devices may use three technologies: BR (Basic Rate), EDR (Enha
 
 ![BR scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-scan.png)
 
-As shown above, through BR device scanning, we can get the address, name, device type, and RSSI of the surrounding classic Bluetooth devices.
+As shown above, through BR device scanning, we can get the address, page scan repetition mode, class of device, clock offset, RSSI, and the extended inquiry response (Name, TX power, and so on) of the surrounding classic Bluetooth devices.
 
 ### Scan LE devices `-m le`
 

@@ -21,7 +21,7 @@ bluescan 在底层基于 Linux 官方的 BlueZ 蓝牙协议栈。如下依赖的
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-当在 Linux 虚拟机中使用该工具时，建议让虚拟机独占一个搭载博通或 CSR 芯片的 USB 蓝牙适配器，比如 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)。如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
+当在 Linux 虚拟机中使用该工具时，建议让虚拟机独占一个 USB 蓝牙适配器，比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)。当然最好用的还是有点小贵的 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)，560 元。如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
 
 ## 安装
 
@@ -35,7 +35,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.1.1
+bluescan v0.2.0
 
 A powerful Bluetooth scanner.
 
@@ -57,16 +57,16 @@ Arguments:
     BD_ADDR    Target Bluetooth device address
 
 Options:
-    -h, --help                  Display this help
-    -v, --version               Show the version
-    -i <hcix>                   HCI device for scan [default: hci0]
-    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln
-    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command [default: 8]
-    --timeout=<sec>             Duration of LE scan [default: 10]
-    --le-scan-type=<type>       Active or passive scan for LE scan [default: active]
-    --sort=<key>                Sort the discovered devices by key, only support RSSI now [default: rssi]
-    --include-descriptor        Fetch descriptor information
-    --addr-type=<type>          Public, random or BR
+    -h, --help                  Display this help.
+    -v, --version               Show the version.
+    -i <hcix>                   HCI device for scan. [default: hci0]
+    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
+    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --timeout=<sec>             Duration of LE scan. [default: 10]
+    --le-scan-type=<type>       Active or passive scan for LE scan. [default: active]
+    --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
+    --include-descriptor        Fetch descriptor information.
+    --addr-type=<type>          Public, random or BR.
 ```
 
 ### BR 设备扫描 `-m br`
@@ -75,7 +75,7 @@ Options:
 
 ![BR scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-scan.png)
 
-如上图，通过 BR 设备扫描，我们可以拿到周围经典蓝牙设备的地址、名称、类型以及 RSSI。
+如上图，通过 BR 设备扫描，我们可以拿到周围经典蓝牙设备的地址、page scan 重复模式、类型、时钟偏移、RSSI 以及扩展 inquiry 结果。
 
 ### LE 设备扫描 `-m le`
 

@@ -1,27 +1,15 @@
 #!/usr/bin/env python3
 
-
 import re
 import sys
 import subprocess
 from bluetooth import find_service
 from xml.etree import ElementTree
 
-
-
-# 仅供测试使用
-#sys.path.append('/mnt/hgfs/OneDrive/Projects/bluescan/src/')
-
-from bluescan import BlueScanner
+from . import BlueScanner
 from .service_record import ServiceRecord
-from .ui import blue
-from .ui import green
-from .ui import yellow
-from .ui import red
-from .ui import DEBUG
-from .ui import INFO
-from .ui import WARNING
-from .ui import ERROR
+from pyclui import green, blue, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
 
 
 class SDPScanner(BlueScanner):
@@ -32,7 +20,7 @@ class SDPScanner(BlueScanner):
             sys.exit(exitcode)
 
         # print('[DEBUG] output:', output)
-        self.parse_sdptool_output(output)
+        self.pp_sdptool_output(output)
         
         # services = find_service(address=addr)
         # # print(services)
@@ -50,9 +38,10 @@ class SDPScanner(BlueScanner):
 
 
     @classmethod
-    def parse_sdptool_output(cls, output:str):
+    def pp_sdptool_output(cls, output:str):
         '''Split the string output by sdptool into individual servcie records 
         and processes them separately.'''
+        # print(DEBUG, 'parse_sdptool_output')
         pattern = r'Failed to connect to SDP server on[\da-zA-Z :]*'
         pattern = re.compile(pattern)
         result = pattern.findall(output)

@@ -2,14 +2,20 @@
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
-from bluescan import BlueScanner
 from termcolor import cprint
 
-from .ui import INFO
-from .ui import WARNING
-from .ui import ERROR
+from pyclui import blue, green, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
 
 import re
+
+from . import BlueScanner
+from . import service_cls_profile_ids
+from . import gap_type_name_pairs, \
+    COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST, \
+    COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST, \
+    COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
+    SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
 
 
 # 这个字典暂时没用，以后可能用来判断收到的 advertising 类型
@@ -62,23 +68,10 @@ class LEScanner(BlueScanner):
             devs.sort(key=lambda d:d.rssi)
         
         for dev in devs:
-            print("BD_ADDR:    ", dev.addr)
-            print("Addr type:  ", dev.addrType)
-            if dev.connectable: 
-                # link 层定义的 ADV_IND、ADV_DIRECT_IND 是可连接的
-                # 可连接用高亮绿色前景显示，背景色不变
-                print("\x1B[1;32m", end='') 
-                
-                # cprint() 中 on_color 即设置背景色。这个背景色被 termcolor 理解为
-                # 涂荧光笔，highlight。而 "\x1B[1;31m]" 中的第一个 1 也表示 
-                # highlight 不过此时的含义是把前景色的亮度调高
-                #cprint("Connectable: " + str(dev.connectable), "green")
-            else:
-                # 不可连接用高亮红色前景显示，背景色不变
-                print("\x1B[1;31m", end='')
-                #cprint("Connectable: " + str(dev.connectable), "red")
-            # 注意末尾需要恢复终端的默认值颜色
-            print("Connectable:", dev.connectable, "\x1B[0m") 
+            print('Addr:       ', blue(dev.addr.upper()))
+            print('Addr type:  ', blue(dev.addrType))
+            print('Connectable:', 
+                green('True') if dev.connectable else red('False'))
             print("RSSI:        %d dB" % dev.rssi)
             print("General Access Profile:")
             for (adtype, desc, val) in dev.getScanData():
@@ -102,7 +95,13 @@ class LEScanner(BlueScanner):
                 # 另外 getScanData() 返回的 desc 还可以通过 ScanEntry.getDescription() 
                 # 单独获取；val 还可以通过 ScanEntry.getValueText() 单独获取；
                 # adtype 表示当前一条 GAP 数据（AD structure）的类型。
-                print("    " + desc + ' (' + '0x%02X' % adtype + '):', val)
+                print('\t'+desc+': ', end='')
+                if adtype == COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST:
+                    print()
+                    for uuid in val.split(','):
+                        print('\t\t'+blue(uuid))
+                    continue
+                print(val)
             print("\n")
 
 
