@@ -21,7 +21,7 @@ bluescan 在底层基于 Linux 官方的 BlueZ 蓝牙协议栈。如下依赖的
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-当在 Linux 虚拟机中使用该工具时，建议让虚拟机独占一个 USB 蓝牙适配器，比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)。当然最好用的还是有点小贵的 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)，560 元。如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
+当在 Linux 虚拟机中使用该工具时，**建议让虚拟机独占一个 USB 蓝牙适配器**，比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)。当然最好用的还是有点小贵的 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)，560 元。如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
 
 ## 安装
 
@@ -35,7 +35,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.0
+bluescan v0.2.1
 
 A powerful Bluetooth scanner.
 

@@ -2,7 +2,6 @@
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
-from termcolor import cprint
 
 from pyclui import blue, green, yellow, red, \
     DEBUG, INFO, WARNING, ERROR

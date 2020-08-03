@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.2.0
+r'''bluescan v0.2.1
 
 A powerful Bluetooth scanner.
 
@@ -42,7 +42,7 @@ from .helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.2.0', options_first=True)
+    args = docopt(__doc__, version='v0.2.1', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()

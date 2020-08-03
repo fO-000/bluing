@@ -23,7 +23,7 @@ This tool is based on BlueZ, the official Linux Bluetooth stack. The following p
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-When you play this tool in a Linux virtual machine, making a USB Bluetooth adapter exclusive to it is recommended, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB. Of course, the best one to use is the little bit expensive [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail), 560 RMB. And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785).
+When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB. Of course, the best one to use is the little bit expensive [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail), 560 RMB. And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785).
 
 ## Install
 
@@ -37,7 +37,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.0
+bluescan v0.2.1
 
 A powerful Bluetooth scanner.
 
