@@ -10,6 +10,9 @@ from . import BlueScanner
 
 import pkg_resources
 
+from pyclui import green, blue, yellow, red, \
+    DEBUG, INFO, WARNING, ERROR
+
 # char_uuid = pkg_resources.resource_string()
 # service_uuid = pkg_resources.resource_string()
 
@@ -69,17 +72,17 @@ class GATTScanner(BlueScanner):
         for service in services:
             characteristics = service.getCharacteristics()
 
-            print("\x1B[1;34mService declaration\x1B[0m", '(%s characteristics)' % len(characteristics))
-            print("    Handle:", "\"attr handle\" by using gatttool -b <BD_ADDR> --primary")
-            print("    Type: (May be primary service 00002800-0000-1000-8000-00805f9b34fb)")
-            print("    Value (Service UUID): \x1B[1;34m%s" % service.uuid, end=' ')
+            print(blue('Service'), '(%s characteristics)' % len(characteristics))
+            print('\tHandle:", "\"attr handle\" by using gatttool -b <BD_ADDR> --primary')
+            print('\tType: (May be primary service 0x2800)')
+            print('\tValue (Service UUID): ', blue(str(service.uuid)), end=' ')
             try:
                 print('(' + services_spec[
                     '0x' + ("%s" % service.uuid)[4:8].upper()
                 ]['Name'] + ')', '\x1B[0m')
             except KeyError:
-                print("(Unknown service)", '\x1B[0m')
-            print('    Permission: Read Only, No Authentication, No Authorization\n')
+                print('('+red('unknown')+')', '\x1B[0m')
+            print('\tPermission: Read Only, No Authentication, No Authorization\n')
 
             # Show characteristic
             for characteristic in characteristics:
@@ -90,47 +93,47 @@ class GATTScanner(BlueScanner):
                     descriptors = characteristic.getDescriptors()
                 
                 try:
-                    print("\x1B[1;33m    Characteristic declaration\x1B[0m", '(%s descriptors)' % len(descriptors))
+                    print(yellow('\tCharacteristic'), '(%s descriptors)' % len(descriptors))
                     #print('-'*8)
-                    print("        Handle: %#06x" % (characteristic.getHandle() - 1))
-                    print("        Type: 00002803-0000-1000-8000-00805f9b34fb")
-                    print("        Value:")
-                    print("            Characteristic properties:\x1B[1;32m", characteristic.propertiesToString(), "\x1B[0m")
-                    print("            Characteristic value handle: %#06x" % characteristic.getHandle())
-                    print("            Characteristic UUID: \x1B[1;32m", characteristic.uuid, end=' ') # This UUID is also the type field of characteristic value declaration attribute.
+                    print('\t\tHandle: %#06x' % (characteristic.getHandle() - 1))
+                    print('\t\tType: 0x2803 (tCharacteristic)')
+                    print('\t\tValue:')
+                    print('\t\t\tCharacteristic properties:', green(characteristic.propertiesToString()))
+                    print('\t\t\tCharacteristic value handle: %#06x' % characteristic.getHandle())
+                    print('\t\t\tCharacteristic UUID: ', green(str(characteristic.uuid)), end=' ') # This UUID is also the type field of characteristic value declaration attribute.
                     try:
                         print('(' + characteristics_spec[
                             '0x' + ("%s" % characteristic.uuid)[4:8].upper()
-                        ]['Name'] + ')', '\x1B[0m')
+                        ]['Name'] + ')')
                     except KeyError:
-                        print("(Unknown characteristic)", '\x1B[0m')
-                    print('        Permission: Read Only, No Authentication, No Authorization')
+                        print('('+red('unknown')+')')
+                    print('\t\tPermission: Read Only, No Authentication, No Authorization')
                     
                     if characteristic.supportsRead():
-                        print("\x1B[1;33m    Characteristic value declaration\x1B[0m")
-                        print("        Handle:\x1B[1;32m %#06x" % characteristic.getHandle(), "\x1B[0m")
-                        print("        Type:", characteristic.uuid)
-                        print("        Value:\x1B[1;32m", characteristic.read(), "\x1B[0m")
-                        print("        Permission: Higher layer profile or implementation-specific")
+                        print(yellow('\tCharacteristic value'))
+                        print('\t\tHandle:', green('%#06x' % characteristic.getHandle()))
+                        print('\t\tType:', characteristic.uuid)
+                        print('\t\tValue:', green(str(characteristic.read())))
+                        print('\t\tPermission: Higher layer profile or implementation-specific')
                 except BTLEException as e:
                     print('        ' + str(e))
 
                 # Show descriptor
                 for descriptor in descriptors:
                     try:
-                        print("\x1B[1;33m    Descriptor declaration\x1B[0m")
-                        print("        Handle:\x1B[1;32m %#06x" % descriptor.handle, "\x1B[0m")
-                        print("        Type:\x1B[1;32m", descriptor.uuid, end=' ')
+                        print('\tDescriptor')
+                        print('\t\tHandle:', green('%#06x' % descriptor.handle))
+                        print('\t\tType:', descriptor.uuid, end=' ')
                         try:
                             print('(' + descriptors_spec[
                                 '0x' + ("%s" % descriptor.uuid)[4:8].upper()
-                            ]['Name'] + ')', '\x1B[0m')
+                            ]['Name'] + ')')
                         except KeyError:
-                            print("(Unknown descriptor)", '\x1B[0m')
-                        print('        Value:', descriptor.read())
-                        print('        Permissions:')
+                            print('(Unknown descriptor)')
+                        print('\t\tValue:', descriptor.read())
+                        print('\t\tPermissions:')
                     except BTLEException as e:
-                        print('        ' + str(e))
+                        print('\t\t' + str(e))
                 print()
             print()
 

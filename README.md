@@ -37,7 +37,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.1
+bluescan v0.2.2
 
 A powerful Bluetooth scanner.
 
@@ -56,7 +56,7 @@ Usage:
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
 Arguments:
-    BD_ADDR    Target Bluetooth device address
+    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local device.
 
 Options:
     -h, --help                  Display this help.
@@ -116,3 +116,25 @@ $ sudo bluescan -m vuln --addr-type=br ??:??:??:??:??:??
 ... ...
 CVE-2017-0785
 ```
+
+## FAQ
+
+* Exception: "Can't find the ID of hci0 in rfkill"
+
+  Some old versions of rfkill do not support `-r` and `-n` options, like:
+  
+  ```sh
+  # Ubuntu 16.04.1
+  rfkill --version
+  # rfkill 0.5-1ubuntu3 (Ubuntu)"
+  ```
+  
+  Please upgrade rfkill or OS to solve this problem.
+
+  PS: My system is Kali, and the version of rfkill is:
+  
+  ```sh
+  # Kali
+  rfkill --version
+  # rfkill from util-linux 2.36
+  ```

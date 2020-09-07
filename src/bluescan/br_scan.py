@@ -45,68 +45,13 @@ major_dev_clses = {
     0b11111: 'Uncategorized'
 }
 
-# # DeviceDiscoverer is in bluetooth/bluez.py
-# class BRDiscoverer(DeviceDiscoverer):
-#     def pre_inquiry(self):
-#         '''Called when find_devices() returned'''
-#         self.existing_devs = []
-#         self.done = False
-    
-#     def device_discovered(self, address, device_class, rssi, name):
-#         if address not in self.existing_devs:
-#             self.existing_devs.append(address)
-#             print('addr:', blue(address))
-#             print('name:', blue(name.decode()))
-#             print('class: 0x%06X' % device_class)
-#             pp_cod(device_class)
-#             print('rssi:', rssi, '\n')
-
-#     def inquiry_complete(self):
-#         '''HCI_Inquiry_Complete 与 HCI_Command_Complete 都会导致该函数被回调'''
-#         self.done = True
-
-
 class BRScanner(BlueScanner):
-    # def scan(self, inquiry_len=8):
-    #     '''
-    #     inquiry_len - Maximum amount of time (N * 1.28 s) specified before the 
-    #                   Inquiry is halted.
-    #     '''
-    #     print(INFO, "BR scanning on " + blue("hci%d"%self.devid) + \
-    #           " with timeout " + blue("%.2f sec\n"%(inquiry_len*1.28)))
-
-    #     br_discover = BRDiscoverer(self.devid)
-
-    #     # find_devices() 会立即返回，期间 HCI_Inquiry command 也会被发送。
-    #     # flush_cache=False 不让之前 inquiry 发现的设备影响本次扫描结果
-    #     br_discover.find_devices(lookup_names=True, duration=inquiry_len, 
-    #         flush_cache=False)
-
-    #     readfiles = [br_discover,]
-
-    #     while True:
-    #         try:
-    #             br_discover.process_event()
-    #             rfds = select.select(readfiles, [], [])[0] # blocking
-    #             if br_discover in rfds:
-    #                 #print('[DEBUG] process_event()')
-    #                 # 只有调用 process_event()，device_discovered() 与 
-    #                 # inquiry_complete() 才会被回调
-    #                 br_discover.process_event()
-
-    #             if br_discover.done:
-    #                 break
-    #         except KeyboardInterrupt:
-    #             # send HCI_Inquiry_Cancel，当收到 HCI_Command_Complete 时
-    #             # inquiry_complete() 将被回调
-    #             br_discover.cancel_inquiry()
-
-
     def inquiry(self, lap=0x9e8b33, inquiry_len=0x08, num_rsp=0x00):
         print(INFO, "BR scanning on " + blue("hci%d"%self.devid) + \
               " with timeout " + blue("%.2f sec\n"%(inquiry_len*1.28))+'\n')
         
         self.scanned_dev = []
+        self.remote_name_req_flag = True
         
         cmd_params = lap.to_bytes(3, 'little') + \
             inquiry_len.to_bytes(1, 'little') + num_rsp.to_bytes(1, 'little')
@@ -140,7 +85,22 @@ class BRScanner(BlueScanner):
                         self.pp_extended_inquiry_result(data[3:])
                     elif event_code == EVT_INQUIRY_COMPLETE:
                         # print(DEBUG, 'HCI_Inquiry_Complete')
-                        print(INFO, 'Inquiry completed')
+                        print(INFO, 'Inquiry completed\n')
+
+                        if self.remote_name_req_flag:
+                            print(INFO, 'Requesting the name of the scanned devices...')
+                            for bd_addr in self.scanned_dev:
+                                try:
+                                    name = HCI(self.iface).remote_name_request({
+                                        'BD_ADDR': bytes.fromhex(bd_addr.replace(':', '')),
+                                        'Page_Scan_Repetition_Mode': 0x01, 
+                                        'Reserved': 0x00, 'Clock_Offset': 0x0000
+                                    })['Remote_Name'].decode().strip()
+                                except Exception as e:
+                                    print(e)
+                                    name = ''
+
+                                print(bd_addr+':', blue(name))
                         break
                     else:
                         print(DEBUG, "Unknow:", data)
@@ -197,7 +157,7 @@ class BRScanner(BlueScanner):
         bd_addr = ':'.join(['%02X'%b for b in bd_addr[::-1]])
         if bd_addr in self.scanned_dev:
             return
-    
+
         print('Addr:', blue(bd_addr))
         # print('name:', blue(name.decode()))
         print('Page scan repetition mode: ', end='')
@@ -230,7 +190,7 @@ class BRScanner(BlueScanner):
         bd_addr = ':'.join(['%02X'%b for b in bd_addr[::-1]])
         if bd_addr in self.scanned_dev:
             return
-    
+
         print('Addr:', blue(bd_addr))
         # print('name:', blue(name.decode()))
         print('Page scan repetition mode: ', end='')
@@ -262,16 +222,13 @@ def pp_page_scan_repetition_mode(val):
 
 
 def pp_cod(cod:int):
-    '''Print and parse Class of Device.'''
+    '''Print and parse the Class of Device.'''
     #print(DEBUG, 'br_scan.py pp_cod()')
-    if cod > 0xFFFFFF:
-        print(WARNING, "CoD's Format Type is not format #1")
-        return
-    elif cod & 0x000003 != 0:
+    if cod > 0xFFFFFF or cod & 0x000003 != 0:
         print(WARNING, "CoD's Format Type is not format #1")
         return
 
-    print('    Service Class: %s' % bin(cod>>13))
+    print('\tService Class: %s' % bin(cod>>13))
     information = lambda b: (b >> 23) & 1
     telephony = lambda b: (b >> 22) & 1
     audio = lambda b: (b >> 21) & 1
@@ -282,37 +239,37 @@ def pp_cod(cod:int):
     positioning = lambda b: (b >> 16) & 1
     limited_discoverable_mode = lambda b: (b >> 13) & 1
 
-    # Parse Service Class Field
+    # Parse Service Class field
     if information(cod):
-        print(' '*8+'Information (WEB-server, WAP-server, ...)')
+        print('\t\t'+'Information (WEB-server, WAP-server, ...)')
 
     if telephony(cod):
-        print(' '*8+'Telephony (Cordless telephony, Modem, Headset service, ...)')
+        print('\t\t'+'Telephony (Cordless telephony, Modem, Headset service, ...)')
 
     if audio(cod):
-        print(' '*8+'Audio (Cordless telephony, Modem, Headset service, ...)')
+        print('\t\t'+'Audio (Cordless telephony, Modem, Headset service, ...)')
 
     if object_transfer(cod):
-        print(' '*8+'Object Transfer (v-Inbox, v-Folder, ...)')
+        print('\t\t'+'Object Transfer (v-Inbox, v-Folder, ...)')
 
     if capturing(cod):
-        print(' '*8+'Capturing (Scanner, Microphone, ...)')
+        print('\t\t'+'Capturing (Scanner, Microphone, ...)')
 
     if rendering(cod):
-        print(' '*8+'Rendering (Printing, Speaker, ...)')
+        print('\t\t'+'Rendering (Printing, Speaker, ...)')
 
     if networking(cod):
-        print(' '*8+'Networking (LAN, Ad hoc, ...)')
+        print('\t\t'+'Networking (LAN, Ad hoc, ...)')
 
     if positioning(cod):
-        print(' '*8+'Positioning (Location identification)')
+        print('\t\t'+'Positioning (Location identification)')
 
     if limited_discoverable_mode(cod):
-        print(' '*8+'Limited Discoverable Mode')
+        print('\t\t'+'Limited Discoverable Mode')
 
     # Parse Major Device Class
     major_dev_cls = (cod>>8)&0x001F
-    print('    Major Device Class: %s,'%bin(major_dev_cls), blue(major_dev_clses[major_dev_cls]))
+    print('\tMajor Device Class: %s,'%bin(major_dev_cls), blue(major_dev_clses[major_dev_cls]))
 
     # Parse Minor Device class
     pp_minor_dev_cls((cod>>8)&0x0000, major_dev_cls)
@@ -374,7 +331,10 @@ def pp_ext_inquiry_rsp(ext_inq_rsp):
                     continue
                 for i in range(0, len(eir_data), 16):
                     uuid = int.from_bytes(eir_data[i:i+16], byteorder='little')
-                    print('\t\t0x%032x'%uuid)
+                    uuid_str = '%032X' % uuid
+                    print('\t\t', end='')
+                    print(blue('-'.join([uuid_str[:8], uuid_str[8:12], 
+                        uuid_str[12:16], uuid_str[16:20], uuid_str[20:32]])))   
             else:
                 print('\t\t'+red('None'))
         elif data_type == SHORTENED_LOCAL_NAME or \

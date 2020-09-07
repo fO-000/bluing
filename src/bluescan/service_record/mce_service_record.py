@@ -77,7 +77,7 @@ class MCEServiceRecord(ServiceRecord):
         '''
         print('\t0x%08X'%val)
         for i in range(len(cls.map_supported_features_bitmap)):
-            feature_name = cls.map_supported_features_bitmap
+            feature_name = cls.map_supported_features_bitmap[i]
             print('\t\t', end=' ')
             if i < 23:
                 print(green(feature_name) if val >> i & 0x01 else red(feature_name))

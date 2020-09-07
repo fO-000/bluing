@@ -82,8 +82,7 @@ def main():
             LMPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'le':
             LEScanner(args['-i']).scan(args['--timeout'], 
-                args['--le-scan-type'], args['--sort']
-            )
+                args['--le-scan-type'], args['--sort'])
         elif args['-m'] == 'sdp':
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':
@@ -96,6 +95,8 @@ def main():
         else:
             print(ERROR, "invalid scan mode")
     except BluetoothError as e:
+        print(ERROR, e)
+    except RuntimeError as e:
         print(ERROR, e)
     except (BTLEException, ValueError) as e:
         # print('__main__')

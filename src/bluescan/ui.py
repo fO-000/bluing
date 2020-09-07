@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r'''bluescan v0.2.1
+r'''bluescan v0.2.2
 
 A powerful Bluetooth scanner.
 
@@ -19,7 +19,7 @@ Usage:
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
 Arguments:
-    BD_ADDR    Target Bluetooth device address
+    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local device.
 
 Options:
     -h, --help                  Display this help.
@@ -42,7 +42,7 @@ from .helper import valid_bdaddr
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.2.1', options_first=True)
+    args = docopt(__doc__, version='v0.2.2', options_first=True)
     #print("[Debug] args =", args)
 
     args['-m'] = args['-m'].lower()
