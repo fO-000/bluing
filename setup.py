@@ -2,13 +2,17 @@
 
 import os
 import shutil
+import logging
 from pathlib import Path
 from setuptools.command.install import install
 from distutils.command.clean import clean
 from setuptools import setup, find_packages
 
+from pyclui import Logger
 
-BLUESCAN_PATH = os.path.abspath(Path(__file__).parent)
+logger = Logger(__name__, logging.INFO)
+
+PROJECT_ROOT = os.path.abspath(Path(__file__).parent)
 
 
 def read(fname):
@@ -18,7 +22,7 @@ def read(fname):
 class MyInstall(install):
     def run(self):
         super().run()
-        print('[INFO] install bluescan_prompt.bash')
+        logger.info('install bluescan_prompt.bash')
         shutil.copy(
             'src/bluescan/bluescan_prompt.bash', '/etc/bash_completion.d'
         )
@@ -28,10 +32,10 @@ class MyClean(clean):
     def run(self):
         super().run()
         dirs = [
-            os.path.join(BLUESCAN_PATH, 'build'),
-            os.path.join(BLUESCAN_PATH, 'dist'),
-            os.path.join(BLUESCAN_PATH, 'src', 'bluescan.egg-info'),
-            os.path.join(BLUESCAN_PATH, 'src', 'bluescan', '__pycache__')
+            os.path.join(PROJECT_ROOT, 'build'),
+            os.path.join(PROJECT_ROOT, 'dist'),
+            os.path.join(PROJECT_ROOT, 'src', 'bluescan.egg-info'),
+            os.path.join(PROJECT_ROOT, 'src', 'bluescan', '__pycache__')
         ]
 
         for d in dirs:
@@ -41,7 +45,7 @@ class MyClean(clean):
 if __name__ == '__main__':
     setup(
         name='bluescan',
-        version='0.2.2',
+        version='0.2.3',
         license = "GPL-3.0",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
@@ -56,7 +60,7 @@ if __name__ == '__main__':
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
-            'bthci>=0.0.6', 'pyclui>=0.0.2',
+            'bthci>=0.0.7', 'pyclui>=0.0.3',
             'pybluez>=0.23', 'bluepy>=1.3.0', 'docopt>=0.6.2'
         ],
 

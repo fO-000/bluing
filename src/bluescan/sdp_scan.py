@@ -2,19 +2,24 @@
 
 import re
 import sys
+import logging
 import subprocess
 from bluetooth import find_service
 from xml.etree import ElementTree
 
 from . import BlueScanner
 from .service_record import ServiceRecord
-from pyclui import green, blue, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR
+
+from pyclui import Logger
+from pyclui import green, blue, yellow, red
+
+
+logger = Logger(__name__, logging.INFO)
 
 
 class SDPScanner(BlueScanner):
     def scan(self, addr:str):
-        print(INFO, 'Scanning...')
+        logger.info('Scanning...')
         exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
         if exitcode != 0:
             sys.exit(exitcode)

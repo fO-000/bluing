@@ -37,7 +37,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.2
+bluescan v0.2.3
 
 A powerful Bluetooth scanner.
 
@@ -61,7 +61,7 @@ Arguments:
 Options:
     -h, --help                  Display this help.
     -v, --version               Show the version.
-    -i <hcix>                   HCI device for scan. [default: hci0]
+    -i <hcix>                   HCI device for scan. [default: The first HCI device]
     -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
     --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --timeout=<sec>             Duration of LE scan. [default: 10]

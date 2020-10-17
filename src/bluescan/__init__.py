@@ -5,7 +5,6 @@ import pkg_resources
 from bthci import HCI
 
 
-
 # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
 #     Table 2: Service Class Profile Identifiers
 #
@@ -40,13 +39,14 @@ for line in service_cls_profile_ids_file:
         'Allowed Usage': items[2]
     }
 
-
+# EIR Data Type, Advertising Data Type (AD Type) and OOB Data Type Definitions
 COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST  = 0x03
 COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST  = 0x05
 COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST = 0x07
 COMPLETE_LOCAL_NAME                    = 0X09
 SHORTENED_LOCAL_NAME                   = 0X08
 TX_POWER_LEVEL                         = 0x0a
+MANUFACTURER_SPECIFIC_DATA             = 0xff
 
 gap_type_name_pairs = {
     0x01: 'Flags',
@@ -99,4 +99,4 @@ gap_type_name_pairs = {
 class BlueScanner():
     def __init__(self, iface='hci0'):
         self.iface = iface
-        self.devid = HCI.hcix2devid(self.iface)
+        self.devid = HCI.hcistr2devid(self.iface)

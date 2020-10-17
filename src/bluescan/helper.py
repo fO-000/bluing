@@ -5,7 +5,6 @@ import sys
 import subprocess
 
 from pyclui import blue, green, yellow, red
-from pyclui import DEBUG, ERROR, INFO, ERROR
 
 
 def valid_bdaddr(addr:str) -> bool:

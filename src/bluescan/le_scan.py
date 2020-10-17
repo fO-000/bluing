@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
+import re
+import logging
+
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
-
-from pyclui import blue, green, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR
-
-import re
+from pyclui import Logger
+from pyclui import blue, green, yellow, red
 
 from . import BlueScanner
 from . import service_cls_profile_ids
@@ -14,7 +14,10 @@ from . import gap_type_name_pairs, \
     COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST, \
     COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST, \
     COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
-    SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
+    SHORTENED_LOCAL_NAME, TX_POWER_LEVEL, MANUFACTURER_SPECIFIC_DATA
+
+
+logger = Logger(__name__, logging.INFO)
 
 
 # 这个字典暂时没用，以后可能用来判断收到的 advertising 类型
@@ -52,14 +55,16 @@ class LEScanner(BlueScanner):
 
         # scan() 返回的 devs 是 dictionary view。
         if scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
-            print(WARNING, 'Before doing an active scan, make sure you spoof your BD_ADDR.')
-            print(INFO, "LE active scanning on \x1B[1;34mhci%d\x1B[0m with timeout %d sec\n" % (self.devid, timeout))
+            logger.warning('Before doing an active scan, make sure you spoof your BD_ADDR.')
+            logger.info('LE active scanning on %s with timeout %d sec\n' % \
+                (blue('hci%d'%self.devid), timeout))
             devs = scanner.scan(timeout)
         elif scan_type == 'passive':
-            print("LE passive scanning on \x1B[1;34mhci%d\x1B[0m with timeout %d sec\n" % (self.deivd, timeout))
+            logger.info('LE passive scanning on %s with timeout %d sec\n' % \
+                (blue('hci%d'%self.devid), timeout))
             devs = scanner.scan(timeout, passive=True)
         else:
-            print(ERROR, "Unknown LE scan type.")
+            logger.error('Unknown LE scan type')
             return
 
         if sort == 'rssi':
@@ -96,9 +101,22 @@ class LEScanner(BlueScanner):
                 # adtype 表示当前一条 GAP 数据（AD structure）的类型。
                 print('\t'+desc+': ', end='')
                 if adtype == COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST:
-                    print()
                     for uuid in val.split(','):
-                        print('\t\t'+blue(uuid))
+                        print()
+                        if len(uuid) == 36:
+                            # 这里拿到的是完整的 128-bit uuid，但我们需要 16-bit uuid。
+                            print('\t\t'+blue(uuid[4:8]))
+                        else:
+                            print('\t\t'+blue(uuid))
+                    continue
+                elif adtype == MANUFACTURER_SPECIFIC_DATA:
+                    val = bytes.fromhex(val)
+                    if len(val) > 2:
+                        print()
+                        print('\t\tCompany ID:', '0x%04x'%int.from_bytes(val[0:2], 'little', signed=False))
+                        print('\t\tData:', val[2:])
+                    else:
+                        print(val)
                     continue
                 print(val)
             print("\n")

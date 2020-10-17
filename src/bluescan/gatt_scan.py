@@ -3,15 +3,13 @@
 import sys
 import io
 
+import pkg_resources
 from bluepy.btle import Peripheral
 from bluepy.btle import BTLEException
+from pyclui import green, blue, yellow, red
 
 from . import BlueScanner
 
-import pkg_resources
-
-from pyclui import green, blue, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR
 
 # char_uuid = pkg_resources.resource_string()
 # service_uuid = pkg_resources.resource_string()
@@ -96,7 +94,7 @@ class GATTScanner(BlueScanner):
                     print(yellow('\tCharacteristic'), '(%s descriptors)' % len(descriptors))
                     #print('-'*8)
                     print('\t\tHandle: %#06x' % (characteristic.getHandle() - 1))
-                    print('\t\tType: 0x2803 (tCharacteristic)')
+                    print('\t\tType: 0x2803 (Characteristic)')
                     print('\t\tValue:')
                     print('\t\t\tCharacteristic properties:', green(characteristic.propertiesToString()))
                     print('\t\t\tCharacteristic value handle: %#06x' % characteristic.getHandle())

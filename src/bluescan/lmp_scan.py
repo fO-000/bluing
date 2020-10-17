@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
-from pyclui import blue, green, blue, red, \
-    DEBUG, INFO, WARNING, ERROR
+import sys
+import logging
 
+from pyclui import Logger
+from pyclui import blue, green, blue, red
 from bthci import HCI
 
 from . import BlueScanner
 from .ll import ll_vers
+
+
+logger = Logger(__name__, logging.INFO)
 
 
 lm_vers = {
@@ -38,7 +43,7 @@ class LMPScanner(BlueScanner):
         })
 
         if event_params['Status'] != 0:
-            print(ERROR, 'Failed to create ACL connection')
+            logger.error('Failed to create ACL connection')
             sys.exit(1)
 
         event_params = hci.read_remote_version_information(cmd_params={
@@ -46,7 +51,7 @@ class LMPScanner(BlueScanner):
         })
 
         if event_params['Status'] != 0:
-            print(ERROR, 'Failed to read remote version')
+            logger.error('Failed to read remote version')
             sys.exit(1)
 
         print(blue('Version'))
@@ -60,7 +65,7 @@ class LMPScanner(BlueScanner):
             'Connection_Handle': event_params['Connection_Handle']
         })
         if event_params['Status'] != 0:
-            print(ERROR, 'Failed to read remote supported features')
+            logger.error('Failed to read remote supported features')
         else:
             print(blue('LMP features'))
             pp_lmp_features(event_params['LMP_Features'])
@@ -75,7 +80,7 @@ class LMPScanner(BlueScanner):
             'Page_Number': 0x00
         })
         if event_params['Status'] != 0:
-            print(ERROR, 'Failed to read remote extented features')
+            logger.error('Failed to read remote extented features')
         else:
             pp_ext_lmp_features(event_params['Extended_LMP_Features'], 0)
             for i in range(1, event_params['Maximum_Page_Number']+1):
@@ -83,7 +88,7 @@ class LMPScanner(BlueScanner):
                     'Connection_Handle': event_params['Connection_Handle'],
                     'Page_Number': i})
                 if event_params['Status'] != 0:
-                    print(ERROR, 'Failed to read remote extented features, page', i)
+                    logger.error('Failed to read remote extented features, page {}'.format(i))
                 else:
                     pp_ext_lmp_features(event_params['Extended_LMP_Features'], i)
 
@@ -203,4 +208,4 @@ def pp_ext_lmp_features(ext_lmp_features:bytes, page_num:int):
                 print('    Slot Availability Mask:', green('True') if (b >> 2) & 0x01 else red('False'))
                 print('    Train nudging:', green('True') if (b >> 3) & 0x01 else red('False'))
     else:
-        print(WARNING, 'Unknown page number', page_num)
+        logger.warning('Unknown page number {}'.format(page_num))
