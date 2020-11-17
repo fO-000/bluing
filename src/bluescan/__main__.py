@@ -87,7 +87,8 @@ def main():
             LMPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'le':
             LEScanner(args['-i']).scan(args['--timeout'], 
-                args['--le-scan-type'], args['--sort'])
+                args['--scan-type'], args['--sort'], 
+                args['BD_ADDR'], args['--addr-type'])
         elif args['-m'] == 'sdp':
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':

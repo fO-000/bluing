@@ -7,6 +7,10 @@ from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
 from pyclui import Logger
 from pyclui import blue, green, yellow, red
+from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
+from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
+
+from bthci import HCI, ERR_REMOTE_USER_TERMINATED_CONNECTION
 
 from . import BlueScanner
 from . import service_cls_profile_ids
@@ -45,11 +49,36 @@ class LEDelegate(DefaultDelegate):
 
 
 class LEScanner(BlueScanner):
-    def scan(self, timeout=8, scan_type='active', sort='rssi'):
-        '''        
-        scan_type
-            指定执行的 LE scan，是 active scan 还是 passive scan。
+    def scan(self, timeout=8, scan_type='active', sort='rssi', paddr=None, patype='public'):
         '''
+        scan_type - Indicate the type of LE scan：active, passive or features.
+        paddr     - peer addresss, 配合 features 扫描类型使用。
+        patype    - peer address type, public or random。
+        '''
+        if scan_type == 'features':
+            hci = HCI(self.iface)
+            logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.iface)))
+            try:
+                event_params = hci.le_create_connection(HCI_Cmd_LE_Create_Connection(
+                    paddr=bytes.fromhex(paddr.replace(':', ''))[::-1], patype=patype))
+                logger.debug(event_params)
+            except RuntimeError as e:
+                logger.error(e)
+                return
+
+            event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(
+                handle=event_params['Connection_Handle']))
+            logger.debug(event_params)
+            print(blue('LE LL Features:'))
+            pp_le_features(event_params['LE_Features'])
+
+            event_params = hci.disconnect({
+                'Connection_Handle': event_params['Connection_Handle'],
+                'Reason': ERR_REMOTE_USER_TERMINATED_CONNECTION})
+            logger.debug(event_params)
+            return
+
+
         scanner = Scanner(self.devid).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
 
@@ -121,6 +150,56 @@ class LEScanner(BlueScanner):
                 print(val)
             print("\n")
 
+
+def pp_le_features(features:bytes):
+    '''
+    features - LE LL features. The Bluetooth specification calls this FeatureSet.
+    待处理 Valid from Controller to Controller, Masked to Peer, Host Controlled
+    '''
+    for i in range(8):
+        b  = features[i]
+        if i == 0:
+            print('    LE Encryption:', green('True') if b & 0x01 else red('False'))
+            print('    Connection Parameters Request Procedure:', green('True') if (b >> 1) & 0x01 else red('False'))
+            print('    Extended Reject Indication:', green('True') if (b >> 2) & 0x01 else red('False'))
+            print('    Slave-initiated Features Exchange:', green('True') if (b >> 3) & 0x01 else red('False'))
+            print('    LE Ping: ', green('True') if (b >> 4) & 0x01 else red('False'))
+            print('    LE Data Packet Length Extension:', green('True') if (b >> 5) & 0x01 else red('False'))
+            print('    LL Privacy:', green('True') if (b >> 6) & 0x01 else red('False'))
+            print('    Extended Scanner Filter Policies:', green('True') if (b >> 7) & 0x01 else red('False'))
+        elif i == 1:
+            print('    LE 2M PHY:', green('True') if b & 0x01 else red('False'))
+            print('    Stable Modulation Index - Transmitter:', green('True') if (b >> 1) & 0x01 else red('False'))
+            print('    Stable Modulation Index - Receiver:', green('True') if (b >> 2) & 0x01 else red('False'))
+            print('    LE Coded PHY:', green('True') if (b >> 3) & 0x01 else red('False'))
+            print('    LE Extended Advertising:', green('True') if (b >> 4) & 0x01 else red('False'))
+            print('    LE Periodic Advertising:', green('True') if (b >> 5) & 0x01 else red('False'))
+            print('    Channel Selection Algorithm #2:', green('True') if (b >> 6) & 0x01 else red('False'))
+            print('    LE Power Class 1:', green('True') if (b >> 7) & 0x01 else red('False'))
+        elif i == 2:
+            print('    Minimum Number of Used Channels Procedure:', green('True') if b & 0x01 else red('False'))
+            print('    Connection CTE Request:', green('True') if (b >> 1) & 0x01 else red('False'))
+            print('    Connection CTE Response:', green('True') if (b >> 2) & 0x01 else red('False'))
+            print('    Connectionless CTE Transmitter:', green('True') if (b >> 3) & 0x01 else red('False'))
+            print('    Connectionless CTE Receiver:', green('True') if (b >> 4) & 0x01 else red('False'))
+            print('    Antenna Switching During CTE Transmission (AoD):', green('True') if (b >> 5) & 0x01 else red('False'))
+            print('    Antenna Switching During CTE Reception (AoA):', green('True') if (b >> 6) & 0x01 else red('False'))
+            print('    Receiving Constant Tone Extensions:', green('True') if (b >> 7) & 0x01 else red('False'))
+        elif i == 3:
+            print('    Periodic Advertising Sync Transfer - Sender:', green('True') if b & 0x01 else red('False'))
+            print('    Periodic Advertising Sync Transfer - Recipient:', green('True') if (b >> 1) & 0x01 else red('False'))
+            print('    Sleep Clock Accuracy Updates:', green('True') if (b >> 2) & 0x01 else red('False'))
+            print('    Remote Public Key Validation:', green('True') if (b >> 3) & 0x01 else red('False'))
+            print('    Connected Isochronous Stream - Master:', green('True') if (b >> 4) & 0x01 else red('False'))
+            print('    Connected Isochronous Stream - Slave:', green('True') if (b >> 5) & 0x01 else red('False'))
+            print('    Isochronous Broadcaster:', green('True') if (b >> 6) & 0x01 else red('False'))
+            print('    Synchronized Receiver:', green('True') if (b >> 7) & 0x01 else red('False'))
+        elif i == 4:
+            print('    Isochronous Channels (Host Support):', green('True') if b & 0x01 else red('False'))
+            print('    LE Power Control Request:', green('True') if (b >> 1) & 0x01 else red('False'))
+            print('    LE Power Change Indication:', green('True') if (b >> 2) & 0x01 else red('False'))
+            print('    LE Path Loss Monitoring:', green('True') if (b >> 3) & 0x01 else red('False'))
+ 
 
 def __test():
     pass

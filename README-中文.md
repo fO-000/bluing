@@ -8,8 +8,9 @@
 
 * BR 设备扫描
 * LE 设备扫描
-* SDP 服务扫描
 * LMP 特性扫描
+* LE LL 特性扫描
+* SDP 服务扫描
 * GATT 服务扫描
 * 漏洞扫描 (demo)
 
@@ -35,7 +36,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.3
+bluescan v0.3.0
 
 A powerful Bluetooth scanner.
 
@@ -49,7 +50,8 @@ Usage:
     bluescan [-i <hcix>] -m br [--inquiry-len=<n>]
     bluescan [-i <hcix>] -m lmp BD_ADDR
     bluescan [-i <hcix>] -m sdp BD_ADDR
-    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--le-scan-type=<type>] [--sort=<key>]
+    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--scan-type=<type>] [--sort=<key>]
+    bluescan [-i <hcix>] -m le --scan-type=features --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
@@ -63,7 +65,7 @@ Options:
     -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
     --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --timeout=<sec>             Duration of LE scan. [default: 10]
-    --le-scan-type=<type>       Active or passive scan for LE scan. [default: active]
+    --scan-type=<type>          Active, passive or features scan for LE device(s). [default: active]
     --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
     --include-descriptor        Fetch descriptor information.
     --addr-type=<type>          Public, random or BR.
@@ -97,7 +99,13 @@ Options:
 
 探测经典蓝牙设备的 LMP 特性，可以让我们判断目标设备底层的安全特性：
 
-![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-scan.png)
+![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-features-scan.png)
+
+### LE LL 特性扫描 `-m le --scan-type=features`
+
+探测低功耗蓝牙设备的链路层特性：
+
+![LE LL scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-features-scan.png)
 
 ### GATT 服务扫描 `-m gatt`
 
@@ -105,7 +113,7 @@ Options:
 
 ![GATT scan](https://github.com/fO-000/bluescan/blob/master/res/example-gatt-scan.png)
 
-### 漏洞扫描 `-m vul` (demo)
+### 漏洞扫描 `-m vuln` (demo)
 
 漏洞扫描还处于 demo 阶段，目前仅支持 CVE-2017-0785：
 

@@ -1,6 +1,6 @@
 # bluescan ---- A powerful Bluetooth scanner
 
-> This document is also available in Chinese. See [README-Chinese.md](https://github.com/fO-000/bluescan/blob/master/README-Chinese.md)
+> This document is also available in Chinese（中文）. See [README-中文.md](https://github.com/fO-000/bluescan/blob/master/README-中文.md)
 >
 > bluescan is a open source project by Sourcell Xu from DBAPP Security HatLab. Anyone may redistribute copies of bluescan to anyone under the terms stated in the GPL-3.0 license.
 
@@ -11,8 +11,9 @@ When hacking new Bluetooth targets, the scanner can help us to collect intellige
 * BR devices
 * LE devices
 * LMP features
-* GATT services
+* LE LL features
 * SDP services
+* GATT services
 * Vulnerabilities (demo)
 
 ## Requirements
@@ -37,7 +38,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.2.3
+bluescan v0.3.0
 
 A powerful Bluetooth scanner.
 
@@ -51,7 +52,8 @@ Usage:
     bluescan [-i <hcix>] -m br [--inquiry-len=<n>]
     bluescan [-i <hcix>] -m lmp BD_ADDR
     bluescan [-i <hcix>] -m sdp BD_ADDR
-    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--le-scan-type=<type>] [--sort=<key>]
+    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--scan-type=<type>] [--sort=<key>]
+    bluescan [-i <hcix>] -m le --scan-type=features --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
     bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
 
@@ -65,7 +67,7 @@ Options:
     -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
     --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --timeout=<sec>             Duration of LE scan. [default: 10]
-    --le-scan-type=<type>       Active or passive scan for LE scan. [default: active]
+    --scan-type=<type>          Active, passive or features scan for LE device(s). [default: active]
     --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
     --include-descriptor        Fetch descriptor information.
     --addr-type=<type>          Public, random or BR.
@@ -87,7 +89,7 @@ Bluetooth technology, in addition to the Basic Rate system, is Low Energy (LE) s
 
 As shown above, through LE device scanning, we can get the address, address type, connection status, RSSI, and GAP data of the surrounding LE devices.
 
-### Scan SDP services
+### Scan SDP services `-m sdp`
 
 Classic Bluetooth devices tell the outside world about their open services through SDP. After SDP scanning, we can get service records of the specified classic Bluetooth device:
 
@@ -95,19 +97,25 @@ Classic Bluetooth devices tell the outside world about their open services throu
 
 You can try to connect to these services for further hacking.
 
-### Scan LMP features
+### Scan LMP features `-m lmp`
 
 Detecting the LMP features of classic Bluetooth devices allows us to judge the underlying security features of the classic Bluetooth device:
 
-![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-scan.png)
+![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-features-scan.png)
 
-### Scan GATT services
+### Scan LE LL features `-m le --scan-type=features`
+
+Detecting the LE LL (Link Layer) features:
+
+![LE LL scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-features-scan.png)
+
+### Scan GATT services `-m gatt`
 
 LE devices tell the outside world about their open services through GATT. After GATT scanning, we can get the GATT service of the specified LE device. You can try to read and write these GATT data for further hacking:
 
 ![GATT scan](https://github.com/fO-000/bluescan/blob/master/res/example-gatt-scan.png)
 
-### Vulnerabilities scanning (demo)
+### Vulnerabilities scanning `-m vuln` (demo)
 
 Vulnerability scanning is still in the demo stage, and currently only supports CVE-2017-0785:
 
