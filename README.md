@@ -38,7 +38,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.3.0
+bluescan v0.3.1
 
 A powerful Bluetooth scanner.
 
