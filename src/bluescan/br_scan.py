@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import time
 import select
 import subprocess
@@ -23,6 +24,7 @@ from bthci import HCI
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
 
+from .ll import ll_vers
 from . import BlueScanner
 from . import service_cls_profile_ids
 from . import gap_type_name_pairs, \
@@ -30,6 +32,9 @@ from . import gap_type_name_pairs, \
     COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST, \
     COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
     SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
+
+from .lmp import lmp_vers
+from .lmp import pp_lmp_features, pp_ext_lmp_features
 
 
 logger = Logger(__name__, logging.INFO)
@@ -48,6 +53,8 @@ major_dev_clses = {
     0b01001: 'Health',
     0b11111: 'Uncategorized'
 }
+
+
 
 class BRScanner(BlueScanner):
     def inquiry(self, lap=0x9e8b33, inquiry_len=0x08, num_rsp=0x00):
@@ -113,6 +120,67 @@ class BRScanner(BlueScanner):
             HCI(self.iface).inquiry_cancel()
 
         hci_close_dev(dd.fileno())
+
+    def scan_lmp_feature(self, paddr):
+        hci = HCI(self.iface)
+        event_params = hci.create_connection({
+            'BD_ADDR': paddr,
+            'Packet_Type': 0xcc18,
+            'Page_Scan_Repetition_Mode': 0x02,
+            'Reserved': 0x00,
+            'Clock_Offset': 0x0000,
+            'Allow_Role_Switch': 0x01
+        })
+
+        if event_params['Status'] != 0:
+            logger.error('Failed to create ACL connection')
+            sys.exit(1)
+
+        event_params = hci.read_remote_version_information(cmd_params={
+            'Connection_Handle': event_params['Connection_Handle']
+        })
+
+        if event_params['Status'] != 0:
+            logger.error('Failed to read remote version')
+            sys.exit(1)
+
+        print(blue('Version'))
+        print('    Version:')
+        print(' '*8+lmp_vers[event_params['Version']], '(LMP)')
+        print(' '*8+ll_vers[event_params['Version']], '(LL)')
+        print('    Manufacturer name:', event_params['Manufacturer_Name'])
+        print('    Subversion:', event_params['Subversion'], '\n')
+
+        event_params = hci.read_remote_supported_features({
+            'Connection_Handle': event_params['Connection_Handle']
+        })
+        if event_params['Status'] != 0:
+            logger.error('Failed to read remote supported features')
+        else:
+            print(blue('LMP features'))
+            pp_lmp_features(event_params['LMP_Features'])
+            print()
+
+        if not True if (event_params['LMP_Features'][7] >> 7) & 0x01 else False:
+            sys.exit(1)
+
+        print(blue('Extended LMP features'))
+        event_params = hci.read_remote_extended_features({
+            'Connection_Handle': event_params['Connection_Handle'],
+            'Page_Number': 0x00
+        })
+        if event_params['Status'] != 0:
+            logger.error('Failed to read remote extented features')
+        else:
+            pp_ext_lmp_features(event_params['Extended_LMP_Features'], 0)
+            for i in range(1, event_params['Maximum_Page_Number']+1):
+                event_params = hci.read_remote_extended_features({
+                    'Connection_Handle': event_params['Connection_Handle'],
+                    'Page_Number': i})
+                if event_params['Status'] != 0:
+                    logger.error('Failed to read remote extented features, page {}'.format(i))
+                else:
+                    pp_ext_lmp_features(event_params['Extended_LMP_Features'], i)
 
 
     def pp_inquiry_result(self, params):

@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                //"${workspaceFolder}/**",
+                "/usr/include/python3.8",
+                "/usr/include/newlib",
+                "${workspaceFolder}/yotta_modules/microbit/inc",
+                "${workspaceFolder}/yotta_modules/mbed-classic/api",
+                "${workspaceFolder}/yotta_modules/mbed-classic/targets/hal/TARGET_ARM_SSG/TARGET_MPS2",
+                "${workspaceFolder}/yotta_modules/mbed-classic/targets/cmsis/TARGET_NORDIC/TARGET_MCU_NRF51822",
+                "${workspaceFolder}/yotta_modules/mbed-classic/targets/cmsis",
+                "${workspaceFolder}/yotta_modules/mbed-classic/hal",
+                "${workspaceFolder}/yotta_modules/microbit-dal/inc/core",
+                "${workspaceFolder}/yotta_modules/microbit-dal/inc/platform",
+                "${workspaceFolder}/yotta_modules/microbit-dal/inc/drivers",
+                "${workspaceFolder}/yotta_modules/microbit-dal/inc/types"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

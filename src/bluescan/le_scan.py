@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-import re
 import logging
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
 from pyclui import Logger
-from pyclui import blue, green, yellow, red
+from pyclui import blue, green, red
 from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
 from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
 
+from serial import Serial
+
 from bthci import HCI, ERR_REMOTE_USER_TERMINATED_CONNECTION
 
-from . import BlueScanner
 from . import service_cls_profile_ids
 from . import gap_type_name_pairs, \
     COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST, \
@@ -20,8 +20,13 @@ from . import gap_type_name_pairs, \
     COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
     SHORTENED_LOCAL_NAME, TX_POWER_LEVEL, MANUFACTURER_SPECIFIC_DATA
 
+from .serial_protocol import serial_reset
+from .serial_protocol import SerialEventHandler
 
 logger = Logger(__name__, logging.INFO)
+
+
+microbit_infos = {}
 
 
 # 这个字典暂时没用，以后可能用来判断收到的 advertising 类型
@@ -48,36 +53,33 @@ class LEDelegate(DefaultDelegate):
             pass
 
 
-class LEScanner(BlueScanner):
-    def scan(self, timeout=8, scan_type='active', sort='rssi', paddr=None, patype='public'):
-        '''
-        scan_type - Indicate the type of LE scan：active, passive or features.
-        paddr     - peer addresss, 配合 features 扫描类型使用。
-        patype    - peer address type, public or random。
-        '''
-        if scan_type == 'features':
-            hci = HCI(self.iface)
-            logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.iface)))
-            try:
-                event_params = hci.le_create_connection(HCI_Cmd_LE_Create_Connection(
-                    paddr=bytes.fromhex(paddr.replace(':', ''))[::-1], patype=patype))
-                logger.debug(event_params)
-            except RuntimeError as e:
-                logger.error(e)
-                return
+class LEScanner:
+    """
+    Provide three scanning functions:
 
-            event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(
-                handle=event_params['Connection_Handle']))
-            logger.debug(event_params)
-            print(blue('LE LL Features:'))
-            pp_le_features(event_params['LE_Features'])
+    1. LE devices scanning
+    2. LL features scanning
+    3. Advertising physical channel PDU sniffing.
+    """
+    def __init__(self, hci='hci0', microbit_devpaths=None):
+        """
+        hci               - HCI device for scaning LE devices and LL features.
+        microbit_devpaths - When sniffing advertising physical channel PDU, we 
+                            need at least one micro:bit.
+        """
+        self.hci = hci
+        self.devid = HCI.hcistr2devid(self.hci)
+        self.microbit_devpaths = microbit_devpaths
 
-            event_params = hci.disconnect({
-                'Connection_Handle': event_params['Connection_Handle'],
-                'Reason': ERR_REMOTE_USER_TERMINATED_CONNECTION})
-            logger.debug(event_params)
+
+    def scan_devs(self, timeout=8, scan_type='active', sort='rssi'):
+        """LE devices scanning
+
+        scan_type  - Indicate the type of LE scan：active, passive, adv or 
+                     features.
+        """
+        if scan_type == 'adv':
             return
-
 
         scanner = Scanner(self.devid).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
@@ -151,11 +153,91 @@ class LEScanner(BlueScanner):
             print("\n")
 
 
+    def scan_ll_feature(self, paddr, patype):
+        """LL feature scanning
+
+        paddr  - Peer addresss for scanning LL features.
+        patype - Peer address type, public or random.
+        """
+        hci = HCI(self.hci)
+        logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
+
+        try:
+            event_params = hci.le_create_connection(HCI_Cmd_LE_Create_Connection(
+                paddr=bytes.fromhex(paddr.replace(':', ''))[::-1], patype=patype))
+            logger.debug(event_params)
+        except RuntimeError as e:
+            logger.error(e)
+            return
+
+        event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(
+            handle=event_params['Connection_Handle']))
+        logger.debug(event_params)
+        print(blue('LE LL Features:'))
+        pp_le_features(event_params['LE_Features'])
+
+        event_params = hci.disconnect({
+            'Connection_Handle': event_params['Connection_Handle'],
+            'Reason': ERR_REMOTE_USER_TERMINATED_CONNECTION})
+        logger.debug(event_params)
+        return
+
+
+    def sniff_adv(self, channels=[37, 38, 39]):
+        """Advertising physical channel PDU sniffing
+
+        channel - The channel index(es) used when sniffing advertising 
+                   physical channel PDU.
+
+                   In addition to the primary advertising channel (37, 38, 
+                   and 39), these PDUs may also appear in other channels. But 
+                   at present we only focus on the primary advertising 
+                   channel.
+        """
+        logger.debug("LEScanner.sniff_adv")
+
+        try:
+            serial_devs = []
+            idx = 0
+            event_handlers = []
+
+            dev_paths = self.microbit_devpaths
+
+            if len(channels) > 3:
+                raise RuntimeError("The number of channels ({}) > 3".format(len(channels)))
+            elif len(dev_paths) > len(channels):
+                logger.info("Detected {} micro:bits, but only enable {} of them".format(len(dev_paths), len(channels)))
+                dev_paths = dev_paths[:len(channels)]
+            elif len(dev_paths) < len(channels):
+                channels = channels[:len(dev_paths)]
+
+            for dev_path in dev_paths:
+                logger.info("Using micro:bit {} on channel {}".format(dev_path, channels[idx]))
+                
+                dev = Serial(dev_path, 115200)
+                dev.reset_input_buffer()
+                dev.reset_output_buffer()
+                serial_devs.append(dev)
+
+                handler = SerialEventHandler(dev, channels[idx])
+                handler.start()
+                event_handlers.append(handler)
+                idx += 1
+                
+            for handler in event_handlers:
+                handler.join()
+        finally:
+            for dev in serial_devs:
+                logger.debug("LEScanner.scan, close()")
+                serial_reset(dev)
+                dev.close()
+
+
 def pp_le_features(features:bytes):
-    '''
+    """
     features - LE LL features. The Bluetooth specification calls this FeatureSet.
     待处理 Valid from Controller to Controller, Masked to Peer, Host Controlled
-    '''
+    """
     for i in range(8):
         b  = features[i]
         if i == 0:
@@ -199,7 +281,7 @@ def pp_le_features(features:bytes):
             print('    LE Power Control Request:', green('True') if (b >> 1) & 0x01 else red('False'))
             print('    LE Power Change Indication:', green('True') if (b >> 2) & 0x01 else red('False'))
             print('    LE Path Loss Monitoring:', green('True') if (b >> 3) & 0x01 else red('False'))
- 
+
 
 def __test():
     pass

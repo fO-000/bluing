@@ -1,0 +1,11 @@
+{
+    "name": "bluescan-advsniff",
+    "version": "0.0.1",
+    "description": "Sniff BLE advertising physical channel PDU",
+    "license": "GPL",
+    "dependencies": {
+        "microbit": "virtualabs/microbit#v2.0.0-blesniff"
+    },
+    "targetDependencies": {},
+    "bin": "./src/firmware"
+}

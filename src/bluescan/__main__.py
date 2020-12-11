@@ -3,7 +3,7 @@
 import os
 import sys
 import logging
-import traceback
+import time
 import subprocess
 from pathlib import PosixPath
 
@@ -13,20 +13,19 @@ from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
 from .ui import parse_cmdline
-from .helper import find_rfkill_devid
+from .helper import find_rfkill_devid, get_microbit_devpaths
 from .br_scan import BRScanner
 from .le_scan import LEScanner
 from .gatt_scan import GATTScanner
 from .sdp_scan import SDPScanner
 from .stack_scan import StackScanner
 from .vuln_scan import VulnScanner
-from .lmp_scan import LMPScanner
 
 
 logger = Logger(__name__, logging.INFO)
 
 
-def init(iface='hci0'):
+def init_hci(iface='hci0'):
     hci = HCI(iface)
 
     exitcode, output = subprocess.getstatusoutput(
@@ -34,6 +33,14 @@ def init(iface='hci0'):
     if exitcode != 0:
         logger.error('rfkill: ' + output)
         sys.exit(exitcode)
+
+    exitcode, output = subprocess.getstatusoutput(
+        "hciconfig up " + iface)
+    if exitcode != 0:
+        logger.error("Failed to up " + iface)
+        sys.exit(exitcode)
+    else:
+        time.sleep(0.5)
 
     # hci.reset()
     hci.inquiry_cancel()
@@ -73,22 +80,39 @@ def init(iface='hci0'):
 def main():
     try:
         args = parse_cmdline()
-        logger.debug('args: {}'.format(args))
+        logger.debug("__main__.main(), args: {}".format(args))
 
-        if args['-i'] == 'The first HCI device':
-            args['-i'] = HCI.get_default_hcistr() # May raise IndexError
+        if not args['--adv']:
+            if args['-i'] == 'The first HCI device':
+                exitcode, output = subprocess.getstatusoutput(
+                    'systemctl start bluetooth.service')
+                if exitcode != 0:
+                    logger.error("Failed to start bluetooth.service")
+                    sys.exit(exitcode)
+                try:
+                    args['-i'] = HCI.get_default_hcistr() # May raise IndexError
+                except IndexError:
+                    logger.error('There is no available HCI device')
+                    exit(-1)
 
-        init(args['-i'])
+            init_hci(args['-i'])
 
         if args['-m'] == 'br':
             br_scanner = BRScanner(args['-i'])
-            br_scanner.inquiry(inquiry_len=args['--inquiry-len'])
-        elif args['-m'] == 'lmp':
-            LMPScanner(args['-i']).scan(args['BD_ADDR'])
+            if args['--lmp-feature']:
+                br_scanner.scan_lmp_feature(args['BD_ADDR'])
+            else:
+                br_scanner = BRScanner(args['-i'])
+                br_scanner.inquiry(inquiry_len=args['--inquiry-len'])
         elif args['-m'] == 'le':
-            LEScanner(args['-i']).scan(args['--timeout'], 
-                args['--scan-type'], args['--sort'], 
-                args['BD_ADDR'], args['--addr-type'])
+            if args['--adv']:
+                dev_paths = get_microbit_devpaths()
+                LEScanner(microbit_devpaths=dev_paths).sniff_adv(args['--channel'])
+            elif args['--ll-feature']:
+                LEScanner(args['-i']).scan_ll_feature(args['BD_ADDR'], args['--addr-type'])
+            else:
+                LEScanner(args['-i']).scan_devs(args['--timeout'], 
+                    args['--scan-type'], args['--sort'])
         elif args['-m'] == 'sdp':
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':
@@ -100,8 +124,9 @@ def main():
             VulnScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
         else:
             logger.error('Invalid scan mode')
-    except IndexError:
-        logger.error('There is no available HCI device')
+    except ValueError as e:
+        logger.error("{}".format(e))
+        exit(1)
     except BluetoothError as e:
         logger.error('{}'.format(e))
     except RuntimeError as e:
@@ -109,12 +134,9 @@ def main():
     except (BTLEException, ValueError) as e:
         logger.error('{}'.format(e))
         if 'le on' in str(e):
-            print('        No BLE adapter? or missing sudo ?')
+            print("        No BLE adapter? or missing sudo ?")
     except KeyboardInterrupt:
-        logger.info(args['-m'].upper() + " scan canceled\n")
-    # except Exception as e:
-    #     #traceback.print_exc()
-    #     print(ERROR, e)
+        logger.info("Canceled\n")
 
 
 if __name__ == '__main__':

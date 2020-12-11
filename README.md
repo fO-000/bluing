@@ -1,30 +1,67 @@
 # bluescan ---- A powerful Bluetooth scanner
 
-> This document is also available in Chinese（中文）. See [README-中文.md](https://github.com/fO-000/bluescan/blob/master/README-中文.md)
+> This document is also available in [Chinese（中文）](https://github.com/fO-000/bluescan/blob/master/README-中文.md).
 >
-> bluescan is a open source project by Sourcell Xu from DBAPP Security HatLab. Anyone may redistribute copies of bluescan to anyone under the terms stated in the GPL-3.0 license.
+> This project is maintained by Sourcell Xu from DBAPP Security HatLab. Under the terms stated in the GPL-3.0, anyone may redistribute copies of it to anyone.
 
-Aren't the previous Bluetooth scanning tools scattered and in disrepair? So we have this powerful Bluetooth scanner based on modern Python 3 ---- bluescan.
+Bluetooth is a complex protocol, and using a scanner we can quickly peek inside its secrets. But previous Bluetooth scanners suffered from a number of problems such as incomplete functionality, unintuitive information and out of repair. So we came up with this powerful Bluetooth scanner based on modern Python 3 - bluescan.
 
-When hacking new Bluetooth targets, the scanner can help us to collect intelligence, such as:
+When hacking Bluetooth targets, bluescan can be very useful for **intelligence collecting**. Its main features are as follows:
 
 * BR devices
 * LE devices
-* LMP features
+* BR LMP features
 * LE LL features
+* Real-time advertising physical channel PDU
 * SDP services
 * GATT services
 * Vulnerabilities (demo)
 
 ## Requirements
 
-This tool is based on BlueZ, the official Linux Bluetooth stack. The following packages need to be installed:
+bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports running on Linux, and the following packages need to be installed:
 
 ```sh
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB. Of course, the best one to use is the little bit expensive [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail), 560 RMB. And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785).
+Python 3 is also necessary for running bluescan. Currently bluescan can support python 3.8. For python 3.9 support, see the FAQ at the end of this README.
+
+When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB：
+
+![OST-105](https://github.com/fO-000/bluescan/blob/master/res/OST-105.jpg)
+
+[Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) is better than the above-mentioned Ostran adapter. But of course it will be a little more expensive, 560 RMB：
+
+![Parani UD100-G03](https://github.com/fO-000/bluescan/blob/master/res/Parani-UD100-G03.jpg)
+
+And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) to resolve dependencies.
+
+### Dedicated firmware for [micro:bit](https://microbit.org/)
+
+If you want to use bluescan to sniff the advertising physical channel PDU (`-m le --adv`), you need to execute the following command to download the dedicated firmware `bin/bluescan-advsniff-combined.hex` to 1 or 3 micro:bit(s). It is recommended to use 3 micro:bits at the same time.
+
+```sh
+cd bluescan
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT1
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT2
+```
+
+![3 micro:bit](https://github.com/fO-000/bluescan/blob/master/res/3-microbit.jpg)
+
+If you want to compile the firmware yourself, first install the following packages:
+
+```sh
+sudo apt install yotta ninja-build
+```
+
+Then execute the following command, it will automatically compile (**requires network to automatically resolve dependencies**) and download the firmware to the micro:bit(s) which connected to your PC:
+
+```sh
+cd bluescan
+make flash
+```
 
 ## Install
 
@@ -38,7 +75,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.3.1
+bluescan v0.4.0
 
 A powerful Bluetooth scanner.
 
@@ -49,35 +86,44 @@ License: GPL-3.0
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)
-    bluescan [-i <hcix>] -m br [--inquiry-len=<n>]
-    bluescan [-i <hcix>] -m lmp BD_ADDR
-    bluescan [-i <hcix>] -m sdp BD_ADDR
-    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--scan-type=<type>] [--sort=<key>]
-    bluescan [-i <hcix>] -m le --scan-type=features --addr-type=<type> BD_ADDR
-    bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
-    bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
+    bluescan [-i <hci>] -m br [--inquiry-len=<n>]
+    bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
+    bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
+    bluescan [-i <hci>] -m le --ll-feature --addr-type=<type> BD_ADDR
+    bluescan -m le --adv [--channel=<num>]
+    bluescan [-i <hci>] -m sdp BD_ADDR
+    bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
-    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local device.
+    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
+               device.
 
 Options:
-    -h, --help                  Display this help.
-    -v, --version               Show the version.
-    -i <hcix>                   HCI device for scan. [default: The first HCI device]
-    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
-    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
-    --timeout=<sec>             Duration of LE scan. [default: 10]
-    --scan-type=<type>          Active, passive or features scan for LE device(s). [default: active]
-    --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
-    --include-descriptor        Fetch descriptor information.
-    --addr-type=<type>          Public, random or BR.
+    -h, --help              Display this help.
+    -v, --version           Show the version.
+    -i <hci>                HCI device used for subsequent scans. [default: The first HCI device]
+    -m <mode>               Scan mode, support BR, LE, SDP, GATT and vuln.
+    --inquiry-len=<n>       Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --lmp-feature           Scan LMP features of the remote BR/EDR device.
+    --scan-type=<type>      Scan type used for scanning LE devices, active or 
+                            passive. [default: active]
+    --timeout=<sec>         Duration of LE scan. [default: 10]
+    --sort=<key>            Sort the discovered devices by key, only support 
+                            RSSI now. [default: rssi]
+    --adv                   Sniff advertising physical channel PDU. Need at 
+                            least one micro:bit.
+    --ll-feature            Scan LL features of the remote LE device.
+    --channel=<num>         LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
+    --include-descriptor    Fetch descriptor information.
+    --addr-type=<type>      Type of the LE address, public or random.
 ```
 
 ### Scan BR devices `-m br`
 
 Classic Bluetooth devices may use three technologies: BR (Basic Rate), EDR (Enhanced Data Rate), and AMP (Alternate MAC/PHY). Since they all belong to the Basic Rate system, so when scanning these devices we call them BR device scanning:
 
-![BR scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-scan.png)
+![BR dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-dev-scan.png)
 
 As shown above, through BR device scanning, we can get the address, page scan repetition mode, class of device, clock offset, RSSI, and the extended inquiry response (Name, TX power, and so on) of the surrounding classic Bluetooth devices.
 
@@ -85,33 +131,41 @@ As shown above, through BR device scanning, we can get the address, page scan re
 
 Bluetooth technology, in addition to the Basic Rate system, is Low Energy (LE) system. When scanning Bluetooth low energy devices, it is called LE device scanning:
 
-![LE scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-scan.png)
+![LE dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-dev-scan.png)
 
 As shown above, through LE device scanning, we can get the address, address type, connection status, RSSI, and GAP data of the surrounding LE devices.
 
+### Scan BR LMP features `-m br --lmp-feature`
+
+Detecting the LMP features of classic Bluetooth devices allows us to judge the underlying security features of them:
+
+![BR LMP feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-lmp-feature-scan.png)
+
+### Scan LE LL features `-m le --ll-feature`
+
+Detecting the LL (Link Layer) features fo the LE devices:
+
+![LE LL feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-feature-scan.png)
+
+### Sniffing advertising physical channel PDU `-m le --adv`
+
+Compared with scanning adove the HCI, using micro:bit to sniff the advertising physical channel PDU at the link layer, you can get richer LE device activity information:
+
+![LE adv sniff](https://github.com/fO-000/bluescan/blob/master/res/example-le-adv-sniff.png)
+
+:bulb: The scan mode has a hidden function.
+
 ### Scan SDP services `-m sdp`
 
-Classic Bluetooth devices tell the outside world about their open services through SDP. After SDP scanning, we can get service records of the specified classic Bluetooth device:
+Classic Bluetooth devices tell the outside world about their open services through SDP. After SDP scanning, we can get service records of them:
 
 ![SDP scan](https://github.com/fO-000/bluescan/blob/master/res/example-sdp-scan.png)
 
 You can try to connect to these services for further hacking.
 
-### Scan LMP features `-m lmp`
-
-Detecting the LMP features of classic Bluetooth devices allows us to judge the underlying security features of the classic Bluetooth device:
-
-![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-features-scan.png)
-
-### Scan LE LL features `-m le --scan-type=features`
-
-Detecting the LE LL (Link Layer) features:
-
-![LE LL scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-features-scan.png)
-
 ### Scan GATT services `-m gatt`
 
-LE devices tell the outside world about their open services through GATT. After GATT scanning, we can get the GATT service of the specified LE device. You can try to read and write these GATT data for further hacking:
+LE devices tell the outside world about their open services through GATT. After GATT scanning, we can get the GATT service of them. You can try to read and write these GATT data for further hacking:
 
 ![GATT scan](https://github.com/fO-000/bluescan/blob/master/res/example-gatt-scan.png)
 
@@ -144,5 +198,26 @@ CVE-2017-0785
   ```sh
   # Kali
   rfkill --version
-  # rfkill from util-linux 2.36
+  # rfkill from util-linux 2.36.1
   ```
+
+* When using Python 3.9, there is a `b'liblibc.a'` FileNotFoundError
+
+  This problem is caused by scapy and python 3.9. bluescan will not support python 3.9 until they solve the problem:
+
+  ```txt
+  ... ...
+  File "/usr/lib/python3/dist-packages/scapy/arch/__init__.py", line 27, in <module>
+    from scapy.arch.bpf.core import get_if_raw_addr
+  File "/usr/lib/python3/dist-packages/scapy/arch/bpf/core.py", line 30, in <module>
+    LIBC = cdll.LoadLibrary(find_library("libc"))
+  File "/usr/lib/python3.9/ctypes/util.py", line 341, in find_library
+    _get_soname(_findLib_gcc(name)) or _get_soname(_findLib_ld(name))
+  File "/usr/lib/python3.9/ctypes/util.py", line 147, in _findLib_gcc
+    if not _is_elf(file):
+  File "/usr/lib/python3.9/ctypes/util.py", line 99, in _is_elf
+    with open(filename, 'br') as thefile:
+  FileNotFoundError: [Errno 2] No such file or directory: b'liblibc.a'
+  ```
+
+  Currently bluescan supports python 3.8.

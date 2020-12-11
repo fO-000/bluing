@@ -1,28 +1,65 @@
 # bluescan：一个强大的蓝牙扫描器
 
-> bluescan 是一个由 Sourcell Xu（杭州安恒信息 海特实验室）维护的开源项目。任何人都可以在 GPL-3.0 许可下分享该项目的源码。
+> 本项目由 Sourcell Xu（杭州安恒信息 海特实验室）维护。任何人都可以在 GPL-3.0 下分享该项目的源码。
 
-先前的蓝牙扫描工具都是零零散散，而且年久失修对吗？于是我们有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
+蓝牙是一个复杂的协议，利用扫描器我们可以快速窥探其内部的秘密。但先前的蓝牙扫描器存在功能不全、信息不直观以及年久失修等诸多问题。于是我们就有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
 
-在测试新的蓝牙目标时，该扫描器可以帮助我们做好情报收集工作，比如：
+在 hacking 蓝牙目标时，bluescan 可以很好地帮助我们完成**情报收集**工作。它的主要功能如下：
 
 * BR 设备扫描
 * LE 设备扫描
-* LMP 特性扫描
+* BR LMP 特性扫描
 * LE LL 特性扫描
+* 嗅探 advertising physical channel PDU
 * SDP 服务扫描
 * GATT 服务扫描
 * 漏洞扫描 (demo)
 
 ## 依赖
 
-bluescan 在底层基于 Linux 官方的 BlueZ 蓝牙协议栈。如下依赖的包需要被安装：
+bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Linux 上运行，且需要安装如下依赖包：
 
 ```sh
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-当在 Linux 虚拟机中使用该工具时，**建议让虚拟机独占一个 USB 蓝牙适配器**，比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)。当然最好用的还是有点小贵的 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)，560 元。如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
+Python 3 也是运行 bluescan 的必要条件。目前 bluescan 可以支持到 python 3.8。关于 python 3.9 的支持，见本 README 末尾的 FAQ。
+
+若在 Linux 虚拟机中使用该工具，则建议让虚拟机**独占一个 USB 蓝牙适配器**。比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)：
+
+![OST-105](https://github.com/fO-000/bluescan/blob/master/res/OST-105.jpg)
+
+[Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) 比上面奥视通的适配器好用一些，但 560 元的价格有点小贵：
+
+![Parani UD100-G03](https://github.com/fO-000/bluescan/blob/master/res/Parani-UD100-G03.jpg)
+
+如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
+
+### [micro:bit](https://microbit.org/) 以及专用固件
+
+若想使用 bluescan 嗅探 advertising physical channel PDU (`-m le --adv`)，我们需要执行如下命令，把构建好的固件 `bin/bluescan-advsniff-combined.hex` 下载到 1 到 3 块 micro:bit(s) 中（推荐同时用 3 块）：
+
+```sh
+cd bluescan
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT1
+cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT2
+```
+
+![3 micro:bit](https://github.com/fO-000/bluescan/blob/master/res/3-microbit.jpg)
+
+如果你想自己编译固件，则需要安装如下依赖包：
+
+```sh
+sudo apt install yotta ninja-build
+```
+
+然后执行下面的命令即可自动编译（**需要网络自动解决依赖**）并下载固件到已接入 PC 的 micro:bit(s)：
+
+```sh
+cd bluescan
+make flash
+```
 
 ## 安装
 
@@ -32,11 +69,11 @@ sudo apt install libglib2.0-dev libbluetooth-dev
 sudo pip3 install bluescan
 ```
 
-## 功能和使用方法
+## 使用
 
 ```txt
 $ bluescan -h
-bluescan v0.3.1
+bluescan v0.4.0
 
 A powerful Bluetooth scanner.
 
@@ -47,35 +84,44 @@ License: GPL-3.0
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)
-    bluescan [-i <hcix>] -m br [--inquiry-len=<n>]
-    bluescan [-i <hcix>] -m lmp BD_ADDR
-    bluescan [-i <hcix>] -m sdp BD_ADDR
-    bluescan [-i <hcix>] -m le [--timeout=<sec>] [--scan-type=<type>] [--sort=<key>]
-    bluescan [-i <hcix>] -m le --scan-type=features --addr-type=<type> BD_ADDR
-    bluescan [-i <hcix>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
-    bluescan [-i <hcix>] -m vuln --addr-type=br BD_ADDR
+    bluescan [-i <hci>] -m br [--inquiry-len=<n>]
+    bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
+    bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
+    bluescan [-i <hci>] -m le --ll-feature --addr-type=<type> BD_ADDR
+    bluescan -m le --adv [--channel=<num>]
+    bluescan [-i <hci>] -m sdp BD_ADDR
+    bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
-    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local device.
+    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
+               device.
 
 Options:
-    -h, --help                  Display this help.
-    -v, --version               Show the version.
-    -i <hcix>                   HCI device for scan. [default: The first HCI device]
-    -m <mode>                   Scan mode, support BR, LE, LMP, SDP, GATT and vuln.
-    --inquiry-len=<n>           Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
-    --timeout=<sec>             Duration of LE scan. [default: 10]
-    --scan-type=<type>          Active, passive or features scan for LE device(s). [default: active]
-    --sort=<key>                Sort the discovered devices by key, only support RSSI now. [default: rssi]
-    --include-descriptor        Fetch descriptor information.
-    --addr-type=<type>          Public, random or BR.
+    -h, --help              Display this help.
+    -v, --version           Show the version.
+    -i <hci>                HCI device used for subsequent scans. [default: The first HCI device]
+    -m <mode>               Scan mode, support BR, LE, SDP, GATT and vuln.
+    --inquiry-len=<n>       Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --lmp-feature           Scan LMP features of the remote BR/EDR device.
+    --scan-type=<type>      Scan type used for scanning LE devices, active or 
+                            passive. [default: active]
+    --timeout=<sec>         Duration of LE scan. [default: 10]
+    --sort=<key>            Sort the discovered devices by key, only support 
+                            RSSI now. [default: rssi]
+    --adv                   Sniff advertising physical channel PDU. Need at 
+                            least one micro:bit.
+    --ll-feature            Scan LL features of the remote LE device.
+    --channel=<num>         LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
+    --include-descriptor    Fetch descriptor information.
+    --addr-type=<type>      Type of the LE address, public or random.
 ```
 
 ### BR 设备扫描 `-m br`
 
 经典蓝牙设备可能使用三种技术：BR (Basic Rate)、EDR (Enhanced Data Rate) 以及 AMP (Alternate MAC/PHY)。由于它们都属于 Basic Rate system，因此在扫描这些设备时统称为 BR 设备扫描：
 
-![BR scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-scan.png)
+![BR dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-dev-scan.png)
 
 如上图，通过 BR 设备扫描，我们可以拿到周围经典蓝牙设备的地址、page scan 重复模式、类型、时钟偏移、RSSI 以及扩展 inquiry 结果。
 
@@ -83,33 +129,41 @@ Options:
 
 蓝牙除了 Basic Rate system 就是 Low Energy (LE) system 了。当扫描周围的低功耗蓝牙设备时，称为 LE 设备扫描：
 
-![LE scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-scan.png)
+![LE dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-dev-scan.png)
 
 如上图，通过 LE 扫描，我们可以拿到周围低功耗蓝牙设备的地址、地址类型、连接状态、RSSI 以及 GAP 数据。
 
+### BR LMP 特性扫描 `-m br --lmp-feature`
+
+探测经典蓝牙设备的 LMP 特性，可以帮我们测试其底层安全性：
+
+![BR LMP feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-lmp-feature-scan.png)
+
+### LE LL 特性扫描 `-m le --ll-feature`
+
+探测低功耗蓝牙设备的链路层特性：
+
+![LE LL feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-feature-scan.png)
+
+### 嗅探 advertising physical channel PDU `-m le --adv`
+
+相比 HCI 之上的扫描，利用 micro:bit 站在链路层嗅探 advertising physical channel PDU，可拿到更丰富的 LE 设备活动信息：
+
+![LE adv sniff](https://github.com/fO-000/bluescan/blob/master/res/example-le-adv-sniff.png)
+
+:bulb: 该扫描模式有隐藏功能。
+
 ### SDP 服务扫描 `-m sdp`
 
-经典蓝牙设备通过 SDP 告诉外界自己开放的服务。通过 SDP 扫描，我们可以拿到指定经典蓝牙设备的 service record：
+经典蓝牙设备通过 SDP 告诉外界自己开放的服务。通过 SDP 扫描，我们可以拿到它们的 service record：
 
 ![SDP scan](https://github.com/fO-000/bluescan/blob/master/res/example-sdp-scan.png)
 
 之后可以尝试连接这些 service，做进一步的安全测试。
 
-### LMP 特性扫描 `-m lmp`
-
-探测经典蓝牙设备的 LMP 特性，可以让我们判断目标设备底层的安全特性：
-
-![LMP scan](https://github.com/fO-000/bluescan/blob/master/res/example-lmp-features-scan.png)
-
-### LE LL 特性扫描 `-m le --scan-type=features`
-
-探测低功耗蓝牙设备的链路层特性：
-
-![LE LL scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-features-scan.png)
-
 ### GATT 服务扫描 `-m gatt`
 
-低功耗蓝牙设备通过 GATT 告诉外界自己开放的服务。通过 GATT 扫描，我们可以拿到指定低功耗蓝牙设备的 GATT 数据。之后可以尝试读写这些 GATT 数据，做进一步的安全测试：
+低功耗蓝牙设备通过 GATT 告诉外界自己开放的服务。通过 GATT 扫描，我们可以拿到它们的 GATT 数据。之后可以尝试读写这些 GATT 数据，做进一步的安全测试：
 
 ![GATT scan](https://github.com/fO-000/bluescan/blob/master/res/example-gatt-scan.png)
 
@@ -142,5 +196,26 @@ CVE-2017-0785
   ```sh
   # Kali
   rfkill --version
-  # rfkill from util-linux 2.36
+  # rfkill from util-linux 2.36.1
   ```
+
+* 使用 Python 3.9 时报错 `b'liblibc.a'` 找不到
+  
+  这个问题由 scapy 和 python 3.9 导致。它们解决问题后 bluescan 才会支持 python 3.9：
+
+  ```txt
+  ... ...
+  File "/usr/lib/python3/dist-packages/scapy/arch/__init__.py", line 27, in <module>
+    from scapy.arch.bpf.core import get_if_raw_addr
+  File "/usr/lib/python3/dist-packages/scapy/arch/bpf/core.py", line 30, in <module>
+    LIBC = cdll.LoadLibrary(find_library("libc"))
+  File "/usr/lib/python3.9/ctypes/util.py", line 341, in find_library
+    _get_soname(_findLib_gcc(name)) or _get_soname(_findLib_ld(name))
+  File "/usr/lib/python3.9/ctypes/util.py", line 147, in _findLib_gcc
+    if not _is_elf(file):
+  File "/usr/lib/python3.9/ctypes/util.py", line 99, in _is_elf
+    with open(filename, 'br') as thefile:
+  FileNotFoundError: [Errno 2] No such file or directory: b'liblibc.a'
+  ```
+
+  目前 bluescan 支持到 python 3.8。

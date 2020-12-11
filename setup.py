@@ -32,7 +32,8 @@ class MyClean(clean):
     def run(self):
         super().run()
         dirs = [
-            os.path.join(PROJECT_ROOT, 'build'),
+            os.path.join(PROJECT_ROOT, 'build', 'bdist.linux-x86_64'), # 不直接删除 build 目录，因为 yotta 也会使用该目录。
+            os.path.join(PROJECT_ROOT, 'build', 'lib'),
             os.path.join(PROJECT_ROOT, 'dist'),
             os.path.join(PROJECT_ROOT, 'src', 'bluescan.egg-info'),
             os.path.join(PROJECT_ROOT, 'src', 'bluescan', '__pycache__')
@@ -45,7 +46,7 @@ class MyClean(clean):
 if __name__ == '__main__':
     setup(
         name='bluescan',
-        version='0.3.1',
+        version='0.4.0',
         license = "GPL-3.0",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
@@ -60,14 +61,14 @@ if __name__ == '__main__':
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
-            'bthci>=0.0.11', 'pyclui>=0.0.3', "scapy>=2.4.4",
-            'pybluez>=0.23', 'bluepy>=1.3.0', 'docopt>=0.6.2'
+            'bthci>=0.0.12', 'pyclui>=0.0.3', 'scapy>=2.4.4', 'docopt>=0.6.2',
+            'pybluez>=0.23', 'bluepy>=1.3.0', 'pyserial>=3.5', 
         ],
 
         # metadata to display on PyPI
         author="fO_000",
         author_email="fO_000@protonmail.com",
-        description='A powerful Bluetooth scanner for scanning BR/LE devices, LMP, SDP, GATT and vulnerabilities!',
+        description='A powerful Bluetooth scanner',
         long_description=read('README.md'),
         long_description_content_type='text/markdown',
         url='https://github.com/fO-000/bluescan',
