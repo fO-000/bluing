@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import re
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
@@ -153,21 +154,26 @@ class LEScanner:
             print("\n")
 
 
-    def scan_ll_feature(self, paddr, patype):
+    def scan_ll_feature(self, paddr, patype, timeout:int=10):
         """LL feature scanning
 
-        paddr  - Peer addresss for scanning LL features.
-        patype - Peer address type, public or random.
+        paddr   - Peer addresss for scanning LL features.
+        patype  - Peer address type, public or random.
+        timeout - sec
         """
         hci = HCI(self.hci)
         logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
 
         try:
-            event_params = hci.le_create_connection(HCI_Cmd_LE_Create_Connection(
-                paddr=bytes.fromhex(paddr.replace(':', ''))[::-1], patype=patype))
+            event_params = hci.le_create_connection(
+                HCI_Cmd_LE_Create_Connection(paddr=bytes.fromhex(
+                    paddr.replace(':', ''))[::-1], patype=patype), timeout)
             logger.debug(event_params)
         except RuntimeError as e:
             logger.error(e)
+            return
+        except TimeoutError as e:
+            logger.error("TimeoutError {}".format(e))
             return
 
         event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(

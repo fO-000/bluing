@@ -2,7 +2,7 @@
 
 > 本项目由 Sourcell Xu（杭州安恒信息 海特实验室）维护。任何人都可以在 GPL-3.0 下分享该项目的源码。
 
-蓝牙是一个复杂的协议，利用扫描器我们可以快速窥探其内部的秘密。但先前的蓝牙扫描器存在功能不全、信息不直观以及年久失修等诸多问题。于是我们就有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
+蓝牙是一个复杂的协议，一个好用的扫描器可以快速帮我们窥探其内部的秘密。但先前的蓝牙扫描器存在功能不全、信息不直观以及年久失修等诸多问题。于是我们就有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
 
 在 hacking 蓝牙目标时，bluescan 可以很好地帮助我们完成**情报收集**工作。它的主要功能如下：
 
@@ -23,15 +23,15 @@ bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Li
 sudo apt install libglib2.0-dev libbluetooth-dev
 ```
 
-Python 3 也是运行 bluescan 的必要条件。目前 bluescan 可以支持到 python 3.8。关于 python 3.9 的支持，见本 README 末尾的 FAQ。
+Python 3 也是运行 bluescan 的必要条件。目前 bluescan 可以支持到 python 3.9.1。
 
 若在 Linux 虚拟机中使用该工具，则建议让虚拟机**独占一个 USB 蓝牙适配器**。比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)：
 
-![OST-105](https://github.com/fO-000/bluescan/blob/master/res/OST-105.jpg)
+![OST-105](https://raw.githubusercontent.com/fO-000/bluescan/master/res/OST-105.jpg)
 
 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) 比上面奥视通的适配器好用一些，但 560 元的价格有点小贵：
 
-![Parani UD100-G03](https://github.com/fO-000/bluescan/blob/master/res/Parani-UD100-G03.jpg)
+![Parani UD100-G03](https://raw.githubusercontent.com/fO-000/bluescan/master/res/Parani-UD100-G03.jpg)
 
 如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
 
@@ -46,7 +46,7 @@ cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT1
 cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT2
 ```
 
-![3 micro:bit](https://github.com/fO-000/bluescan/blob/master/res/3-microbit.jpg)
+![3 micro:bit](https://raw.githubusercontent.com/fO-000/bluescan/master/res/3-microbit.jpg)
 
 如果你想自己编译固件，则需要安装如下依赖包：
 
@@ -73,7 +73,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.4.0
+bluescan v0.4.1
 
 A powerful Bluetooth scanner.
 
@@ -87,7 +87,7 @@ Usage:
     bluescan [-i <hci>] -m br [--inquiry-len=<n>]
     bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
     bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
-    bluescan [-i <hci>] -m le --ll-feature --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m le --ll-feature [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
@@ -106,7 +106,7 @@ Options:
     --lmp-feature           Scan LMP features of the remote BR/EDR device.
     --scan-type=<type>      Scan type used for scanning LE devices, active or 
                             passive. [default: active]
-    --timeout=<sec>         Duration of LE scan. [default: 10]
+    --timeout=<sec>         Duration of the LE scanning, but may not be precise. [default: 10]
     --sort=<key>            Sort the discovered devices by key, only support 
                             RSSI now. [default: rssi]
     --adv                   Sniff advertising physical channel PDU. Need at 
@@ -121,7 +121,7 @@ Options:
 
 经典蓝牙设备可能使用三种技术：BR (Basic Rate)、EDR (Enhanced Data Rate) 以及 AMP (Alternate MAC/PHY)。由于它们都属于 Basic Rate system，因此在扫描这些设备时统称为 BR 设备扫描：
 
-![BR dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-dev-scan.png)
+![BR dev scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-br-dev-scan.png)
 
 如上图，通过 BR 设备扫描，我们可以拿到周围经典蓝牙设备的地址、page scan 重复模式、类型、时钟偏移、RSSI 以及扩展 inquiry 结果。
 
@@ -129,7 +129,7 @@ Options:
 
 蓝牙除了 Basic Rate system 就是 Low Energy (LE) system 了。当扫描周围的低功耗蓝牙设备时，称为 LE 设备扫描：
 
-![LE dev scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-dev-scan.png)
+![LE dev scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-le-dev-scan.png)
 
 如上图，通过 LE 扫描，我们可以拿到周围低功耗蓝牙设备的地址、地址类型、连接状态、RSSI 以及 GAP 数据。
 
@@ -137,19 +137,19 @@ Options:
 
 探测经典蓝牙设备的 LMP 特性，可以帮我们测试其底层安全性：
 
-![BR LMP feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-br-lmp-feature-scan.png)
+![BR LMP feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-br-lmp-feature-scan.png)
 
 ### LE LL 特性扫描 `-m le --ll-feature`
 
 探测低功耗蓝牙设备的链路层特性：
 
-![LE LL feature scan](https://github.com/fO-000/bluescan/blob/master/res/example-le-ll-feature-scan.png)
+![LE LL feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-le-ll-feature-scan.png)
 
 ### 嗅探 advertising physical channel PDU `-m le --adv`
 
 相比 HCI 之上的扫描，利用 micro:bit 站在链路层嗅探 advertising physical channel PDU，可拿到更丰富的 LE 设备活动信息：
 
-![LE adv sniff](https://github.com/fO-000/bluescan/blob/master/res/example-le-adv-sniff.png)
+![LE adv sniff](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-le-adv-sniff.png)
 
 :bulb: 该扫描模式有隐藏功能。
 
@@ -157,7 +157,7 @@ Options:
 
 经典蓝牙设备通过 SDP 告诉外界自己开放的服务。通过 SDP 扫描，我们可以拿到它们的 service record：
 
-![SDP scan](https://github.com/fO-000/bluescan/blob/master/res/example-sdp-scan.png)
+![SDP scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-sdp-scan.png)
 
 之后可以尝试连接这些 service，做进一步的安全测试。
 
@@ -165,7 +165,7 @@ Options:
 
 低功耗蓝牙设备通过 GATT 告诉外界自己开放的服务。通过 GATT 扫描，我们可以拿到它们的 GATT 数据。之后可以尝试读写这些 GATT 数据，做进一步的安全测试：
 
-![GATT scan](https://github.com/fO-000/bluescan/blob/master/res/example-gatt-scan.png)
+![GATT scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-gatt-scan.png)
 
 ### 漏洞扫描 `-m vuln` (demo)
 
@@ -199,23 +199,6 @@ CVE-2017-0785
   # rfkill from util-linux 2.36.1
   ```
 
-* 使用 Python 3.9 时报错 `b'liblibc.a'` 找不到
-  
-  这个问题由 scapy 和 python 3.9 导致。它们解决问题后 bluescan 才会支持 python 3.9：
+如果遇到如下错误，可重启 bluetooth 服务恢复 (`sudo systemctl restart bluetooth.service`)：
 
-  ```txt
-  ... ...
-  File "/usr/lib/python3/dist-packages/scapy/arch/__init__.py", line 27, in <module>
-    from scapy.arch.bpf.core import get_if_raw_addr
-  File "/usr/lib/python3/dist-packages/scapy/arch/bpf/core.py", line 30, in <module>
-    LIBC = cdll.LoadLibrary(find_library("libc"))
-  File "/usr/lib/python3.9/ctypes/util.py", line 341, in find_library
-    _get_soname(_findLib_gcc(name)) or _get_soname(_findLib_ld(name))
-  File "/usr/lib/python3.9/ctypes/util.py", line 147, in _findLib_gcc
-    if not _is_elf(file):
-  File "/usr/lib/python3.9/ctypes/util.py", line 99, in _is_elf
-    with open(filename, 'br') as thefile:
-  FileNotFoundError: [Errno 2] No such file or directory: b'liblibc.a'
-  ```
-
-  目前 bluescan 支持到 python 3.8。
+* `[ERROR] Failed to execute management command 'scanend' (code: 11, error: Rejected)`

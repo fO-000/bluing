@@ -109,7 +109,8 @@ def main():
                 dev_paths = get_microbit_devpaths()
                 LEScanner(microbit_devpaths=dev_paths).sniff_adv(args['--channel'])
             elif args['--ll-feature']:
-                LEScanner(args['-i']).scan_ll_feature(args['BD_ADDR'], args['--addr-type'])
+                LEScanner(args['-i']).scan_ll_feature(
+                    args['BD_ADDR'], args['--addr-type'], args['--timeout'])
             else:
                 LEScanner(args['-i']).scan_devs(args['--timeout'], 
                     args['--scan-type'], args['--sort'])

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r"""bluescan v0.4.0
+r"""bluescan v0.4.1
 
 A powerful Bluetooth scanner.
 
@@ -14,7 +14,7 @@ Usage:
     bluescan [-i <hci>] -m br [--inquiry-len=<n>]
     bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
     bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
-    bluescan [-i <hci>] -m le --ll-feature --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m le --ll-feature [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
@@ -33,7 +33,7 @@ Options:
     --lmp-feature           Scan LMP features of the remote BR/EDR device.
     --scan-type=<type>      Scan type used for scanning LE devices, active or 
                             passive. [default: active]
-    --timeout=<sec>         Duration of LE scan. [default: 10]
+    --timeout=<sec>         Duration of the LE scanning, but may not be precise. [default: 10]
     --sort=<key>            Sort the discovered devices by key, only support 
                             RSSI now. [default: rssi]
     --adv                   Sniff advertising physical channel PDU. Need at 
@@ -58,7 +58,7 @@ logger = Logger(__name__, logging.INFO)
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.4.0', options_first=True)
+    args = docopt(__doc__, version='v0.4.1', options_first=True)
     logger.debug("ui.parse_cmdline, args: {}".format(args))
 
     args['-m'] = args['-m'].lower()

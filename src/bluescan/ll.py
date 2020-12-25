@@ -127,7 +127,7 @@ def pp_adv_phych_pdu(pdu:bytes, ch:int) -> list:
             {
                 'BD_ADDR': target_a,
                 'type': 'public' if rx_add == 0b0 else 'random'
-            },     
+            },
         ]
         print("[{}]".format(blue('ADV_DIRECT_IND')))
         print("{} AdvA: {}".format(
