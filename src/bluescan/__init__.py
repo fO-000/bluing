@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
 import io
+import sys
 import pkg_resources
+
+# sys.path.insert(0, '/home/x/OneDrive/Projects/bthci/src')
+# sys.path.insert(0, '/home/x/OneDrive/Projects/pyclui/src')
+# sys.path.insert(0, '/home/x/OneDrive/Projects/btsmp/src')
 from bthci import HCI
 
 
@@ -75,7 +80,7 @@ gap_type_name_pairs = {
     0x1B: 'LE Bluetooth Device Address',
     0x1C: 'LE Role',
     0x1D: 'Simple Pairing Hash C-256',
-    0x0E: 'Simple Pairing Randomizer R-256',
+    0x1E: 'Simple Pairing Randomizer R-256',
     0x1F: 'List of 32-bit Service Solicitation UUIDs',
     0x20: 'Service Data - 32-bit UUID',
     0x21: 'Service Data - 128-bit UUID',

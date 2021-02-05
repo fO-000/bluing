@@ -192,7 +192,7 @@ class BRScanner(BlueScanner):
             return
 
         bd_addr, page_scan_repetition_mode, reserved, cod, clk_offset = \
-           struct.unpack('<6sBB3sH', params[1:])
+           struct.unpack('<6sBH3sH', params[1:])
 
         bd_addr = ':'.join(['%02X'%b for b in bd_addr[::-1]])
         if bd_addr in self.scanned_dev:
@@ -201,7 +201,7 @@ class BRScanner(BlueScanner):
         print('Addr:', blue(bd_addr))
         print('Page scan repetition mode: ', end='')
         pp_page_scan_repetition_mode(page_scan_repetition_mode)
-        print('Reserved: 0x%02x'% reserved)
+        print('Reserved: 0x%04x' % reserved)
 
         cod = int.from_bytes(cod, byteorder='little')
         print('CoD: 0x%06X' % cod)

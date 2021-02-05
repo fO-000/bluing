@@ -10,6 +10,7 @@
 * LE 设备扫描
 * BR LMP 特性扫描
 * LE LL 特性扫描
+* SMP Pairing 特性扫描
 * 嗅探 advertising physical channel PDU
 * SDP 服务扫描
 * GATT 服务扫描
@@ -73,7 +74,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.4.1
+bluescan v0.5.0
 
 A powerful Bluetooth scanner.
 
@@ -87,7 +88,7 @@ Usage:
     bluescan [-i <hci>] -m br [--inquiry-len=<n>]
     bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
     bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
-    bluescan [-i <hci>] -m le --ll-feature [--timeout=<sec>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
@@ -112,6 +113,7 @@ Options:
     --adv                   Sniff advertising physical channel PDU. Need at 
                             least one micro:bit.
     --ll-feature            Scan LL features of the remote LE device.
+    --smp-feature           Detect pairing features of the remote LE device.
     --channel=<num>         LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
     --include-descriptor    Fetch descriptor information.
     --addr-type=<type>      Type of the LE address, public or random.
@@ -144,6 +146,12 @@ Options:
 探测低功耗蓝牙设备的链路层特性：
 
 ![LE LL feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-le-ll-feature-scan.png)
+
+### SMP Pairing 特性扫描 `-m le --smp-feature`
+
+探测远端低功耗蓝牙设备的配对特征：
+
+![SMP feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/smp-feature-scan.png)
 
 ### 嗅探 advertising physical channel PDU `-m le --adv`
 

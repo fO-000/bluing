@@ -12,6 +12,7 @@ When hacking Bluetooth targets, bluescan can be very useful for **intelligence c
 * LE devices
 * BR LMP features
 * LE LL features
+* SMP Pairing features
 * Real-time advertising physical channel PDU
 * SDP services
 * GATT services
@@ -75,7 +76,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.4.1
+bluescan v0.5.0
 
 A powerful Bluetooth scanner.
 
@@ -89,7 +90,7 @@ Usage:
     bluescan [-i <hci>] -m br [--inquiry-len=<n>]
     bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
     bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
-    bluescan [-i <hci>] -m le --ll-feature [--timeout=<sec>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
@@ -114,6 +115,7 @@ Options:
     --adv                   Sniff advertising physical channel PDU. Need at 
                             least one micro:bit.
     --ll-feature            Scan LL features of the remote LE device.
+    --smp-feature           Detect pairing features of the remote LE device.
     --channel=<num>         LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
     --include-descriptor    Fetch descriptor information.
     --addr-type=<type>      Type of the LE address, public or random.
@@ -146,6 +148,12 @@ Detecting the LMP features of classic Bluetooth devices allows us to judge the u
 Detecting the LL (Link Layer) features fo the LE devices:
 
 ![LE LL feature scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-le-ll-feature-scan.png)
+
+### Detect SMP Pairing features `-m le --smp-feature`
+
+Detecting the SMP Pairing features of the remote LE device:
+
+![SMP feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/smp-feature-scan.png)
 
 ### Sniffing advertising physical channel PDU `-m le --adv`
 

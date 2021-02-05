@@ -5,6 +5,7 @@ import sys
 import logging
 import time
 import subprocess
+from subprocess import STDOUT
 from pathlib import PosixPath
 
 from bthci import HCI
@@ -23,6 +24,8 @@ from .vuln_scan import VulnScanner
 
 
 logger = Logger(__name__, logging.INFO)
+
+logger.debug("__name__: {}".format(__name__))
 
 
 def init_hci(iface='hci0'):
@@ -78,9 +81,10 @@ def init_hci(iface='hci0'):
 
 
 def main():
+    args = None
     try:
         args = parse_cmdline()
-        logger.debug("__main__.main(), args: {}".format(args))
+        logger.debug("main(), args: {}".format(args))
 
         if not args['--adv']:
             if args['-i'] == 'The first HCI device':
@@ -111,6 +115,9 @@ def main():
             elif args['--ll-feature']:
                 LEScanner(args['-i']).scan_ll_feature(
                     args['BD_ADDR'], args['--addr-type'], args['--timeout'])
+            elif args['--smp-feature']:
+                LEScanner(args['-i']).detect_pairing_feature(
+                    args['BD_ADDR'], args['--addr-type'], args['--timeout'])
             else:
                 LEScanner(args['-i']).scan_devs(args['--timeout'], 
                     args['--scan-type'], args['--sort'])
@@ -137,6 +144,9 @@ def main():
         if 'le on' in str(e):
             print("        No BLE adapter? or missing sudo ?")
     except KeyboardInterrupt:
+        if args != None and args['-i'] != None:
+            output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 
+                    stderr=STDOUT, timeout=60, shell=True)
         logger.info("Canceled\n")
 
 

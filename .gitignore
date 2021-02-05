@@ -3,6 +3,7 @@
 /.vscode/launch.json
 /.vscode/settings.json
 
+/.idea/
 /backup/
 /build/
 /dist/

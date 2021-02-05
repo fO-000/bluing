@@ -46,7 +46,7 @@ class MyClean(clean):
 if __name__ == '__main__':
     setup(
         name='bluescan',
-        version='0.4.1',
+        version='0.5.0',
         license = "GPL-3.0",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
@@ -61,8 +61,8 @@ if __name__ == '__main__':
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
-            'bthci>=0.0.18', 'pyclui>=0.0.6', 'scapy>=2.4.4', 'docopt>=0.6.2',
-            'pybluez>=0.23', 'bluepy>=1.3.0', 'pyserial>=3.5', 
+            'btsmp>=0.0.2', 'bthci>=0.0.19', 'pyclui>=0.0.7', 'scapy>=2.4.4', 
+            'docopt>=0.6.2', 'pybluez>=0.23', 'bluepy>=1.3.0', 'pyserial>=3.5'
         ],
 
         # metadata to display on PyPI
