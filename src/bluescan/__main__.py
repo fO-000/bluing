@@ -7,6 +7,7 @@ import time
 import subprocess
 from subprocess import STDOUT
 from pathlib import PosixPath
+from bluescan import BlueScanner
 
 from bthci import HCI
 from pyclui import Logger
@@ -80,6 +81,30 @@ def init_hci(iface='hci0'):
             os.remove(file)
 
 
+def clean(laddr: str, raddr: str):
+    output = subprocess.check_output(
+        ' '.join(['sudo', 'systemctl', 'stop', 'bluetooth.service']), 
+        stderr=STDOUT, timeout=60, shell=True)
+
+    output = subprocess.check_output(
+        ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
+                  laddr + '/' + raddr.upper()]), 
+        stderr=STDOUT, timeout=60, shell=True)
+    if output != b'':
+        logger.info(output.decode())
+
+    output = subprocess.check_output(
+        ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
+                  laddr + '/' + 'cache' + '/' + raddr.upper()]), 
+        stderr=STDOUT, timeout=60, shell=True)
+    if output != b'':
+        logger.info(output.decode())
+
+    output = subprocess.check_output(
+        ' '.join(['sudo', 'systemctl', 'start', 'bluetooth.service']), 
+        stderr=STDOUT, timeout=60, shell=True)
+
+
 def main():
     args = None
     try:
@@ -124,12 +149,15 @@ def main():
         elif args['-m'] == 'sdp':
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':
-            GATTScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'],
-                args['--include-descriptor'])
+            GATTScanner(args['-i'], args['--io-capability']).scan(
+                args['BD_ADDR'], args['--addr-type'], args['--include-descriptor'])
         elif args['-m'] == 'stack':
             StackScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'vuln':
             VulnScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
+        elif args['--clean']:
+            BlueScanner(args['-i'])
+            clean(BlueScanner(args['-i']).hci_bdaddr, args['BD_ADDR'])
         else:
             logger.error('Invalid scan mode')
     except ValueError as e:

@@ -3,12 +3,17 @@
 import io
 import sys
 import pkg_resources
+import logging
+
+from pyclui import Logger
 
 # sys.path.insert(0, '/home/x/OneDrive/Projects/bthci/src')
 # sys.path.insert(0, '/home/x/OneDrive/Projects/pyclui/src')
 # sys.path.insert(0, '/home/x/OneDrive/Projects/btsmp/src')
 from bthci import HCI
 
+
+logger = Logger(__name__, logging.INFO)
 
 # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
 #     Table 2: Service Class Profile Identifiers
@@ -105,3 +110,8 @@ class BlueScanner():
     def __init__(self, iface='hci0'):
         self.iface = iface
         self.devid = HCI.hcistr2devid(self.iface)
+        try:
+            self.hci_bdaddr = HCI(iface).read_bdaddr()['BD_ADDR'].upper()
+        except Exception as e:
+            logger.error("{}".format(e))
+            exit(1)

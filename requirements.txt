@@ -10,3 +10,4 @@ scapy>=2.4.4
 setuptools>=51.1.0
 wheel>=0.36.2
 btsmp>=0.0.2
+dbus-python>=1.2.16

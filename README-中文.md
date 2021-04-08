@@ -74,7 +74,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.5.0
+bluescan v0.6.0
 
 A powerful Bluetooth scanner.
 
@@ -85,13 +85,14 @@ License: GPL-3.0
 Usage:
     bluescan (-h | --help)
     bluescan (-v | --version)
+    bluescan [-i <hci>] --clean BD_ADDR
     bluescan [-i <hci>] -m br [--inquiry-len=<n>]
     bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
     bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--include-descriptor] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] --addr-type=<type> BD_ADDR
     bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
@@ -99,24 +100,27 @@ Arguments:
                device.
 
 Options:
-    -h, --help              Display this help.
-    -v, --version           Show the version.
-    -i <hci>                HCI device used for subsequent scans. [default: The first HCI device]
-    -m <mode>               Scan mode, support BR, LE, SDP, GATT and vuln.
-    --inquiry-len=<n>       Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
-    --lmp-feature           Scan LMP features of the remote BR/EDR device.
-    --scan-type=<type>      Scan type used for scanning LE devices, active or 
-                            passive. [default: active]
-    --timeout=<sec>         Duration of the LE scanning, but may not be precise. [default: 10]
-    --sort=<key>            Sort the discovered devices by key, only support 
-                            RSSI now. [default: rssi]
-    --adv                   Sniff advertising physical channel PDU. Need at 
-                            least one micro:bit.
-    --ll-feature            Scan LL features of the remote LE device.
-    --smp-feature           Detect pairing features of the remote LE device.
-    --channel=<num>         LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --include-descriptor    Fetch descriptor information.
-    --addr-type=<type>      Type of the LE address, public or random.
+    -h, --help                Display this help.
+    -v, --version             Show the version.
+    -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
+    -m <mode>                 Scan mode, support BR, LE, SDP, GATT and vuln.
+    --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --lmp-feature             Scan LMP features of the remote BR/EDR device.
+    --scan-type=<type>        Scan type used for scanning LE devices, active or 
+                              passive. [default: active]
+    --timeout=<sec>           Duration of the LE scanning, but may not be precise. [default: 10]
+    --sort=<key>              Sort the discovered devices by key, only support 
+                              RSSI now. [default: rssi]
+    --adv                     Sniff advertising physical channel PDU. Need at 
+                              least one micro:bit.
+    --ll-feature              Scan LL features of the remote LE device.
+    --smp-feature             Detect pairing features of the remote LE device.
+    --channel=<num>           LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
+    --include-descriptor      Fetch descriptor information.
+    --addr-type=<type>        Type of the LE address, public or random.
+    --io-capability=<name>    Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
+                              KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
+    --clean                   Clean the cached data of a remote device.
 ```
 
 ### BR 设备扫描 `-m br`
