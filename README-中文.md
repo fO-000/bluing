@@ -21,7 +21,10 @@
 bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Linux 上运行，且需要安装如下依赖包：
 
 ```sh
-sudo apt install libglib2.0-dev libbluetooth-dev
+sudo apt install \
+libglib2.0-dev libbluetooth-dev \
+libdbus-1-dev python3-dbus \
+python3-gi python3-gi-cairo gir1.2-gtk-3.0
 ```
 
 Python 3 也是运行 bluescan 的必要条件。目前 bluescan 可以支持到 python 3.9.1。
@@ -74,7 +77,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.6.0
+bluescan v0.6.1
 
 A powerful Bluetooth scanner.
 
