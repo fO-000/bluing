@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r"""bluescan v0.6.1
+r"""bluescan v0.6.2
 
 A powerful Bluetooth scanner.
 
@@ -63,7 +63,7 @@ logger = Logger(__name__, logging.INFO)
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.6.1', options_first=True)
+    args = docopt(__doc__, version='v0.6.2', options_first=True)
     logger.debug("ui.parse_cmdline, args: {}".format(args))
     
     try:

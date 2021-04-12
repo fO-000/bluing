@@ -46,7 +46,7 @@ class MyClean(clean):
 if __name__ == '__main__':
     setup(
         name='bluescan',
-        version='0.6.1',
+        version='0.6.2',
         license = "GPL-3.0",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src

@@ -14,7 +14,6 @@ __all__ = ['ag_service_record', 'hf_service_record', 'hid_service_record',
     'mce_service_record', 'mse_service_record']
 
 
-
 # Only used in the ProfileDescriptorList attribute
 protocol_ids_file = pkg_resources.resource_stream(__name__, "../res/sdp_ProfileDescriptorList_protocol_ids.txt")
 protocol_ids_file = io.TextIOWrapper(protocol_ids_file)
@@ -213,6 +212,7 @@ class ServiceRecord:
             from .hid_service_record import HIDServiceRecord
             from .mce_service_record import MCEServiceRecord
             from .mse_service_record import MSEServiceRecord
+            from .op_service_record import ObjPushServiceRecord
 
             # Guess if the attribute is one of the universal attribute offsets.
             offset = attr_id - 0x0100
@@ -250,6 +250,11 @@ class ServiceRecord:
                 print('0x%04x:'%attr_id, hidsr.attrs[attr_id]['Name'], 
                     '(%s)'%val_type)
                 hidsr.attrs[attr_id]['Parser'](val)
+            elif self.service_clses[0] == ObjPushServiceRecord.service_clses[0]['UUID']:
+                opsr = ObjPushServiceRecord(self.record_xml)
+                print('0x%04x:'%attr_id, opsr.attrs[attr_id]['Name'], '(guess)', 
+                    '(%s)'%val_type)
+                opsr.attrs[attr_id]['Parser'](val)
             else:
                 print('0x%04x:'%attr_id, red('unknown'))
                 for elem in list(attr):
