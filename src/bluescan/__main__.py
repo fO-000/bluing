@@ -10,15 +10,15 @@ from pathlib import PosixPath
 from bluescan import BlueScanner
 
 from bthci import HCI
-from pyclui import Logger
+from pyclui import Logger, blue
 from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
 from .ui import parse_cmdline
 from .helper import find_rfkill_devid, get_microbit_devpaths
 from .br_scan import BRScanner
-from .le_scan import LEScanner
-from .gatt_scan import GATTScanner
+from .le_scan import LeScanner
+from .gatt_scan import GattScanner
 from .sdp_scan import SDPScanner
 from .stack_scan import StackScanner
 from .vuln_scan import VulnScanner
@@ -125,7 +125,8 @@ def main():
                     exit(-1)
 
             init_hci(args['-i'])
-
+            
+        scan_result = None
         if args['-m'] == 'br':
             br_scanner = BRScanner(args['-i'])
             if args['--lmp-feature']:
@@ -136,20 +137,20 @@ def main():
         elif args['-m'] == 'le':
             if args['--adv']:
                 dev_paths = get_microbit_devpaths()
-                LEScanner(microbit_devpaths=dev_paths).sniff_adv(args['--channel'])
+                LeScanner(microbit_devpaths=dev_paths).sniff_adv(args['--channel'])
             elif args['--ll-feature']:
-                LEScanner(args['-i']).scan_ll_feature(
+                LeScanner(args['-i']).scan_ll_feature(
                     args['BD_ADDR'], args['--addr-type'], args['--timeout'])
             elif args['--smp-feature']:
-                LEScanner(args['-i']).detect_pairing_feature(
+                LeScanner(args['-i']).detect_pairing_feature(
                     args['BD_ADDR'], args['--addr-type'], args['--timeout'])
             else:
-                LEScanner(args['-i']).scan_devs(args['--timeout'], 
+                scan_result = LeScanner(args['-i']).scan_devs(args['--timeout'], 
                     args['--scan-type'], args['--sort'])
         elif args['-m'] == 'sdp':
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':
-            GATTScanner(args['-i'], args['--io-capability']).scan(
+            scan_result = GattScanner(args['-i'], args['--io-capability']).scan(
                 args['BD_ADDR'], args['--addr-type'], args['--include-descriptor'])
         elif args['-m'] == 'stack':
             StackScanner(args['-i']).scan(args['BD_ADDR'])
@@ -160,6 +161,20 @@ def main():
             clean(BlueScanner(args['-i']).hci_bdaddr, args['BD_ADDR'])
         else:
             logger.error('Invalid scan mode')
+        
+        # Prints scan result
+        print()
+        print()
+        try:
+            print(blue("----------------"+scan_result.type+" Scan Result"+"----------------"))
+            scan_result.print()
+        except AttributeError as e:
+            logger.debug("{}".format(e))
+        
+        # Stores scan result
+        # if args['--store']:
+        #     pass
+        
     except ValueError as e:
         logger.error("{}".format(e))
         exit(1)

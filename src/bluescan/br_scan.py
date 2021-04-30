@@ -9,6 +9,7 @@ import struct
 import logging
 
 from bluetooth import DeviceDiscoverer
+from bluetooth.btcommon import INTERCOM_CLASS
 
 # Temporary solution for PyBlueZ problems
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -24,13 +25,15 @@ from bthci import HCI
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
 
-from .ll import ll_vers
 from . import BlueScanner
 from . import service_cls_profile_ids
-from . import gap_type_name_pairs, \
-    COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST, \
-    COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST, \
-    COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
+from .ui import INDENT
+from .common import bdaddr_to_company_name
+from .ll import ll_vers
+from .gap_data import gap_type_names, \
+    COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \
+    COMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS, \
+    COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, COMPLETE_LOCAL_NAME, \
     SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
 
 from .lmp import lmp_vers
@@ -198,7 +201,7 @@ class BRScanner(BlueScanner):
         if bd_addr in self.scanned_dev:
             return
 
-        print('Addr:', blue(bd_addr))
+        print('Addr:', blue(bd_addr), "("+bdaddr_to_company_name(bd_addr)+")")
         print('Page scan repetition mode: ', end='')
         pp_page_scan_repetition_mode(page_scan_repetition_mode)
         print('Reserved: 0x%04x' % reserved)
@@ -230,7 +233,7 @@ class BRScanner(BlueScanner):
         if bd_addr in self.scanned_dev:
             return
 
-        print('Addr:', blue(bd_addr))
+        print('Addr:', blue(bd_addr), "("+bdaddr_to_company_name(bd_addr)+")")
         # print('name:', blue(name.decode()))
         print('Page scan repetition mode: ', end='')
         pp_page_scan_repetition_mode(page_scan_repetition_mode)
@@ -263,7 +266,7 @@ class BRScanner(BlueScanner):
         if bd_addr in self.scanned_dev:
             return
 
-        print('Addr:', blue(bd_addr))
+        print('Addr:', blue(bd_addr), "("+bdaddr_to_company_name(bd_addr)+")")
         # print('name:', blue(name.decode()))
         print('Page scan repetition mode: ', end='')
         pp_page_scan_repetition_mode(page_scan_repetition_mode)
@@ -300,7 +303,7 @@ def pp_cod(cod:int):
         logger.warning('CoD\'s Format Type is not format #1')
         return
 
-    print('\tService Class: %s' % bin(cod>>13))
+    print(INDENT+'Service Class: %s' % bin(cod>>13))
     information = lambda b: (b >> 23) & 1
     telephony = lambda b: (b >> 22) & 1
     audio = lambda b: (b >> 21) & 1
@@ -313,35 +316,35 @@ def pp_cod(cod:int):
 
     # Parse Service Class field
     if information(cod):
-        print('\t\t'+'Information (WEB-server, WAP-server, ...)')
+        print(INDENT*2 + 'Information') # (WEB-server, WAP-server, ...)
 
     if telephony(cod):
-        print('\t\t'+'Telephony (Cordless telephony, Modem, Headset service, ...)')
+        print(INDENT*2 + 'Telephony') # (Cordless telephony, Modem, Headset service, ...)
 
     if audio(cod):
-        print('\t\t'+'Audio (Cordless telephony, Modem, Headset service, ...)')
+        print(INDENT*2 + 'Audio') # (Cordless telephony, Modem, Headset service, ...)
 
     if object_transfer(cod):
-        print('\t\t'+'Object Transfer (v-Inbox, v-Folder, ...)')
+        print(INDENT*2 + 'Object Transfer') # (v-Inbox, v-Folder, ...)
 
     if capturing(cod):
-        print('\t\t'+'Capturing (Scanner, Microphone, ...)')
+        print(INDENT*2 + 'Capturing') # (Scanner, Microphone, ...)
 
     if rendering(cod):
-        print('\t\t'+'Rendering (Printing, Speaker, ...)')
+        print(INDENT*2 + 'Rendering') # (Printing, Speaker, ...)
 
     if networking(cod):
-        print('\t\t'+'Networking (LAN, Ad hoc, ...)')
+        print(INDENT*2 + 'Networking') # (LAN, Ad hoc, ...)
 
     if positioning(cod):
-        print('\t\t'+'Positioning (Location identification)')
+        print(INDENT*2 + 'Positioning') # (Location identification)
 
     if limited_discoverable_mode(cod):
-        print('\t\t'+'Limited Discoverable Mode')
+        print(INDENT*2 + 'Limited Discoverable Mode')
 
     # Parse Major Device Class
     major_dev_cls = (cod>>8)&0x001F
-    print('\tMajor Device Class: %s,'%bin(major_dev_cls), blue(major_dev_clses[major_dev_cls]))
+    print(INDENT + 'Major Device Class: %s,'%bin(major_dev_cls), blue(major_dev_clses[major_dev_cls]))
 
     # Parse Minor Device class
     pp_minor_dev_cls((cod>>8)&0x0000, major_dev_cls)
@@ -364,63 +367,64 @@ def pp_ext_inquiry_rsp(ext_inq_rsp):
         data = ext_inq_rsp[1:1+length]
         data_type = data[0]
         ext_inq_rsp = ext_inq_rsp[1+length:]
-        print('\t', end='')
-        if data_type == COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST:
-            print(gap_type_name_pairs[data_type])
+        print(INDENT, end='')
+        # TODO: Unify the gap type name parsings of BR and LE
+        if data_type == COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS:
+            print(gap_type_names[data_type])
             if length - 1 >= 2:
                 eir_data = data[1:]
                 if len(eir_data) % 2 != 0:
-                    print('\t\t'+blue('Invalid EIR data length: %d'%len(eir_data)))
+                    print(INDENT*2 + blue('Invalid EIR data length: %d'%len(eir_data)))
                     continue
 
                 for i in range(0, len(eir_data), 2):
                     uuid = int.from_bytes(eir_data[i:i+2], byteorder='little')
-                    print('\t\t0x%04x '%uuid, end='')
+                    print(INDENT*2 + '0x%04x '%uuid, end='')
                     try:
                         print(blue(service_cls_profile_ids[uuid]['Name']))
                     except KeyError as e:
                         print(red('unknown'))
             else:
-                print('\t\t'+red('None'))
-        elif data_type == COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST:
-            print(gap_type_name_pairs[data_type])
+                print(INDENT*2 + red('None'))
+        elif data_type == COMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS:
+            print(gap_type_names[data_type])
             if length - 1 >= 4:
                 eir_data = data[1:]
                 if len(eir_data) % 4 != 0:
-                    logger.info('\t\tInvalid EIR data length: {} {}'.format(len(eir_data), eir_data))
+                    logger.info(INDENT*2 + 'Invalid EIR data length: {} {}'.format(len(eir_data), eir_data))
                     continue
                 for i in range(0, len(eir_data), 4):
                     uuid = int.from_bytes(eir_data[i:i+4], byteorder='little')
-                    print('\t\t0x%08x '%uuid)
+                    print(INDENT*2 + '0x%08x '%uuid)
             else:
-                print('\t\t'+red('None'))
-        elif data_type == COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST:
-            print(gap_type_name_pairs[data_type])
+                print(INDENT*2 + red('None'))
+        elif data_type == COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS:
+            print(gap_type_names[data_type])
             if length - 1 >= 16:
                 eir_data = data[1:]
                 if len(eir_data) % 16 != 0:
-                    logger.info('\t\tInvalid EIR data length: {} {}'.format(len(eir_data), eir_data))
+                    logger.info(INDENT*2 + 'Invalid EIR data length: {} {}'.format(len(eir_data), eir_data))
                     continue
                 for i in range(0, len(eir_data), 16):
                     uuid = int.from_bytes(eir_data[i:i+16], byteorder='little')
                     uuid_str = '%032X' % uuid
-                    print('\t\t', end='')
+                    print(INDENT*2, end='')
                     print(blue('-'.join([uuid_str[:8], uuid_str[8:12], 
                         uuid_str[12:16], uuid_str[16:20], uuid_str[20:32]])))   
             else:
-                print('\t\t'+red('None'))
+                print(INDENT*2 + red('None'))
         elif data_type == SHORTENED_LOCAL_NAME or \
             data_type == COMPLETE_LOCAL_NAME:
-            print(gap_type_name_pairs[data_type]+':', blue(data[1:].decode()))
+            print(gap_type_names[data_type]+':', blue(data[1:].decode()))
         elif data_type == TX_POWER_LEVEL:
-            print(gap_type_name_pairs[data_type]+':', blue(str(int.from_bytes(
+            print(gap_type_names[data_type]+':', blue(str(int.from_bytes(
                 data[1:], byteorder='little')) + ' dBm'))
         else:
             try:
-                print(gap_type_name_pairs[data_type])
+                print(gap_type_names[data_type])
             except KeyError as e:
                 print(red('Unknown, 0x%02x'%data_type))
-            print('\t\t', data[1:],sep='')
+            print(INDENT*2, data[1:],sep='')
 
 
 def pp_minor_dev_cls(val:int, major_dev_cls:int):

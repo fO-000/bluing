@@ -23,13 +23,14 @@ from btsmp import *
 from pyclui import Logger
 from pyclui import blue, green, red
 
-from . import service_cls_profile_ids
-from . import gap_type_name_pairs, \
-    COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST, \
-    COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST, \
-    COMPLETE_128_BIT_SERVICE_CLS_UUID_LIST, COMPLETE_LOCAL_NAME, \
-    SHORTENED_LOCAL_NAME, TX_POWER_LEVEL, MANUFACTURER_SPECIFIC_DATA
-
+from . import ScanResult
+from .common import bdaddr_to_company_name
+from .gap_data import SERVICE_DATA_128_BIT_UUID, SERVICE_DATA_16_BIT_UUID, SERVICE_DATA_32_BIT_UUID, gap_type_names, company_names, \
+    COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \
+    COMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS,\
+    COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, \
+    TX_POWER_LEVEL, MANUFACTURER_SPECIFIC_DATA, FLAGS, SHORTENED_LOCAL_NAME, COMPLETE_LOCAL_NAME
+from .ui import INDENT
 from .serial_protocol import serial_reset
 from .serial_protocol import SerialEventHandler
 
@@ -48,6 +49,12 @@ HCI_LE_ADVERTISING_REPORT_EVENT_EVENT_TYPE_DESCPS = {
     0x04: "Scan Response (SCAN_RSP, 0x04)"
 }
 
+class AdStruct:
+    def __init__(self, type: int, value: bytes) -> None:
+        self.length = None
+        self.type = type
+        self.value = value
+
 
 class LEDelegate(DefaultDelegate):
     def __init__(self):
@@ -63,7 +70,124 @@ class LEDelegate(DefaultDelegate):
             pass
 
 
-class LEScanner:
+class LeDeviceInfo:
+    def __init__(self, addr: str, addr_type : str, connectable : bool, rssi : int) -> None:
+        self.addr = addr
+        self.addr_type = addr_type
+        self.connectable = connectable
+        self.rssi = rssi
+        self.ad_structs = []
+        
+    def add_ad_structs(self, ad: AdStruct):
+        self.ad_structs.append(ad)
+
+
+class LeDevicesScanResult(ScanResult):
+    def __init__(self) -> None:
+        super().__init__('LE Devices')
+        self.devices_info = []
+    
+    def add_device_info(self, info: LeDeviceInfo):
+        self.devices_info.append(info)
+        
+    def print(self):
+        for dev_info in self.devices_info:
+            print('Addr:       ', blue(dev_info.addr), 
+                  "("+bdaddr_to_company_name(dev_info.addr)+")" if dev_info.addr_type == 'public' else "")
+            print('Addr type:  ', blue(dev_info.addr_type))
+            print('Connectable:', 
+                green('True') if dev_info.connectable else red('False'))
+            print("RSSI:        {} dBm".format(dev_info.rssi))
+            print("General Access Profile:")
+            
+            # TODO: Unify the gap type name parsings of BR and LE
+            for ad in dev_info.ad_structs:
+                try:
+                    type_names = gap_type_names[ad.type]
+                except KeyError:
+                    type_names = "0x{:02X} ".format(ad.type)+"("+ red("Unknown")+")"
+
+                print(INDENT+"{}: ".format(type_names), end='')
+                # print(INDENT+"0x{:02X} ({}): ".format(ad.type, type_names), end='')
+                
+                # Parses AD structure based on https://www.bluetooth.com/specifications/specs/
+                # -> Core Specification Supplement
+                if ad.type == COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS or \
+                    ad.type == INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS:
+                    print()
+                    for uuid in ad.value.split(','):
+                        if len(uuid) == 36:
+                            # 这里拿到的是完整的 128-bit uuid，但我们需要 16-bit uuid。
+                            print(INDENT*2 + blue("0x"+uuid[4:8].upper()))
+                        else:
+                            print(INDENT*2 + blue(uuid))
+                elif ad.type == COMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS or \
+                    ad.type == INCOMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS:
+                    print()
+                    for uuid in ad.value.split(','): 
+                        if len(uuid) == 36:
+                            # 这里拿到的是完整的 128-bit uuid，但我们需要 32-bit uuid。
+                            print(INDENT*2 + blue("0x"+uuid[0:8].upper()))
+                        else:
+                            print(INDENT*2 + blue(uuid))
+                elif ad.type == COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS or \
+                    ad.type == INCOMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS:
+                        print()
+                        for uuid in ad.value.split(','): 
+                            print(INDENT*2 + blue(uuid).upper())
+                elif ad.type == SERVICE_DATA_16_BIT_UUID:
+                    print()
+                    print(INDENT*2 + "UUID: 0x{}".format(ad.value[0:2*2].upper()))
+                    print(INDENT*2 + "Data:", ad.value[2*2:])
+                elif ad.type == SERVICE_DATA_32_BIT_UUID:
+                    print()
+                    print(INDENT*2 + "UUID: {}".format(ad.value[0:4*2].upper()))
+                    print(INDENT*2 + "Data:", ad.value[4*2:])
+                elif ad.type == SERVICE_DATA_128_BIT_UUID:
+                    print()
+                    print(INDENT*2 + "UUID: {}".format(ad.value[0:16*2].upper()))
+                    print(INDENT*2 + "Data: ", ad.value[16*2:])
+                elif ad.type == FLAGS:
+                    print()
+                    try:
+                        value = bytes.fromhex(ad.value)
+                        print(INDENT*2 + "LE Limited Discoverable Mode\n" if value[0] & 0x01 else "", end="")
+                        print(INDENT*2 + "LE General Discoverable Mode\n" if value[0] & 0x02 else "", end="")
+                        print(INDENT*2 + "BR/EDR Not Supported\n" if value[0] & 0x04 else "", end="") # Bit 37 of LMP Feature Mask Definitions (Page 0)
+                        print(INDENT*2 + "Simultaneous LE + BR/EDR to Same Device Capable (Controller)\n" if value[0] & 0x08 else "", end="") # Bit 49 of LMP Feature Mask Definitions (Page 0)
+                        print(INDENT*2 + "Simultaneous LE + BR/EDR to Same Device Capable (Host)\n" if value[0] & 0x10 else "", end="") # Bit 66 of LMP Feature Mask Definitions (Page 1)
+                    except (ValueError, IndexError) as e:
+                        logger.debug("LeDevicesScanResult.print(), parse ad.type == FLAGS")
+                        print(ad.value, "("+red("Raw")+")")
+                elif ad.type == MANUFACTURER_SPECIFIC_DATA:
+                    value = bytes.fromhex(ad.value)
+                    company_id = int.from_bytes(value[0:2], 'little', signed=False)
+                    try:
+                        company_name = blue(company_names[company_id])
+                    except KeyError:
+                        company_name = red("Unknown")
+                    
+                    if len(value) >= 2:
+                        print()
+                        print(INDENT*2+"Company ID:", '0x{:04X} ({})'.format(company_id,company_name))
+                        try:
+                            
+                            print(INDENT*2+'Data:      ', ''.join(["{:02X}".format(b) for b in value[2:]]))
+                        except IndexError:
+                            print(INDENT*2+'Data:', None)
+                    else:
+                        print(value)
+                elif ad.type == TX_POWER_LEVEL:
+                    value = int.from_bytes(bytes.fromhex(ad.value), 'little', signed=True)
+                    print(value, "dBm", "(pathloss {} dBm)".format(value - dev_info.rssi))
+                else:
+                    print(ad.value)
+
+            print()  
+            print() # Two empty lines before next LE device information
+
+
+class LeScanner:
     """
     Provide three scanning functions:
 
@@ -77,16 +201,16 @@ class LEScanner:
         microbit_devpaths - When sniffing advertising physical channel PDU, we 
                             need at least one micro:bit.
         """
+        self.devs_scan_result = LeDevicesScanResult()
         self.hci = hci
         self.devid = HCI.hcistr2devid(self.hci)
         self.microbit_devpaths = microbit_devpaths
 
 
-    def scan_devs(self, timeout=8, scan_type='active', sort='rssi'):
-        """LE devices scanning
+    def scan_devs(self, timeout=8, scan_type='active', sort='rssi') -> LeDevicesScanResult:
+        """Perform LE Devices scanning and return scan reuslt as LeDevicesScanResult
 
-        scan_type  - Indicate the type of LE scan：active, passive, adv or 
-                     features.
+        scan_type  - 'active' or 'passive'
         """
         if scan_type == 'adv':
             return
@@ -113,13 +237,18 @@ class LEScanner:
             devs.sort(key=lambda d:d.rssi)
         
         for dev in devs:
-            print('Addr:       ', blue(dev.addr.upper()))
-            print('Addr type:  ', blue(dev.addrType))
-            print('Connectable:', 
-                green('True') if dev.connectable else red('False'))
-            print("RSSI:        %d dB" % dev.rssi)
-            print("General Access Profile:")
+            dev_info = LeDeviceInfo(dev.addr.upper(), dev.addrType, dev.connectable, dev.rssi)
+            self.devs_scan_result.add_device_info(dev_info)
+            
+            # print('Addr:       ', blue(dev.addr.upper()))
+            # print('Addr type:  ', blue(dev.addrType))
+            # print('Connectable:', 
+            #     green('True') if dev.connectable else red('False'))
+            # print("RSSI:        %d dB" % dev.rssi)
+            # print("General Access Profile:")
             for (adtype, desc, val) in dev.getScanData():
+                ad_struct = AdStruct(adtype, val)
+                dev_info.add_ad_structs(ad_struct)
                 # 打印当前 remote LE dev 透露的所有 GAP 数据（AD structure）。
                 # 
                 # 如果 bluepy.scan() 执行的是 active scan，那么这些 GAP 数据
@@ -140,36 +269,8 @@ class LEScanner:
                 # 另外 getScanData() 返回的 desc 还可以通过 ScanEntry.getDescription() 
                 # 单独获取；val 还可以通过 ScanEntry.getValueText() 单独获取；
                 # adtype 表示当前一条 GAP 数据（AD structure）的类型。
-                print('\t'+desc+': ', end='')
-                if adtype == COMPLETE_16_BIT_SERVICE_CLS_UUID_LIST:
-                    print()
-                    for uuid in val.split(','):
-                        if len(uuid) == 36:
-                            # 这里拿到的是完整的 128-bit uuid，但我们需要 16-bit uuid。
-                            print('\t\t'+blue(uuid[4:8]))
-                        else:
-                            print('\t\t'+blue(uuid))
-                    continue
-                elif adtype == COMPLETE_32_BIT_SERVICE_CLS_UUID_LIST:
-                    print()
-                    for uuid in val.split(','): 
-                        if len(uuid) == 36:
-                            # 这里拿到的是完整的 128-bit uuid，但我们需要 32-bit uuid。
-                            print('\t\t'+blue(uuid[0:8]))
-                        else:
-                            print('\t\t'+blue(uuid))
-                    continue
-                elif adtype == MANUFACTURER_SPECIFIC_DATA:
-                    val = bytes.fromhex(val)
-                    if len(val) > 2:
-                        print()
-                        print('\t\tCompany ID:', '0x%04x'%int.from_bytes(val[0:2], 'little', signed=False))
-                        print('\t\tData:', val[2:])
-                    else:
-                        print(val)
-                    continue
-                print(val)
-            print("\n")
+            
+        return self.devs_scan_result
 
 
     def scan_ll_feature(self, paddr, patype, timeout:int=10):
@@ -209,7 +310,9 @@ class LEScanner:
 
 
     def detect_pairing_feature(self, paddr, patype, timeout:int=10):
-        """ """
+        """
+        """
+        # TODO Mac OS 会弹窗，需要解决。
         hci = HCI(self.hci)
         logger.info("Detecting SMP pairing feature of %s, using %s\n"%(blue(paddr), blue(self.hci)))
 
@@ -269,7 +372,7 @@ class LEScanner:
                    at present we only focus on the primary advertising 
                    channel.
         """
-        logger.debug("LEScanner.sniff_adv")
+        logger.debug("LeScanner.sniff_adv")
 
         try:
             serial_devs = []
@@ -303,7 +406,7 @@ class LEScanner:
                 handler.join()
         finally:
             for dev in serial_devs:
-                logger.debug("LEScanner.scan, close()")
+                logger.debug("LeScanner.scan, close()")
                 serial_reset(dev)
                 dev.close()
 

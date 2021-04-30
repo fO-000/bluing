@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-r"""bluescan v0.6.2
+r"""bluescan
 
 A powerful Bluetooth scanner.
 
@@ -52,18 +52,21 @@ Options:
 
 import logging
 
-from pyclui import red
-from pyclui import Logger
-
 from docopt import docopt
+from btgatt import service_names, charac_names, descriptor_names
+from pyclui import red, yellow, blue, green, \
+    Logger
+
+from . import VERSION
 from .helper import valid_bdaddr
 
 
 logger = Logger(__name__, logging.INFO)
+INDENT = ' ' * 4
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version='v0.6.2', options_first=True)
+    args = docopt(__doc__, version="v"+VERSION, options_first=True)
     logger.debug("ui.parse_cmdline, args: {}".format(args))
     
     try:

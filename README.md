@@ -1,8 +1,16 @@
 # bluescan ---- A powerful Bluetooth scanner
 
-> This document is also available in [Chinese（中文）](https://github.com/fO-000/bluescan/blob/master/README-中文.md).
->
-> This project is maintained by Sourcell Xu from DBAPP Security HatLab. Under the terms stated in the GPL-3.0, anyone may redistribute copies of it to anyone.
+<p align="center">
+    <a href="https://github.com/fO-000/bluescan/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluescan/blob/master/README-cn.md">简体中文</a>
+</p>
+
+<p align="center">
+    <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a>
+    <a href="https://pypis.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
+    <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
+</p>
+
+> This project is maintained by Sourcell Xu from DBAPP Security HatLab.
 
 Bluetooth is a complex protocol, and a good scanner can quickly help us peek inside its secrets. But previous Bluetooth scanners suffered from a number of problems such as incomplete functionality, unintuitive information and out of repair. So we came up with this powerful Bluetooth scanner based on modern Python 3 ---- bluescan.
 
@@ -29,7 +37,7 @@ libdbus-1-dev python3-dbus \
 python3-gi python3-gi-cairo gir1.2-gtk-3.0
 ```
 
-Python 3 is also necessary for running bluescan. Currently bluescan can support python 3.9.1.
+Python 3 is also necessary for running bluescan. Currently bluescan can support python 3.9.2.
 
 When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB：
 
@@ -79,7 +87,7 @@ sudo pip3 install bluescan
 
 ```txt
 $ bluescan -h
-bluescan v0.6.2
+bluescan
 
 A powerful Bluetooth scanner.
 
