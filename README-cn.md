@@ -7,7 +7,8 @@
 <p align="center">
     <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a>
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
-    <img src="https://img.shields.io/pypi/pyversions/bluescan?color=blue">
+    <!-- <img src="https://img.shields.io/pypi/pyversions/bluescan?color=blue"> -->
+    <img src="https://img.shields.io/badge/python-3.9-blue">
     <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
 </p>
 

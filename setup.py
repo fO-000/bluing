@@ -52,7 +52,7 @@ if __name__ == '__main__':
     setup(
         name=PROJECT_NAME,
         version=VERSION,
-        license = "GPL-3.0",
+        license="GPLv3+",
         packages=find_packages('src'), # include all packages under src
         package_dir={'':'src'}, # tell distutils packages are under src
         entry_points={
@@ -88,5 +88,18 @@ if __name__ == '__main__':
         cmdclass={
             'install': MyInstall,
             'clean': MyClean
-        }
+        },
+
+        classifiers=[
+            'Environment :: Console',
+            "Intended Audience :: Developers",
+            "Intended Audience :: Information Technology",
+            "Intended Audience :: Science/Research",
+            "Intended Audience :: System Administrators",
+            "Intended Audience :: Telecommunications Industry",
+            'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+            'Programming Language :: Python :: 3.9',
+            'Topic :: Security',
+            'Topic :: System :: Networking',
+        ]
     )
