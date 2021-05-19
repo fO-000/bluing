@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import pickle
 import io
 import logging
 import threading
@@ -24,6 +25,7 @@ from btgatt import ServiceDef, CharacDef, CharacDescriptorDeclar, \
     PRIMARY_SERVICE
 
 from . import BlueScanner, ScanResult
+from .le_scan import LeScanner, LE_DEVS_SCAN_RESULT_CACHE
 from .common import BLUEZ_NAME, mainloop
 from .agent import Agent
 from .ui import INDENT
@@ -307,7 +309,7 @@ class GattScanner(BlueScanner):
             error_handler=register_agent_error_callback)
 
 
-    def scan(self, addr, addr_type, include_descriptor: bool) -> GattScanResult:
+    def scan(self, addr: str, addr_type: str, include_descriptor: bool) -> GattScanResult:
         """Performs a GATT scan and return result as GattScanResult.
 
         addr               - Remote BD_ADDR
@@ -317,17 +319,20 @@ class GattScanner(BlueScanner):
         """
         # TODO: Xbox Series X controller 扫描有问题。
         # ? BTLEException: Bluetooth command failed (code: 15, error: Encryption required before read/write)
-        self.result.addr = addr
-        self.result.addr_type = addr_type
-
         def run_mainloop():
             mainloop.run()
         mainloop_thread = threading.Thread(target=run_mainloop, args=[])
         mainloop_thread.start()
         
         try:
+            self.result.addr = addr.upper()
+            self.result.addr_type = addr_type
+            
+            if self.result.addr_type is None:
+                self.result.addr_type = self.determine_addr_type()
+            
             try:
-                target = Peripheral(addr, iface=self.devid, addrType=addr_type)
+                target = Peripheral(addr, iface=self.devid, addrType=self.result.addr_type)
             except BTLEDisconnectError as e:
                 logger.error("BTLEDisconnectError")
                 print(ERROR_INDENT, e, sep='')
@@ -402,6 +407,9 @@ class GattScanner(BlueScanner):
                         except BTLEException as e:
                             logger.warning("GattScanner.scan(), BTLEException: {}".format(e))
                             print(WARNING_INDENT + "Read descriptor {} failed".format(descriptor.uuid))
+                        except BrokenPipeError as e:
+                            logger.warning("GattScanner.scan(), BrokenPipeError: {}".format(e))
+                            print(WARNING_INDENT + "Read descriptor {} failed".format(descriptor.uuid))
 
             # Set remote device untursted
             output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', 
@@ -433,6 +441,26 @@ class GattScanner(BlueScanner):
                 mainloop.quit()
         
         return self.result
+    
+
+    def determine_addr_type(self):
+        """For user not provide the remote LE address type."""
+        try:
+            with open(LE_DEVS_SCAN_RESULT_CACHE, 'rb') as le_devs_scan_result_cache:
+                le_devs_scan_result = pickle.load(le_devs_scan_result_cache)
+                for dev_info in le_devs_scan_result.devices_info:
+                    if self.result.addr == dev_info.addr:
+                        logger.debug("determine_addr_type, {} {}".format(self.result.addr, dev_info.addr_type))
+                        return dev_info.addr_type
+        except FileNotFoundError as e:
+            logger.debug("No {} found".format(LE_DEVS_SCAN_RESULT_CACHE))
+                
+        le_devs_scan_result = LeScanner(self.iface).scan_devs()
+        for dev_info in le_devs_scan_result.devices_info:
+            if self.result.addr == dev_info.addr:
+                return dev_info.addr_type
+
+        raise RuntimeError("Couldn't determine the LE address type. Please provide it explicitly.")
 
 
 if __name__ == '__main__':

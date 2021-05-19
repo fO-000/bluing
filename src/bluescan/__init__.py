@@ -4,6 +4,7 @@ import io
 import sys
 import pkg_resources
 import logging
+from pathlib import Path
 
 from pyclui import Logger
 
@@ -15,7 +16,8 @@ from bthci import HCI
 
 logger = Logger(__name__, logging.INFO)
 
-VERSION = '0.6.3'
+VERSION = '0.6.4'
+PKG_ROOT = Path(__file__).parent
 
 # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
 #     Table 2: Service Class Profile Identifiers
@@ -69,3 +71,6 @@ class ScanResult:
         type - May be 'GATT', 'LE Devices', 'BR/EDR Devices' ...
         """
         self.type = type
+
+    def store(self):
+        logger.debug("Not implemented")

@@ -27,10 +27,10 @@ def read(fname):
 class MyInstall(install):
     def run(self):
         super().run()
-        logger.info('install bluescan_prompt.bash')
-        shutil.copy(
-            'src/bluescan/bluescan_prompt.bash', '/etc/bash_completion.d'
-        )
+        # logger.info('install bluescan_prompt.bash')
+        # shutil.copy(
+        #     'src/bluescan/bluescan_prompt.bash', '/etc/bash_completion.d'
+        # )
 
 
 class MyClean(clean):
@@ -66,10 +66,11 @@ if __name__ == '__main__':
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
-            'bthci>=0.0.19', 'btatt>=0.0.1', 'btgatt>=0.0.2', 'btsmp>=0.0.2', 
-            'pyclui>=0.0.8', 'scapy>=2.4.4', 'docopt>=0.6.2', 'pybluez>=0.23', 
-            'bluepy>=1.3.0', 'pyserial>=3.5', 'dbus-python>=1.2.16', 'PyGObject>=3.38.0',
+            'bthci>=0.0.19', 'btatt>=0.0.2', 'btgatt>=0.0.2', 'btsmp>=0.0.2', 
+            'pyclui>=0.0.8', 'scapy>=2.4.5', 'docopt>=0.6.2', 'pybluez>=0.23', 
+            'bluepy>=1.3.0', 'pyserial>=3.5', 'dbus-python>=1.2.16', 'PyGObject>=3.40.1',
         ],
+        python_requires='>=3.9',
 
         # metadata to display on PyPI
         author="fO_000",

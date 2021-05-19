@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import pickle
 import re
 import sys
 import signal
@@ -10,20 +11,16 @@ from subprocess import STDOUT
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
-
 from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
 from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
-
 from serial import Serial
-
 from bthci import HCI, ERR_REMOTE_USER_TERMINATED_CONNECTION
 import btsmp
 from btsmp import *
-
 from pyclui import Logger
 from pyclui import blue, green, red
 
-from . import ScanResult
+from . import ScanResult, PKG_ROOT
 from .common import bdaddr_to_company_name
 from .gap_data import SERVICE_DATA_128_BIT_UUID, SERVICE_DATA_16_BIT_UUID, SERVICE_DATA_32_BIT_UUID, gap_type_names, company_names, \
     COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \
@@ -35,6 +32,8 @@ from .serial_protocol import serial_reset
 from .serial_protocol import SerialEventHandler
 
 logger = Logger(__name__, logging.INFO)
+
+LE_DEVS_SCAN_RESULT_CACHE = PKG_ROOT/'res'/'le_devs_scan_result.cache'
 
 
 microbit_infos = {}
@@ -72,6 +71,9 @@ class LEDelegate(DefaultDelegate):
 
 class LeDeviceInfo:
     def __init__(self, addr: str, addr_type : str, connectable : bool, rssi : int) -> None:
+        """
+        addr - Upper case
+        """
         self.addr = addr
         self.addr_type = addr_type
         self.connectable = connectable
@@ -185,6 +187,10 @@ class LeDevicesScanResult(ScanResult):
 
             print()  
             print() # Two empty lines before next LE device information
+
+    def store(self):
+        with open(LE_DEVS_SCAN_RESULT_CACHE, 'wb') as result_file:
+            pickle.dump(self, result_file)
 
 
 class LeScanner:

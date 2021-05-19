@@ -18,7 +18,7 @@ Usage:
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
     bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:

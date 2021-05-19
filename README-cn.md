@@ -7,6 +7,7 @@
 <p align="center">
     <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a>
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
+    <img src="https://img.shields.io/pypi/pyversions/bluescan?color=blue">
     <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
 </p>
 
@@ -31,13 +32,33 @@
 bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Linux 上运行，且需要安装如下依赖包：
 
 ```sh
-sudo apt install \
-libglib2.0-dev libbluetooth-dev \
-libdbus-1-dev python3-dbus \
-python3-gi python3-gi-cairo gir1.2-gtk-3.0
+sudo apt install python3-pip \
+libcairo2-dev          `# To solve the installation error "Failed to build pycairo" ` \
+python3-dev            `# To solve the installation error "Python.h: No such file or directory"` \
+libgirepository1.0-dev `# To solve the installation error "Failed building wheel for PyGObject"` \
+libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"`
 ```
 
-Python 3 也是运行 bluescan 的必要条件。目前 bluescan 可以支持到 python 3.9.2。
+如果后续在[安装](https://github.com/fO-000/bluescan/blob/master/README-cn.md#%E5%AE%89%E8%A3%85) bluescan 时仍遇到错误，请尝试继续安装如下 package 来解决：
+
+```sh
+sudo apt install \
+libglib2.0-dev libdbus-1-dev gir1.2-gtk-3.0 \
+python3-dbus python3-gi python3-gi-cairo
+```
+
+更重要的，**bluescan 至少需要 Python 3.9 的支持**。如果系统默认的 Python 版本低于 3.9，那么你需要做些额外的操作。比如在 Ubuntu 20.04.2 LTS (Focal Fossa) 中，系统默使用 Python 3.8，此时**额外的操作**如下：
+
+```sh
+sudo apt install python3.9 python3.9-dev
+
+# To solve the runtime error "No module named '_dbus_bindings'"
+cd /usr/lib/python3/dist-packages
+sudo cp _dbus_bindings.cpython-38-x86_64-linux-gnu.so \
+        _dbus_bindings.cpython-39-x86_64-linux-gnu.so
+sudo cp _dbus_glib_bindings.cpython-38-x86_64-linux-gnu.so \
+        _dbus_glib_bindings.cpython-39-x86_64-linux-gnu.so
+```
 
 若在 Linux 虚拟机中使用该工具，则建议让虚拟机**独占一个 USB 蓝牙适配器**。比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)：
 
@@ -77,10 +98,18 @@ make flash
 
 ## 安装
 
+> 请先阅读“[依赖](https://github.com/fO-000/bluescan/blob/master/README-cn.md#%E4%BE%9D%E8%B5%96)”一节，以避免安装时和运行时错误。
+
 最新的 bluescan 会被上传到 PyPI 上，因此执行如下命令即可安装 bluescan：
 
 ```sh
 sudo pip3 install bluescan
+```
+
+如果你没有使用系统默认的 Python，而是自己安装的 Python 3.9，那么需要这样安装 bluescan：
+
+```sh
+sudo python3.9 -m pip install bluescan
 ```
 
 ## 使用

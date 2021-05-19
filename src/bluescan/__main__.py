@@ -7,13 +7,13 @@ import time
 import subprocess
 from subprocess import STDOUT
 from pathlib import PosixPath
-from bluescan import BlueScanner
 
 from bthci import HCI
 from pyclui import Logger, blue
 from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
+from . import BlueScanner
 from .ui import parse_cmdline
 from .helper import find_rfkill_devid, get_microbit_devpaths
 from .br_scan import BRScanner
@@ -168,13 +168,9 @@ def main():
         try:
             print(blue("----------------"+scan_result.type+" Scan Result"+"----------------"))
             scan_result.print()
+            scan_result.store()
         except AttributeError as e:
             logger.debug("{}".format(e))
-        
-        # Stores scan result
-        # if args['--store']:
-        #     pass
-        
     except ValueError as e:
         logger.error("{}".format(e))
         exit(1)

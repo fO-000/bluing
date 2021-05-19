@@ -10,6 +10,7 @@
 /doc/private/
 /res/private/
 /src/bluescan/poc/bugs.md
+/src/bluescan/res/*.cache
 /test/
 /yotta_targets
 /yotta_modules

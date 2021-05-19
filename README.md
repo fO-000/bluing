@@ -7,6 +7,7 @@
 <p align="center">
     <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a>
     <a href="https://pypis.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
+    <img src="https://img.shields.io/pypi/pyversions/bluescan?color=blue">
     <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
 </p>
 
@@ -31,13 +32,33 @@ When hacking Bluetooth targets, bluescan can be very useful for **intelligence c
 bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports running on Linux, and the following packages need to be installed:
 
 ```sh
-sudo apt install \
-libglib2.0-dev libbluetooth-dev \
-libdbus-1-dev python3-dbus \
-python3-gi python3-gi-cairo gir1.2-gtk-3.0
+sudo apt install python3-pip \
+libcairo2-dev          `# To solve the installation error "Failed to build pycairo" ` \
+python3-dev            `# To solve the installation error "Python.h: No such file or directory"` \
+libgirepository1.0-dev `# To solve the installation error "Failed building wheel for PyGObject"` \
+libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"`
 ```
 
-Python 3 is also necessary for running bluescan. Currently bluescan can support python 3.9.2.
+If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
+
+```sh
+sudo apt install \
+libglib2.0-dev libdbus-1-dev gir1.2-gtk-3.0 \
+python3-dbus python3-gi python3-gi-cairo
+```
+
+More importantly, **bluescan requires at least Python 3.9 support**. If the system default Python version is lower than 3.9, then you need to do some extra operations. For example, in Ubuntu 20.04.2 LTS (Focal Fossa), the system uses Python 3.8 by default, and the **extra operations** are as follows: 
+
+```sh
+sudo apt install python3.9 python3.9-dev
+
+# To solve the runtime error "No module named '_dbus_bindings'"
+cd /usr/lib/python3/dist-packages
+sudo cp _dbus_bindings.cpython-38-x86_64-linux-gnu.so \
+        _dbus_bindings.cpython-39-x86_64-linux-gnu.so
+sudo cp _dbus_glib_bindings.cpython-38-x86_64-linux-gnu.so \
+        _dbus_glib_bindings.cpython-39-x86_64-linux-gnu.so
+```
 
 When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB：
 
@@ -77,10 +98,18 @@ make flash
 
 ## Install
 
+> Please read the "[Requirements](https://github.com/fO-000/bluescan#requirements)" section first to avoid installation and runtime errors.
+
 The lastest bluescan will be uploaded to PyPI, so the following command can install bluescan:
 
 ```sh
 sudo pip3 install bluescan
+```
+
+If you do not use the system default Python, but install Python 3.9 yourself, then you need to install bluescan like this: 
+
+```sh
+sudo python3.9 -m pip install bluescan
 ```
 
 ## Usage
