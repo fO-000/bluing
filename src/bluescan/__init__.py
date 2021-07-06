@@ -16,7 +16,7 @@ from bthci import HCI
 
 logger = Logger(__name__, logging.INFO)
 
-VERSION = '0.6.4'
+VERSION = '0.6.5'
 PKG_ROOT = Path(__file__).parent
 
 # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/

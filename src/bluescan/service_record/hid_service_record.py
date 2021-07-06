@@ -71,7 +71,7 @@ class HIDServiceRecord(ServiceRecord):
                     else red('\tFalse'))},
             self.HID_DESCRIPTOR_LIST:{
                 'Name': 'HIDDescriptorList',
-                'Parser': lambda val: print('\t', val)},
+                'Parser': self.pp_hid_descriptor_list},
             self.HID_LANGID_BASE_LIST:{
                 'Name': 'HIDLANGIDBaseList',
                 'Parser': lambda val: print('\t', val)},
@@ -113,3 +113,16 @@ class HIDServiceRecord(ServiceRecord):
         }
 
         super().__init__(record_xml)
+
+
+    def pp_hid_descriptor_list(self, val:ElementTree.Element):
+        """
+        val - data element sequence, include several HIDDescriptor
+        """
+        hid_descriptors =  val.findall('./sequence')
+        for hid_descriptor in hid_descriptors:
+            print("\tHIDDescriptor")
+            cls_descpt_type = int(hid_descriptor.find('./uint8').attrib['value'], base=16)
+            print("\t\tClassDescriptorType:", "Report" if cls_descpt_type == 0x22 else "Physical" if cls_descpt_type == 0x23 else "Reserved")
+            encoding = hid_descriptor.find('./text').attrib['encoding']
+            print("\t\tClassDescriptorData:", hid_descriptor.find('./text').attrib['value'], "(encoding " + encoding +")")
