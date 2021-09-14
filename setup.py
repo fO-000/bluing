@@ -69,6 +69,7 @@ if __name__ == '__main__':
             'bthci>=0.0.19', 'btatt>=0.0.2', 'btgatt>=0.0.2', 'btsmp>=0.0.2', 
             'pyclui>=0.0.10', 'scapy>=2.4.5', 'docopt>=0.6.2', 'pybluez>=0.23', 
             'bluepy>=1.3.0', 'pyserial>=3.5', 'dbus-python>=1.2.16', 'PyGObject>=3.40.1',
+            'halo>=0.0.31',
         ],
         python_requires='>=3.9',
 

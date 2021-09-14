@@ -16,7 +16,7 @@ from bthci import HCI
 
 logger = Logger(__name__, logging.INFO)
 
-VERSION = '0.6.6'
+VERSION = '0.6.7'
 PKG_ROOT = Path(__file__).parent
 
 LE_DEVS_SCAN_RESULT_CACHE = PKG_ROOT/'res'/'le_devs_scan_result.cache'
