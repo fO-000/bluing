@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
 import os
+import sys
 import shutil
 import logging
 from pathlib import Path
@@ -13,10 +13,10 @@ from pyclui import Logger
 
 logger = Logger(__name__, logging.INFO)
 
-PROJECT_ROOT = os.path.abspath(Path(__file__).parent)
+PROJECT_ROOT = Path(__file__).parent
 PROJECT_NAME = 'bluescan'
 
-sys.path.insert(0, PROJECT_ROOT+'/src')
+sys.path.insert(0, str(PROJECT_ROOT/'src'))
 from bluescan import VERSION
 
 
@@ -37,11 +37,11 @@ class MyClean(clean):
     def run(self):
         super().run()
         dirs = [
-            os.path.join(PROJECT_ROOT, 'build', 'bdist.linux-x86_64'), # 不直接删除 build 目录，因为 yotta 也会使用该目录。
-            os.path.join(PROJECT_ROOT, 'build', 'lib'),
-            os.path.join(PROJECT_ROOT, 'dist'),
-            os.path.join(PROJECT_ROOT, 'src', PROJECT_NAME+'.egg-info'),
-            os.path.join(PROJECT_ROOT, 'src', PROJECT_NAME, '__pycache__')
+            PROJECT_ROOT/'build'/'bdist.linux-x86_64', # 不直接删除 build 目录，因为 yotta 也会使用该目录。
+            PROJECT_ROOT/'build'/'lib',
+            PROJECT_ROOT/'dist',
+            PROJECT_ROOT/'src'/(PROJECT_NAME+'.egg-info'),
+            PROJECT_ROOT/'src'/PROJECT_NAME/'__pycache__'
         ]
 
         for d in dirs:
@@ -61,13 +61,13 @@ if __name__ == '__main__':
             ]
         },
         package_data={
-            "bluescan": ["res/*.txt"]
+            "bluescan": ['res/*.txt', 'res/*.csv']
         },
         #scripts=['src/bluescan/bluescan.py'],
 
         install_requires=[
             'bthci>=0.0.19', 'btatt>=0.0.2', 'btgatt>=0.0.2', 'btsmp>=0.0.2', 
-            'pyclui>=0.0.8', 'scapy>=2.4.5', 'docopt>=0.6.2', 'pybluez>=0.23', 
+            'pyclui>=0.0.10', 'scapy>=2.4.5', 'docopt>=0.6.2', 'pybluez>=0.23', 
             'bluepy>=1.3.0', 'pyserial>=3.5', 'dbus-python>=1.2.16', 'PyGObject>=3.40.1',
         ],
         python_requires='>=3.9',

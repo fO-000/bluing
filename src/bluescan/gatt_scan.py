@@ -11,8 +11,7 @@ from subprocess import STDOUT
 import pkg_resources
 from bluepy.btle import Peripheral # TODO: Get out of bluepy
 from bluepy.btle import BTLEException, BTLEDisconnectError
-from pyclui import green, blue, yellow, red, \
-                   INFO_INDENT, ERROR_INDENT, WARNING_INDENT
+from pyclui import green, blue, yellow, red
 from pyclui import Logger
 
 import dbus
@@ -291,13 +290,13 @@ class GattScanner(BlueScanner):
         self.agent_registered = False
         
         def register_agent_callback():
-            logger.info('Agent object registered')
-            print(INFO_INDENT, "IO capability: {}".format(self.bluescan_agent.io_capability), sep='')
+            logger.info('Agent object registered\n'
+                        "IO capability: {}".format(self.bluescan_agent.io_capability))
             self.agent_registered = True
         def register_agent_error_callback(error):
-            logger.error("Failed to register agent object")
-            print(ERROR_INDENT, "{}".format(error), sep='')
-            print(ERROR_INDENT, "IO capability: {}".format(self.bluescan_agent.io_capability), sep='')
+            logger.error("Failed to register agent object.\n"
+                         "{}\n"
+                         "IO capability: {}".format(error, self.bluescan_agent.io_capability))
             self.agent_registered = False
         self.bluescan_agent = BluescanAgent(sys_bus, 0, ioc)
         self.agent_mgr_1_iface = dbus.Interface(
@@ -334,8 +333,8 @@ class GattScanner(BlueScanner):
             try:
                 target = Peripheral(addr, iface=self.devid, addrType=self.result.addr_type)
             except BTLEDisconnectError as e:
-                logger.error("BTLEDisconnectError")
-                print(ERROR_INDENT, e, sep='')
+                logger.error("BTLEDisconnectError\n" + 
+                             str(e))
                 return self.result
             
             # 这里 bluepy 只会发送 ATT_READ_BY_GROUP_TYPE_REQ 获取 primary service。
@@ -354,8 +353,7 @@ class GattScanner(BlueScanner):
                 try:
                     characteristics = service.getCharacteristics()
                 except BTLEException as e:
-                    logger.warning("BTLEException")
-                    print(WARNING_INDENT, e, sep='')
+                    logger.warning("BTLEException\n" + str(e))
                     # continue                    
 
                 for characteristic in characteristics:
@@ -368,13 +366,13 @@ class GattScanner(BlueScanner):
                         if characteristic.supportsRead():
                             value = characteristic.read()
                     except BTLEDisconnectError as e:
-                        logger.warning("GattScanner.scan(), BTLEDisconnectError: {}".format(e))
-                        print(WARNING_INDENT + "Read characteristic value {} failed".format(characteristic.uuid))
-                        print(WARNING_INDENT + yellow("The Scan results may be incomplete."))
+                        logger.warning("GattScanner.scan(), BTLEDisconnectError: {}\n"
+                                       "Read characteristic value {} failed\n".format(e, characteristic.uuid) + 
+                                       yellow("The Scan results may be incomplete."))
                         return self.result # TODO: 直接返回可能会浪费很多数据，打包这些数据再返回。
                     except BTLEException as e:
-                        logger.warning("GattScanner.scan(), BTLEException: {}".format(e))
-                        print(WARNING_INDENT + "Read characteristic value {} failed".format(characteristic.uuid))
+                        logger.warning("GattScanner.scan(), BTLEException: {}\n"
+                                       "Read characteristic value {} failed".format(e, characteristic.uuid))
                         
                     charac_declar_value = {
                         'Properties' : characteristic.propertiesToString(), # TODO: get properties binary data
@@ -405,11 +403,11 @@ class GattScanner(BlueScanner):
                         try:
                             descriptor_declar.value = descriptor.read()
                         except BTLEException as e:
-                            logger.warning("GattScanner.scan(), BTLEException: {}".format(e))
-                            print(WARNING_INDENT + "Read descriptor {} failed".format(descriptor.uuid))
+                            logger.warning("GattScanner.scan(), BTLEException: {}\n"
+                                           "Read descriptor {} failed".format(e, descriptor.uuid))
                         except BrokenPipeError as e:
-                            logger.warning("GattScanner.scan(), BrokenPipeError: {}".format(e))
-                            print(WARNING_INDENT + "Read descriptor {} failed".format(descriptor.uuid))
+                            logger.warning("GattScanner.scan(), BrokenPipeError: {}"
+                                           "Read descriptor {} failed".format(e, descriptor.uuid))
 
             # Set remote device untursted
             output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', 
@@ -430,8 +428,8 @@ class GattScanner(BlueScanner):
             #     ' '.join(['sudo', 'systemctl', 'start', 'bluetooth.service']), 
             #     stderr=STDOUT, timeout=60, shell=True)
         except BTLEDisconnectError as e:
-            logger.warning("GattScanner.scan(), BTLEDisconnectError: {}".format(e))
-            print(WARNING_INDENT + yellow("The Scan results may be incomplete."))
+            logger.warning("GattScanner.scan(), BTLEDisconnectError: {}\n".format(e) +
+                           yellow("The Scan results may be incomplete."))
         finally:
             if self.agent_registered:
                 self.agent_mgr_1_iface.UnregisterAgent(

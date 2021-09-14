@@ -3,6 +3,7 @@
 import logging
 import re
 import sys
+# import pickle
 import subprocess
 
 from serial.tools.list_ports import comports
@@ -10,8 +11,31 @@ from serial.tools.list_ports import comports
 from pyclui import blue, green, yellow, red
 from pyclui import Logger
 
+# from . import LE_DEVS_SCAN_RESULT_CACHE
+
 
 logger = Logger(__name__, logging.INFO)
+
+
+# def determine_addr_type(self):
+#     """For user not provide the remote LE address type."""
+#     from .le_scan import LeScanner
+#     try:
+#         with open(LE_DEVS_SCAN_RESULT_CACHE, 'rb') as le_devs_scan_result_cache:
+#             le_devs_scan_result = pickle.load(le_devs_scan_result_cache)
+#             for dev_info in le_devs_scan_result.devices_info:
+#                 if self.result.addr == dev_info.addr:
+#                     logger.debug("determine_addr_type, {} {}".format(self.result.addr, dev_info.addr_type))
+#                     return dev_info.addr_type
+#     except FileNotFoundError as e:
+#         logger.debug("No {} found".format(LE_DEVS_SCAN_RESULT_CACHE))
+            
+#     le_devs_scan_result = LeScanner(self.iface).scan_devs()
+#     for dev_info in le_devs_scan_result.devices_info:
+#         if self.result.addr == dev_info.addr:
+#             return dev_info.addr_type
+
+#     raise RuntimeError("Couldn't determine the LE address type. Please provide it explicitly.")
 
 
 def valid_bdaddr(addr:str) -> bool:

@@ -7,11 +7,12 @@ import subprocess
 from bluetooth import find_service
 from xml.etree import ElementTree
 
-from . import BlueScanner
-from .service_record import ServiceRecord
-
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
+from halo import Halo
+
+from . import BlueScanner
+from .service_record import ServiceRecord
 
 
 logger = Logger(__name__, logging.INFO)
@@ -19,11 +20,17 @@ logger = Logger(__name__, logging.INFO)
 
 class SDPScanner(BlueScanner):
     def scan(self, addr:str):
-        logger.info('Scanning...')
-        exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
+        spinner = Halo(text="Scanning", spinner={'interval': 200,
+                                                 'frames': ['', '.', '.'*2, '.'*3]},
+                       placement='right')
+        spinner.start()
+        # exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
+        exitcode, output = subprocess.getstatusoutput('sdptool browse --xml ' + addr)
         if exitcode != 0:
+            spinner.fail()
             sys.exit(exitcode)
-
+        spinner.stop()
+        
         # print('[DEBUG] output:', output)
         self.pp_sdptool_output(output)
         

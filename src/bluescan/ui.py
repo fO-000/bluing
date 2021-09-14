@@ -67,11 +67,15 @@ INDENT = ' ' * 4
 
 def parse_cmdline() -> dict:
     args = docopt(__doc__, version="v"+VERSION, options_first=True)
-    logger.debug("ui.parse_cmdline, args: {}".format(args))
+    logger.debug("parse_cmdline, args: {}".format(args))
     
     try:
         if args['-m'] is not None:
             args['-m'] = args['-m'].lower()
+            
+            if (args['-m'] == 'sdp' or args['-m'] == 'gatt') and args['BD_ADDR'] is None:
+                raise ValueError("The argument BD_ADDR is {}, please provide it.".format(args['BD_ADDR']))
+                
         args['--inquiry-len'] = int(args['--inquiry-len'])
         args['--timeout'] = int(args['--timeout'])
         args['--sort'] = args['--sort'].lower()
@@ -105,7 +109,7 @@ def parse_cmdline() -> dict:
         if args['--io-capability'] not in ['DisplayOnly', 'DisplayYesNo', 'KeyboardOnly', 'NoInputNoOutput', 'KeyboardDisplay', 'KeyboardOnly']:
             raise ValueError("Invalid IO capability %s" % args['--io-capability'])
     except ValueError as e:
-        logger.error("{}".format(e))
+        logger.error(str(e))
         exit(1)
 
     return args

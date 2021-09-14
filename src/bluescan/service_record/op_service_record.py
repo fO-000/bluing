@@ -4,7 +4,7 @@ import logging
 from typing import Sequence
 
 from pyclui import Logger, blue, green, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR, WARNING_INDENT
+    DEBUG, INFO, WARNING, ERROR
 from xml.etree import ElementTree
 
 from . import ServiceRecord
@@ -62,5 +62,4 @@ class ObjPushServiceRecord(ServiceRecord):
                 print('\t0x%02x'%id_val, ': ', red('unknown'), sep='')
                 continue
             except Exception as e:
-                logger.warning('{}'.format(e))
-                print(WARNING_INDENT+format_id.attrib['value'])
+                logger.warning('{}\n{}'.format(e, format_id.attrib['value']))

@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 
+import io
+import csv
 import logging
+import pkg_resources
 
 from pyclui import Logger
 from pyclui import green, red
 
 logger = Logger(__name__, logging.INFO)
+
+company_identfiers_file = pkg_resources.resource_stream(__name__, 'res/CompanyIdentfiers.csv')
+company_identfiers_file = io.TextIOWrapper(company_identfiers_file)
+company_identfiers = {}
+for row in csv.DictReader(company_identfiers_file):
+    # print(row['Decimal'], row['Hexadecimal'], row['Company'])
+    company_identfiers[int(row['Decimal'])] = row['Company']
 
 lmp_vers = {
     0:  'Bluetooth Core Specification 1.0b (Withdrawn)',

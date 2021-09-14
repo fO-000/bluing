@@ -36,7 +36,7 @@ from .gap_data import gap_type_names, \
     COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, COMPLETE_LOCAL_NAME, \
     SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
 
-from .lmp import lmp_vers
+from .lmp import lmp_vers, company_identfiers
 from .lmp import pp_lmp_features, pp_ext_lmp_features
 
 
@@ -151,7 +151,7 @@ class BRScanner(BlueScanner):
         print('    Version:')
         print(' '*8+lmp_vers[event_params['Version']], '(LMP)')
         print(' '*8+ll_vers[event_params['Version']], '(LL)')
-        print('    Manufacturer name:', event_params['Manufacturer_Name'])
+        print('    Manufacturer name:', green(company_identfiers[event_params['Manufacturer_Name']]))
         print('    Subversion:', event_params['Subversion'], '\n')
 
         event_params = hci.read_remote_supported_features({

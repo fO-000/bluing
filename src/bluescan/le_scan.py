@@ -11,6 +11,7 @@ from subprocess import STDOUT
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
+from halo import Halo
 from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
 from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
 from serial import Serial
@@ -20,7 +21,7 @@ from btsmp import *
 from pyclui import Logger
 from pyclui import blue, green, red
 
-from . import ScanResult, PKG_ROOT
+from . import ScanResult, LE_DEVS_SCAN_RESULT_CACHE
 from .common import bdaddr_to_company_name
 from .gap_data import SERVICE_DATA_128_BIT_UUID, SERVICE_DATA_16_BIT_UUID, SERVICE_DATA_32_BIT_UUID, gap_type_names, company_names, \
     COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \
@@ -32,9 +33,6 @@ from .serial_protocol import serial_reset
 from .serial_protocol import SerialEventHandler
 
 logger = Logger(__name__, logging.INFO)
-
-LE_DEVS_SCAN_RESULT_CACHE = PKG_ROOT/'res'/'le_devs_scan_result.cache'
-
 
 microbit_infos = {}
 
@@ -212,7 +210,6 @@ class LeScanner:
         self.devid = HCI.hcistr2devid(self.hci)
         self.microbit_devpaths = microbit_devpaths
 
-
     def scan_devs(self, timeout=8, scan_type='active', sort='rssi') -> LeDevicesScanResult:
         """Perform LE Devices scanning and return scan reuslt as LeDevicesScanResult
 
@@ -223,17 +220,25 @@ class LeScanner:
 
         scanner = Scanner(self.devid).withDelegate(LEDelegate())
         #print("[Debug] timeout =", timeout)
+        
+        spinner = Halo(text="Scanning", spinner={'interval': 200,
+                                        'frames': ['', '.', '.'*2, '.'*3]},
+                       placement='right')
 
         # scan() 返回的 devs 是 dictionary view。
         if scan_type == 'active': # Active scan 会在 LL 发送 SCAN_REQ PDU
             logger.warning('Before doing an active scan, make sure you spoof your BD_ADDR.')
             logger.info('LE active scanning on %s with timeout %d sec\n' % \
                 (blue('hci%d'%self.devid), timeout))
+            spinner.start()
             devs = scanner.scan(timeout)
+            spinner.stop()
         elif scan_type == 'passive':
             logger.info('LE passive scanning on %s with timeout %d sec\n' % \
                 (blue('hci%d'%self.devid), timeout))
+            spinner.start()
             devs = scanner.scan(timeout, passive=True)
+            spinner.stop()
         else:
             logger.error('Unknown LE scan type')
             return
@@ -286,8 +291,13 @@ class LeScanner:
         patype  - Peer address type, public or random.
         timeout - sec
         """
+        spinner = Halo(text="Scanning", spinner={'interval': 200,
+                                                 'frames': ['', '.', '.'*2, '.'*3]},
+                       placement='right')
         hci = HCI(self.hci)
         logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
+        
+        spinner.start()
 
         try:
             event_params = hci.le_create_connection(
@@ -295,7 +305,7 @@ class LeScanner:
                     paddr.replace(':', ''))[::-1], patype=patype), timeout)
             logger.debug(event_params)
         except RuntimeError as e:
-            logger.error(e)
+            logger.error(str(e))
             return
         except TimeoutError as e:
             logger.info("Timeout")
@@ -304,6 +314,7 @@ class LeScanner:
 
         event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(
             handle=event_params['Connection_Handle']))
+        spinner.stop()
         logger.debug(event_params)
         print(blue('LE LL Features:'))
         pp_le_features(event_params['LE_Features'])
@@ -335,22 +346,32 @@ class LeScanner:
                     | (1 << ENCKEY_POS))
 
         event_params = None
+        
+        spinner = Halo(text="Scanning", spinner={'interval': 200,
+                                                 'frames': ['', '.', '.'*2, '.'*3]},
+                       placement='right')
+        hci = HCI(self.hci)
+        logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
+        
+        spinner.start()
+        
         try:
             event_params = hci.le_create_connection(
                 HCI_Cmd_LE_Create_Connection(paddr=bytes.fromhex(
                     paddr.replace(':', ''))[::-1], patype=patype), timeout)
             logger.debug(event_params)
 
-
             result = btsmp.send_pairing_request(event_params['Connection_Handle'], pairing_req, self.hci)
             logger.debug("detect_pairing_feature(), result: {}".format(result))
 
             rsp = btsmp.recv_pairing_response(timeout, self.hci)
             logger.debug("detect_pairing_feature(), rsp: {}".format(rsp))
+            
+            spinner.stop()
 
             pp_smp_pkt(rsp)
         except RuntimeError as e:
-            logger.error(e)
+            logger.error(str(e))
         except TimeoutError as e:
             output = subprocess.check_output(' '.join(['hciconfig', self.hci, 'reset']), 
                 stderr=STDOUT, timeout=60, shell=True)

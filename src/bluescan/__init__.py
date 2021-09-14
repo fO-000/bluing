@@ -16,8 +16,10 @@ from bthci import HCI
 
 logger = Logger(__name__, logging.INFO)
 
-VERSION = '0.6.5'
+VERSION = '0.6.6'
 PKG_ROOT = Path(__file__).parent
+
+LE_DEVS_SCAN_RESULT_CACHE = PKG_ROOT/'res'/'le_devs_scan_result.cache'
 
 # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
 #     Table 2: Service Class Profile Identifiers
@@ -61,7 +63,7 @@ class BlueScanner():
         try:
             self.hci_bdaddr = HCI(iface).read_bdaddr()['BD_ADDR'].upper()
         except Exception as e:
-            logger.error("{}".format(e))
+            logger.error(str(e))
             exit(1)
 
 

@@ -14,7 +14,7 @@ from bluepy.btle import BTLEException
 from bluetooth.btcommon import BluetoothError
 
 from . import BlueScanner
-from .ui import parse_cmdline
+from .ui import parse_cmdline, INDENT
 from .helper import find_rfkill_devid, get_microbit_devpaths
 from .br_scan import BRScanner
 from .le_scan import LeScanner
@@ -170,22 +170,23 @@ def main():
             scan_result.print()
             scan_result.store()
         except AttributeError as e:
-            logger.debug("{}".format(e))
+            logger.debug(str(e))
     except ValueError as e:
-        logger.error("{}".format(e))
+        logger.error(str(e))
         exit(1)
     except BluetoothError as e:
-        logger.error('{}'.format(e))
+        logger.error(str(e))
     except RuntimeError as e:
-        logger.error('{}'.format(e))
+        logger.error(str(e))
     except (BTLEException, ValueError) as e:
-        logger.error('{}'.format(e))
-        if 'le on' in str(e):
-            print("        No BLE adapter? or missing sudo ?")
+        logger.error(str(e) + 
+                     ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) 
+                     else ""))
     except KeyboardInterrupt:
         if args != None and args['-i'] != None:
             output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 
                     stderr=STDOUT, timeout=60, shell=True)
+        print()
         logger.info("Canceled\n")
 
 
