@@ -38,8 +38,7 @@ def init_hci(iface='hci0'):
         logger.error('rfkill: ' + output)
         sys.exit(exitcode)
 
-    exitcode, output = subprocess.getstatusoutput(
-        "hciconfig up " + iface)
+    exitcode, output = subprocess.getstatusoutput('hciconfig {} up'.format(iface))
     if exitcode != 0:
         logger.error("Failed to up " + iface)
         sys.exit(exitcode)

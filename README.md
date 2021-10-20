@@ -37,7 +37,8 @@ sudo apt install python3-pip \
 libcairo2-dev          `# To solve the installation error "Failed to build pycairo" ` \
 python3-dev            `# To solve the installation error "Python.h: No such file or directory"` \
 libgirepository1.0-dev `# To solve the installation error "Failed building wheel for PyGObject"` \
-libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"`
+libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"` \
+bluez-tools
 ```
 
 If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
