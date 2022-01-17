@@ -34,7 +34,7 @@ bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports
 
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-bluez
 ```
 
 If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
