@@ -15,7 +15,6 @@
 /yotta_targets/
 
 /install.rec
-/pyproject.toml
 /bluescan-0.7.0.tar.gz
 
 /src/bluescan/poc/bugs.md
