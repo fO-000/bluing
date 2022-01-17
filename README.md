@@ -33,20 +33,15 @@ When hacking Bluetooth targets, bluescan can be very useful for **intelligence c
 bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports running on Linux, and the following packages need to be installed:
 
 ```sh
-sudo apt install python3-pip \
-libcairo2-dev          `# To solve the installation error "Failed to build pycairo" ` \
-python3-dev            `# To solve the installation error "Python.h: No such file or directory"` \
-libgirepository1.0-dev `# To solve the installation error "Failed building wheel for PyGObject"` \
-libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"` \
-bluez-tools
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools
 ```
 
 If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
 
 ```sh
-sudo apt install \
-libglib2.0-dev libdbus-1-dev gir1.2-gtk-3.0 \
-python3-dbus python3-gi python3-gi-cairo
+sudo apt install libglib2.0-dev gir1.2-gtk-3.0 \
+                 python3-dbus python3-gi python3-gi-cairo
 ```
 
 More importantly, **bluescan requires at least Python 3.9 support**. If the system default Python version is lower than 3.9, then you need to do some extra operations. For example, in Ubuntu 20.04.2 LTS (Focal Fossa), the system uses Python 3.8 by default, and the **extra operations** are as follows: 
@@ -136,7 +131,7 @@ Usage:
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m gatt [--io-capability=<name>] --addr-type=<type> BD_ADDR
     bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
@@ -160,7 +155,6 @@ Options:
     --ll-feature              Scan LL features of the remote LE device.
     --smp-feature             Detect pairing features of the remote LE device.
     --channel=<num>           LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --include-descriptor      Fetch descriptor information.
     --addr-type=<type>        Type of the LE address, public or random.
     --io-capability=<name>    Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
                               KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
@@ -252,7 +246,7 @@ CVE-2017-0785
   ```sh
   # Kali
   rfkill --version
-  # rfkill from util-linux 2.36.1
+  # rfkill from util-linux 2.37.2
   ```
 
 If you encounter the following error, restart bluetooth service to recover (`sudo systemctl restart bluetooth.service`):

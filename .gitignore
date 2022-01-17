@@ -7,17 +7,29 @@
 /backup/
 /build/
 /dist/
+/deb_dist/
 /doc/private/
 /res/private/
-/src/bluescan/poc/bugs.md
-/src/bluescan/res/*.cache
 /test/
-/yotta_targets
-/yotta_modules
+/yotta_modules/
+/yotta_targets/
 
 /install.rec
+/pyproject.toml
+/bluescan-0.7.0.tar.gz
+
+/src/bluescan/poc/bugs.md
+/src/bluescan/res/*.cache
+/src/bluescan/bluescan_prompt.bash
+
+# symbolic link, not directory
+/src/btatt
+/src/btgatt
+/src/bthci
+/src/btsmp
+/src/pyclui
+/src/xpycommon
 
 __pycache__/
-
 bluescan.spec
-bluescan.egg-info
+*.egg-info

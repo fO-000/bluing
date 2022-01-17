@@ -150,7 +150,7 @@ def main():
             SDPScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'gatt':
             scan_result = GattScanner(args['-i'], args['--io-capability']).scan(
-                args['BD_ADDR'], args['--addr-type'], args['--include-descriptor'])
+                args['BD_ADDR'], args['--addr-type']) 
         elif args['-m'] == 'stack':
             StackScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['-m'] == 'vuln':
@@ -162,25 +162,17 @@ def main():
             logger.error('Invalid scan mode')
         
         # Prints scan result
-        print()
-        print()
-        try:
+        if scan_result is not None:
+            print()
+            print()
             print(blue("----------------"+scan_result.type+" Scan Result"+"----------------"))
             scan_result.print()
             scan_result.store()
-        except AttributeError as e:
-            logger.debug(str(e))
-    except ValueError as e:
-        logger.error(str(e))
+    except (RuntimeError, ValueError, BluetoothError) as e:
+        logger.error("{}: {}".format(e.__class__.__name__, e))
         exit(1)
-    except BluetoothError as e:
-        logger.error(str(e))
-    except RuntimeError as e:
-        logger.error(str(e))
     except (BTLEException, ValueError) as e:
-        logger.error(str(e) + 
-                     ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) 
-                     else ""))
+        logger.error(str(e) + ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) else ""))
     except KeyboardInterrupt:
         if args != None and args['-i'] != None:
             output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 

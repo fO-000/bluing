@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 
 import sys
-import pickle
 import io
+import pickle
 import logging
 import threading
 import subprocess
+import traceback
 from subprocess import STDOUT
+from uuid import UUID
 
 import pkg_resources
-from bluepy.btle import Peripheral # TODO: Get out of bluepy
-from bluepy.btle import BTLEException, BTLEDisconnectError
 from pyclui import green, blue, yellow, red
 from pyclui import Logger
+from halo import Halo
 
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 from dbus import SystemBus, ObjectPath
 
-from btgatt import ServiceDef, CharacDef, CharacDescriptorDeclar, \
-    declar_names, service_names, charac_names, descriptor_names, descriptor_permissions, \
-    PRIMARY_SERVICE
+from btgatt import Service, CharactValueDeclar, ServiceUuids, GattAttrTypes, bt_base_uuid, \
+    GattClient, ReadCharactValueError, ReadCharactDescriptorError, CharactProperties
 
 from . import BlueScanner, ScanResult
 from .le_scan import LeScanner, LE_DEVS_SCAN_RESULT_CACHE
@@ -32,9 +32,6 @@ from .ui import INDENT
 logger = Logger(__name__, logging.INFO)
 
 IFACE_AGENT_MGR_1 = 'org.bluez.AgentManager1'
-
-# char_uuid = pkg_resources.resource_string()
-# service_uuid = pkg_resources.resource_string()
 
 service_uuid_file = pkg_resources.resource_stream(__name__, "res/gatt-service-uuid.txt")
 service_uuid_file = io.TextIOWrapper(service_uuid_file)
@@ -120,7 +117,7 @@ def attr_permissions2str(permissions: dict):
             permi_str += ")"
         elif not (permissions['write']['enable'] or permissions['encrypt'] or permissions['higher']):
             return "Read Only, No Authentication, No Authorization"
-        
+
         permi_str += ' '
         
     if permissions['write']['enable']:
@@ -165,114 +162,132 @@ class GattScanResult(ScanResult):
 
         self.addr = addr
         self.addr_type = addr_type
-        self.service_defs = []
+        self.services = []
 
-    def add_service_def(self, service_def: ServiceDef):
-        self.service_defs.append(service_def)
+    def add_service(self, service: Service):
+        self.services.append(service)
+        
+    def uuid2str_for_show(self, uuid: UUID) -> str:
+        if uuid.bytes[4:] == bt_base_uuid.bytes[4:]:
+            if uuid.bytes[:2] == b'\x00\x00':
+                uuid_str_for_show = '{:04X}'.format(int.from_bytes(
+                    uuid.bytes[2:4], 'big', signed=False))
+            else:
+                uuid_str_for_show = '{:08X}'.format(int.from_bytes(
+                    uuid.bytes[0:4], 'big', signed=False))
+        else:
+            uuid_str_for_show = str(uuid)
+            
+        return uuid_str_for_show
 
     def print(self):
         if self.addr is None or self.addr_type is None:
             return
 
-        print("Number of services: {}".format(len(self.service_defs)))
+        print("Number of services: {}".format(len(self.services)))
         print()
         print() # Two empty lines before Service Group
         
         # Prints each service group
-        for service_def in self.service_defs:
-            uuid = service_def.declar.value
-            if type(uuid) is int:
-                uuid = "0x{:04X}".format(uuid)
+        for service in self.services:
+            uuid_str_for_show = self.uuid2str_for_show(service.declar.value)
 
             try:
-                service_name = green(service_names[service_def.declar.value])
+                service_name = green(ServiceUuids[service.declar.value].name)
             except KeyError:
                 service_name = red("Unknown")
 
-            print(blue("Service"), "(0x{:04X} - 0x{:04X}, {} characteristics)".format(
-                service_def.start_handle, service_def.end_handle, len(service_def.charac_defs)))
-            print(INDENT + "Handle: 0x{:04X}".format(service_def.start_handle))
-            print(INDENT + "Type:  ", green("0x{:04X}".format(service_def.declar.type)), "("+green("{}".format(declar_names[service_def.declar.type]))+")")
-            print(INDENT + "Value:  {} ({})".format(green(uuid), service_name))
-            print(INDENT + "Permissions:", attr_permissions2str(service_def.declar.permissions))
+            print(blue("Service"), "(0x{:04x} - 0x{:04x}, {} characteristics)".format(
+                service.start_handle, service.end_handle, len(service.get_characts())))
+            print(INDENT + blue("Declaration"))
+            print(INDENT + "Handle: 0x{:04x}".format(service.start_handle))
+            print(INDENT + "Type:   {:04X} ({})".format(service.declar.type.int16, service.declar.type.name))
+            print(INDENT + "Value:  {} ({})".format(green(uuid_str_for_show), service_name))
+            print(INDENT + "Permissions:", service.declar.permissions_desc)
             print() # An empty line before Characteristic Group
             
             # Prints each Gharacteristic group
-            for charac_def in service_def.charac_defs:
-                uuid = charac_def.declar.value['UUID']
-                if type(uuid) is int:
-                    uuid = "0x{:04X}".format(uuid)
+            for charact in service.characts:
+                uuid_str_for_show = self.uuid2str_for_show(charact.declar.value.uuid)
+                
+                # if type(uuid) is int:
+                #     uuid = "0x{:04X}".format(uuid)
                     
-                value_declar_uuid = charac_def.value_declar.type
-                if type(value_declar_uuid) is int:
-                    value_declar_uuid = "0x{:04X}".format(value_declar_uuid)
+                # value_declar_uuid = charact.value_declar.type
+                # if type(value_declar_uuid) is int:
+                #     value_declar_uuid = "0x{:04X}".format(value_declar_uuid)
                     
-                if charac_def.declar.value['UUID'] != charac_def.value_declar.type:
-                    logger.warning("charac_def.declar.value['UUID'] != charac_def.value_declar.type")
+                # if charact.declar.value.uuid != charact.value_declar.type:
+                #     pass
+                #     logger.warning("charact.declar.value['UUID'] != charact.value_declar.type")
                     
                 try:
-                    charac_name = green(charac_names[charac_def.declar.value['UUID']])
+                    charact_name = green(GattAttrTypes[charact.declar.value.uuid].name)
+                    # charact_name = green(charact_names[charact.declar.value.uuid])
                 except KeyError:
-                    charac_name = red("Unknown")
-
-                try:
-                    value_declar_name = charac_names[charac_def.value_declar.type]
-                except KeyError:
-                    value_declar_name = "Unknown"
-                
-                if charac_def.value_declar.value is None:
-                    value_print = red('Unknown')
-                else:
-                    value_print = green(str(charac_def.value_declar.value))
-                
-                print(INDENT + yellow("Characteristic"), '({} descriptors)'.format(len(charac_def.descriptor_declars)))
-                print(INDENT*2 + "Handle: 0x{:04X}".format(charac_def.declar.handle))
-                print(INDENT*2 + "Type:   0x2803 (Characteristic)")
+                    charact_name = red("Unknown")
+                    
+                print(INDENT + yellow("Characteristic"), '({} descriptors)'.format(len(charact.descriptors)))
+                print(INDENT*2 + yellow("Declaration"))
+                print(INDENT*2 + "Handle: 0x{:04x}".format(charact.declar.handle))
+                print(INDENT*2 + "Type:   {:04X} ({})".format(charact.declar.type.int16, charact.declar.type.name))
                 print(INDENT*2 + "Value:")
-                print(INDENT*3 + "Properties:", green(charac_def.declar.value['Properties']))
-                print(INDENT*3 + "Handle:    ", green("0x{:04X}".format(charac_def.declar.value['Handle'])))
-                print(INDENT*3 + "UUID:       {} ({})".format(green(uuid), charac_name))
-                print(INDENT*2 + "Permissions:", attr_permissions2str(charac_def.declar.permissions))
+                print(INDENT*3 + "Properties: {}".format(green(', '.join(charact.declar.get_property_names()))))
+                print(INDENT*3 + "Handle:    ", green("0x{:04x}".format(charact.declar.value.handle)))
+                print(INDENT*3 + "UUID:       {} ({})".format(green(uuid_str_for_show), charact_name))
+                print(INDENT*2 + "Permissions: {}\n".format(charact.declar.permissions_desc))
 
-                print(INDENT + yellow("Value"))
-                print(INDENT*2 + "Handle: 0x{:04X}".format(charac_def.value_declar.handle))
-                print(INDENT*2 + "Type:   {} ({})".format(value_declar_uuid, value_declar_name))
-                print(INDENT*2 + "Value: ", value_print)
-                print(INDENT*2 + "Permissions:", attr_permissions2str(charac_def.value_declar.permissions))
-                
-                # Prints each Characteristic Descriptor
-                for descriptor_declar in charac_def.descriptor_declars:
-                    uuid = descriptor_declar.type
-                    if type(uuid) is int:
-                        uuid = "0x{:04X}".format(uuid)
-                        
+                if charact.value_declar is not None:
                     try:
-                        descriptor_name = green(descriptor_names[descriptor_declar.type])
+                        value_declar_name = GattAttrTypes[charact.value_declar.type].name
                     except KeyError:
-                        descriptor_name = red("Unknown")
-
-                    if descriptor_declar.value is None:
+                        value_declar_name = "Unknown"
+                        
+                    type_str_for_show = self.uuid2str_for_show(charact.value_declar.type)
+                    
+                    error = charact.value_declar.get_read_error()
+                    if error != None:
+                        value_print = red(error.desc)
+                    elif charact.value_declar.value is None:
                         value_print = red('Unknown')
                     else:
-                        value_print = green(str(descriptor_declar.value))
-                              
-                    print(INDENT + yellow("Descriptor"))
-                    print(INDENT*2 + "Handle:", green('0x{:04X}'.format(descriptor_declar.handle)))
-                    print(INDENT*2 + "Type:   {} ({})".format(green(uuid), descriptor_name))
-                    print(INDENT*2 + "Value: ", value_print)
-                    print(INDENT*2 + "Permissions:", attr_permissions2str(descriptor_declar.permissions))
+                        value_print = green(str(charact.value_declar.value))
                     
-                print() # An empty line before next Characteristic Group
-            print() # An empty line before next Service Group
-    
+                    print(INDENT*2 + yellow("Value declaration"))
+                    print(INDENT*2 + "Handle: 0x{:04x}".format(charact.value_declar.handle))
+                    print(INDENT*2 + "Type:   {} ({})".format(type_str_for_show, value_declar_name))
+                    print(INDENT*2 + "Value:  {}".format(value_print))
+                    print(INDENT*2 + "Permissions: {}\n".format(charact.value_declar.permissions_desc))
+                
+                # Prints each Characteristic Descriptor
+                for descriptor in charact.get_descriptors():
+                    uuid = descriptor.type
+                    if type(uuid) is int:
+                        uuid = "0x{:04X}".format(uuid)
+                    
+                    error = descriptor.get_read_error()
+                    if error != None:
+                        value_print = red(error.desc)
+                    else:
+                        if descriptor.value is None:
+                            value_print = red('Unknown')
+                        else:
+                            value_print = green(str(descriptor.value))
+                              
+                    print(INDENT*2 + yellow("Descriptor"))
+                    print(INDENT*2 + "Handle: {}".format(green('0x{:04x}'.format(descriptor.handle))))
+                    print(INDENT*2 + "Type:   {} ({})".format(green("{:04X}".format(descriptor.type.int16)), yellow(descriptor.type.name)))
+                    print(INDENT*2 + "Value: ", value_print)
+                    print(INDENT*2 + "Permissions: {}\n".format(descriptor.permissions_desc))
+                    
     def to_dict(self) -> dict:
         j = {
             "Addr": self.addr,
             "Addr_Type": self.addr_type,
             "services": []
         }
-        for service_def in self.service_defs:
-            j["services"].append(service_def.json())
+        for service in self.services:
+            j["services"].append(service.json())
 
     def to_json(self) -> str:
         self.to_dict()
@@ -282,7 +297,10 @@ class GattScanner(BlueScanner):
     """"""
     def __init__(self, iface: str = 'hci0', ioc: str = 'NoInputNoOutput'):
         super().__init__(iface=iface)
+        
         self.result = GattScanResult()
+        self.gatt_client = None
+        self.spinner = Halo()
         
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         sys_bus = SystemBus()
@@ -290,13 +308,13 @@ class GattScanner(BlueScanner):
         self.agent_registered = False
         
         def register_agent_callback():
-            logger.info('Agent object registered\n'
+            logger.debug('Agent object registered\n'
                         "IO capability: {}".format(self.bluescan_agent.io_capability))
             self.agent_registered = True
         def register_agent_error_callback(error):
-            logger.error("Failed to register agent object.\n"
-                         "{}\n"
-                         "IO capability: {}".format(error, self.bluescan_agent.io_capability))
+            logger.error("Failed to register agent object.\n" +
+                         "{}\n".format(error) + 
+                         "IO capability: {}".format(self.bluescan_agent.io_capability))
             self.agent_registered = False
         self.bluescan_agent = BluescanAgent(sys_bus, 0, ioc)
         self.agent_mgr_1_iface = dbus.Interface(
@@ -306,149 +324,263 @@ class GattScanner(BlueScanner):
             self.bluescan_agent.io_capability,
             reply_handler=register_agent_callback,
             error_handler=register_agent_error_callback)
-
-
-    def scan(self, addr: str, addr_type: str, include_descriptor: bool) -> GattScanResult:
-        """Performs a GATT scan and return result as GattScanResult.
-
-        addr               - Remote BD_ADDR
-        addr_type          - 'public' or 'random'
-        include_descriptor - 对每个 characteristic 都获取 descriptor 会很耗时有些设
-                             备会因此断开连接。于是这里提供了一个是否获取 descriptor 的选项
-        """
-        # TODO: Xbox Series X controller 扫描有问题。
-        # ? BTLEException: Bluetooth command failed (code: 15, error: Encryption required before read/write)
-        def run_mainloop():
-            mainloop.run()
-        mainloop_thread = threading.Thread(target=run_mainloop, args=[])
-        mainloop_thread.start()
+        
+    def scan(self, addr: str, addr_type: str) -> GattScanResult:
+        logger.debug("Entered scan()")
         
         try:
+            def run_mainloop():
+                # logger.info('mainloop run\n'
+                            # "mainloop: {}".format(mainloop))
+                mainloop.run()
+                # logger.info('mainloop stop')
+            mainloop_thread = threading.Thread(target=run_mainloop, args=[])
+            mainloop_thread.start()
+            
             self.result.addr = addr.upper()
             self.result.addr_type = addr_type
             
             if self.result.addr_type is None:
                 self.result.addr_type = self.determine_addr_type()
+
+            self.gatt_client = GattClient(self.iface)
+            
+            logger.debug("Address:      {}\b".format(self.result.addr) + 
+                         "Address type: {}".format(self.result.addr_type))
             
             try:
-                target = Peripheral(addr, iface=self.devid, addrType=self.result.addr_type)
-            except BTLEDisconnectError as e:
-                logger.error("BTLEDisconnectError\n" + 
-                             str(e))
-                return self.result
+                self.spinner.start("Connecting...")
+                self.gatt_client.connect(self.result.addr, self.result.addr_type)
+            except TimeoutError:
+                raise RuntimeError("Failed to connect remote device {}".format(addr))
             
-            # 这里 bluepy 只会发送 ATT_READ_BY_GROUP_TYPE_REQ 获取 primary service。
-            # TODO: Using ATT_READ_BY_GROUP_TYPE_REQ get secondary service
-            services = target.getServices()
-            
-            for service in services:
-                characteristics = []
-
-                uuid = full_uuid_str_to_16_int(str(service.uuid).upper())
-                
-                service_def = ServiceDef(service.hndStart, service.hndEnd)
-                service_def.set_declar(service_def.start_handle, PRIMARY_SERVICE, uuid)
-                self.result.add_service_def(service_def)
+            try:
+                self.spinner.text = "Discovering all primary services..."
+                services = self.gatt_client.discover_all_primary_services()
+            except TimeoutError:
+                self.spinner.text = "Reconnecting..."
+                self.gatt_client.reconnect()
                 
                 try:
-                    characteristics = service.getCharacteristics()
-                except BTLEException as e:
-                    logger.warning("BTLEException\n" + str(e))
-                    # continue                    
-
-                for characteristic in characteristics:
-                    descriptors = []
-
-                    uuid = full_uuid_str_to_16_int(str(characteristic.uuid).upper())
-                    value = None
-
-                    try:
-                        if characteristic.supportsRead():
-                            value = characteristic.read()
-                    except BTLEDisconnectError as e:
-                        logger.warning("GattScanner.scan(), BTLEDisconnectError: {}\n"
-                                       "Read characteristic value {} failed\n".format(e, characteristic.uuid) + 
-                                       yellow("The Scan results may be incomplete."))
-                        return self.result # TODO: 直接返回可能会浪费很多数据，打包这些数据再返回。
-                    except BTLEException as e:
-                        logger.warning("GattScanner.scan(), BTLEException: {}\n"
-                                       "Read characteristic value {} failed".format(e, characteristic.uuid))
-                        
-                    charac_declar_value = {
-                        'Properties' : characteristic.propertiesToString(), # TODO: get properties binary data
-                        'Handle'     : characteristic.getHandle(),
-                        'UUID'       : uuid
-                    }
-                    charac_def = CharacDef()
-                    charac_def.set_declar(characteristic.getHandle() - 1, charac_declar_value)
-                    charac_def.set_value_declar(characteristic.getHandle(), uuid, value)
-                    service_def.add_charac_def(charac_def)
+                    self.spinner.text = "Discovering all primary services..."
+                    services = self.gatt_client.discover_all_primary_services()
+                except TimeoutError:
+                    raise RuntimeError("Can't discover primary service, the remote device may be not connectable")
+            
+            for service in services:
+                self.result.add_service(service)
+                # logger.debug("Service\n" +
+                #              "start_handle: 0x{:04x}\n".format(service.start_handle) + 
+                #              "end_handle:   0x{:04x}\n".format(service.end_handle) +
+                #              "UUID:         {}".format(service.uuid))
+        
+            self.spinner.text = "Discovering all characteristics of each service..."
+            
+            for service in services:
+                try:
+                    self.spinner.text = "Discovering all characteristics of service 0x{:04x}...".format(service.start_handle)
+                    characts = self.gatt_client.discover_all_characts_of_a_service(service)
+                
+                    for charact in characts:
+                        # logger.debug("Characteristics\n" +
+                        #             "Handle:       0x{:04x}\n".format(charact.declar.handle) +
+                        #             "Properties:   0x{:02X}\n".format(charact.declar.value.properties) +
+                        #             "Value handle: 0x{:04x}\n".format(charact.declar.value.handle) +
+                        #             "UUID:         {}".format(charact.declar.value.uuid))
+                        service.add_charact(charact)
+                except TimeoutError as e:
+                    # When discovering all characteristics fo a service encounters a timeout,
+                    # reconnect and try once again
+                    self.spinner.text = "Reconnecting..."
+                    self.gatt_client.reconnect()
                     
-                    if include_descriptor:
-                        descriptors = characteristic.getDescriptors()
-                        logger.debug("GattScanner.scan(), got {} descriptors".format(len(descriptors)))
+                    try:
+                        characts = self.gatt_client.discover_all_characts_of_a_service(service)
+                        for charact in characts:
+                            service.add_charact(charact)
+                    except TimeoutError as e:     
+                        logger.error("scan() \n" +
+                                     "{}\n".format(e.__class__.__name__) + 
+                                    "Discover all characteristics of a service (start 0x{:04x} - end 0x{:04x}".format(
+                                        service.start_handle, service.end_handle))
+            
+            # 这里如果不重连，wireshark 会显示 server 返回的
+            # 第一个 ATT_READ_RSP PDU 为 malformed packet。
+            # 但是本身并不是 malformed packet，不知道为什么。
+            self.spinner.text = "Reconnecting..."
+            self.gatt_client.reconnect()
 
+            self.spinner.text = "Reading value of each characteristic..."
+            
+            for service in services:
+                for charact in service.get_characts():
+                    if CharactProperties.READ.name in charact.declar.get_property_names():
+                        try:
+                            self.spinner.text = "Reading value of a characteristic, value handle = 0x{:04x}...".format(charact.declar.value.handle)
+                            value = self.gatt_client.read_charact_value(charact)
+                            charact.set_value_declar(CharactValueDeclar(charact.declar.value.handle, charact.declar.value.uuid, value))
+                            # logger.info("Characteristics Value")
+                            # print("Handle: 0x{:04x}".format(charact.value_declar.handle))
+                            # print("Type:   {}".format(charact.value_declar.type))
+                            # print("Value:  {}".format(charact.value_declar.value))
+                        except TimeoutError:
+                            # When reading the characteristic value encounters a timeout,
+                            # reconnect and try to read once again
+                            self.spinner.text = "Reconnecting..."
+                            self.gatt_client.reconnect()
+                            
+                            try:
+                                value = self.gatt_client.read_charact_value(charact)
+                                charact.set_value_declar(CharactValueDeclar(charact.declar.value.handle, charact.declar.value.uuid, value))
+                            except TimeoutError:
+                                value_declar = CharactValueDeclar(charact.declar.value.handle, charact.declar.value.uuid, None)
+                                value_declar.set_read_error(ReadCharactValueError("Read Timeout"))
+                                charact.set_value_declar(value_declar)
+                            except ReadCharactValueError as e:
+                                value_declar = CharactValueDeclar(charact.declar.value.handle, charact.declar.value.uuid, None)
+                                value_declar.set_read_error(e)
+                                charact.set_value_declar(value_declar)
+                                
+                        except ReadCharactValueError as e:
+                            value_declar = CharactValueDeclar(charact.declar.value.handle, charact.declar.value.uuid, None)
+                            value_declar.set_read_error(e)
+                            charact.set_value_declar(value_declar)
+            
+            self.spinner.text = "Discovering descriptors of each characteristic..."
+            
+            for service in services:
+                characts = service.get_characts()
+                if len(characts) == 0:
+                    continue
+                
+                for idx in range(0, len(characts) - 1):
+                    start_handle = characts[idx].declar.value.handle + 1
+                    end_handle = characts[idx+1].declar.value.handle - 1
+                    if end_handle < start_handle:
+                        continue
+                    
+                    try:
+                        self.spinner.text = "Discovering all descriptors of characteristic 0x{:04x}...".format(characts[idx].declar.handle)
+                        descriptors = self.gatt_client.discover_all_charact_descriptors(start_handle, end_handle)
+                        for descriptor in descriptors:
+                            characts[idx].add_descriptor_declar(descriptor)
+                    except TimeoutError:
+                        self.spinner.text = "Reconnecting..."
+                        self.gatt_client.reconnect()
+                        
+                        try:
+                            descriptors = self.gatt_client.discover_all_charact_descriptors(start_handle, end_handle)
+                            for descriptor in descriptors:
+                                characts[idx].add_descriptor_declar(descriptor)
+                        except TimeoutError:
+                            pass
+                
+                # Find descriptor of the last charactertisc in current service.
+                start_handle = characts[-1].declar.value.handle + 1
+                end_handle = service.end_handle
+                if end_handle < start_handle:
+                    continue
+                
+                try:
+                    self.spinner.text = "Discovering all descriptors of characteristic 0x{:04x}...".format(characts[-1].declar.handle)
+                    descriptors = self.gatt_client.discover_all_charact_descriptors(start_handle, end_handle)
                     for descriptor in descriptors:
-                        logger.debug("GattScanner.scan(), descriptor: {}".format(descriptor))
-                        uuid = full_uuid_str_to_16_int(str(descriptor.uuid).upper())
-
+                        characts[-1].add_descriptor_declar(descriptor)
+                except TimeoutError:
+                    self.spinner.text = "Reconnecting..."
+                    self.gatt_client.reconnect()
+                    
+                    try:
+                        self.spinner.text = "Discovering all descriptors of characteristic 0x{:04x}...".format(characts[-1].declar.handle)
+                        descriptors = self.gatt_client.discover_all_charact_descriptors(start_handle, end_handle)
+                        for descriptor in descriptors:
+                            characts[-1].add_descriptor_declar(descriptor)
+                    except TimeoutError:
+                        pass
+            
+            self.spinner.text = "Reading value of each descriptor..."
+            
+            for service in services:
+                for characts in service.get_characts():
+                    for descriptor in characts.get_descriptors():
                         try:
-                            permissions = descriptor_permissions[uuid]
-                        except KeyError:
-                            permissions = None
-                        
-                        descriptor_declar = CharacDescriptorDeclar(descriptor.handle, uuid, None, permissions)
-                        charac_def.add_descriptor_declar(descriptor_declar)
-                        
-                        try:
-                            descriptor_declar.value = descriptor.read()
-                        except BTLEException as e:
-                            logger.warning("GattScanner.scan(), BTLEException: {}\n"
-                                           "Read descriptor {} failed".format(e, descriptor.uuid))
-                        except BrokenPipeError as e:
-                            logger.warning("GattScanner.scan(), BrokenPipeError: {}"
-                                           "Read descriptor {} failed".format(e, descriptor.uuid))
+                            self.spinner.text = "Reading value of the descriptor 0x{:04x}... ".format(descriptor.handle)
+                            value = self.gatt_client.read_charact_descriptor(descriptor.handle)
+                            descriptor.set_value(value)
+                        except TimeoutError:
+                            # When reading the descriptor encounters a timeout,
+                            # reconnect and try to read once again
+                            self.spinner.text = "Reconnecting..."
+                            self.gatt_client.reconnect()
 
-            # Set remote device untursted
-            output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', 
-                                                    addr]), 
-                        stderr=STDOUT, timeout=60, shell=True)
-            logger.info(output.decode())
+                            try:
+                                value = self.gatt_client.read_charact_descriptor(descriptor.handle)
+                                descriptor.set_value(value)
+                            except TimeoutError:
+                                descriptor.set_read_error(ReadCharactDescriptorError("Read Timeout"))
+                                descriptor.set_value(None)
+                            except ReadCharactDescriptorError as e:
+                                descriptor.set_read_error(e)
+                                descriptor.set_value(None)
+                        except ReadCharactDescriptorError as e:
+                            descriptor.set_read_error(e)
+                            descriptor.set_value(None)
 
-            # output = subprocess.check_output(
-            #     ' '.join(['sudo', 'systemctl', 'stop', 'bluetooth.service']), 
-            #     stderr=STDOUT, timeout=60, shell=True)
-
-            # output = subprocess.check_output(
-            #     ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
-            #               self.hci_bdaddr + '/' + addr.upper()]), 
-            #     stderr=STDOUT, timeout=60, shell=True)
-
-            # output = subprocess.check_output(
-            #     ' '.join(['sudo', 'systemctl', 'start', 'bluetooth.service']), 
-            #     stderr=STDOUT, timeout=60, shell=True)
-        except BTLEDisconnectError as e:
-            logger.warning("GattScanner.scan(), BTLEDisconnectError: {}\n".format(e) +
-                           yellow("The Scan results may be incomplete."))
+            # secondary_service_groups = req_groups(addr, addr_type, GattAttrTypes.SECONDARY_SERVICE)
+            # include_groups = req_groups(addr, addr_type, GattAttrTypes.INCLUDE)
+            
+            # print(secondary_service_groups)
+            # print(include_groups)
+    
+        except RuntimeError as e:
+            logger.error("scan()\n" +
+                         "{}\n".format(e.__class__.__name__) + 
+                         "{}".format(e))
         finally:
+            self.spinner.stop()
+    
+            if self.gatt_client is not None:
+                self.gatt_client.close()
+            
             if self.agent_registered:
                 self.agent_mgr_1_iface.UnregisterAgent(
                     ObjectPath(self.bluescan_agent.path))
-                logger.info('Unregistered Agent object')
+                logger.debug("Unregistered agent object")
                 
                 mainloop.quit()
+                self.agent_registered = False
+            try:
+                # Reset and clean bluetooth service
+                output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', addr]), 
+                                                stderr=STDOUT, timeout=60, shell=True) # 这个 untrust 用于解决本地自动重连被扫描设备的问题
+                logger.debug(output.decode())
+            except subprocess.CalledProcessError:
+                pass
+
+            output = subprocess.check_output(
+                ' '.join(['sudo', 'systemctl', 'stop', 'bluetooth.service']), 
+                stderr=STDOUT, timeout=60, shell=True)
+
+            output = subprocess.check_output(
+                ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
+                        self.hci_bdaddr + '/' + addr.upper()]), 
+                stderr=STDOUT, timeout=60, shell=True)
+
+            output = subprocess.check_output(
+                ' '.join(['sudo', 'systemctl', 'start', 'bluetooth.service']), 
+                stderr=STDOUT, timeout=60, shell=True)
         
         return self.result
     
-
     def determine_addr_type(self):
         """For user not provide the remote LE address type."""
+        # logger.info("Automatically determine address type of the remote device\n")
         try:
             with open(LE_DEVS_SCAN_RESULT_CACHE, 'rb') as le_devs_scan_result_cache:
                 le_devs_scan_result = pickle.load(le_devs_scan_result_cache)
                 for dev_info in le_devs_scan_result.devices_info:
                     if self.result.addr == dev_info.addr:
-                        logger.debug("determine_addr_type, {} {}".format(self.result.addr, dev_info.addr_type))
+                        logger.debug("determine_addr_type(), {} {}".format(self.result.addr, dev_info.addr_type))
                         return dev_info.addr_type
         except FileNotFoundError as e:
             logger.debug("No {} found".format(LE_DEVS_SCAN_RESULT_CACHE))

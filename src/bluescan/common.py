@@ -7,8 +7,7 @@ import pkg_resources
 from dbus.exceptions import DBusException
 from gi.repository import GObject
 
-from pyclui import Logger, \
-    blue, red
+from pyclui import Logger, blue, red
 
 APP_NAME = 'bluescan'
 BLUEZ_NAME = 'org.bluez' # The well-known name of bluetoothd

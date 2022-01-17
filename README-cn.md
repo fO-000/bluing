@@ -33,20 +33,15 @@
 bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Linux 上运行，且需要安装如下依赖包：
 
 ```sh
-sudo apt install python3-pip \
-libcairo2-dev          `# To solve the installation error "Failed to build pycairo" ` \
-python3-dev            `# To solve the installation error "Python.h: No such file or directory"` \
-libgirepository1.0-dev `# To solve the installation error "Failed building wheel for PyGObject"` \
-libbluetooth-dev       `# To solve the installation error "bluetooth/bluetooth.h: No such file or directory"` \
-bluez-tools
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools
 ```
 
 如果后续在[安装](https://github.com/fO-000/bluescan/blob/master/README-cn.md#%E5%AE%89%E8%A3%85) bluescan 时仍遇到错误，请尝试继续安装如下 package 来解决：
 
 ```sh
-sudo apt install \
-libglib2.0-dev libdbus-1-dev gir1.2-gtk-3.0 \
-python3-dbus python3-gi python3-gi-cairo
+sudo apt install libglib2.0-dev gir1.2-gtk-3.0 \
+                 python3-dbus python3-gi python3-gi-cairo
 ```
 
 更重要的，**bluescan 至少需要 Python 3.9 的支持**。如果系统默认的 Python 版本低于 3.9，那么你需要做些额外的操作。比如在 Ubuntu 20.04.2 LTS (Focal Fossa) 中，系统默使用 Python 3.8，此时**额外的操作**如下：
@@ -136,7 +131,7 @@ Usage:
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m gatt [--io-capability=<name>] --addr-type=<type> BD_ADDR
     bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
@@ -160,7 +155,6 @@ Options:
     --ll-feature              Scan LL features of the remote LE device.
     --smp-feature             Detect pairing features of the remote LE device.
     --channel=<num>           LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --include-descriptor      Fetch descriptor information.
     --addr-type=<type>        Type of the LE address, public or random.
     --io-capability=<name>    Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
                               KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
@@ -252,7 +246,7 @@ CVE-2017-0785
   ```sh
   # Kali
   rfkill --version
-  # rfkill from util-linux 2.36.1
+  # rfkill from util-linux 2.37.2
   ```
 
 如果遇到如下错误，可重启 bluetooth 服务恢复 (`sudo systemctl restart bluetooth.service`)：

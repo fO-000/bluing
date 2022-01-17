@@ -7,16 +7,13 @@ import logging
 from pathlib import Path
 
 from pyclui import Logger
-
-# sys.path.insert(0, '/home/x/OneDrive/Projects/bthci/src')
-# sys.path.insert(0, '/home/x/OneDrive/Projects/pyclui/src')
-# sys.path.insert(0, '/home/x/OneDrive/Projects/btsmp/src')
 from bthci import HCI
-
 
 logger = Logger(__name__, logging.INFO)
 
-VERSION = '0.6.8'
+PROJECT_NAME = 'bluescan'
+VERSION = '0.7.0'
+
 PKG_ROOT = Path(__file__).parent
 
 LE_DEVS_SCAN_RESULT_CACHE = PKG_ROOT/'res'/'le_devs_scan_result.cache'

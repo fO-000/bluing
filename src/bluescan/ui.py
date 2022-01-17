@@ -18,7 +18,7 @@ Usage:
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--include-descriptor] [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
+    bluescan [-i <hci>] -m gatt [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
     bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
@@ -42,7 +42,6 @@ Options:
     --ll-feature              Scan LL features of the remote LE device.
     --smp-feature             Detect pairing features of the remote LE device.
     --channel=<num>           LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --include-descriptor      Fetch descriptor information.
     --addr-type=<type>        Type of the LE address, public or random.
     --io-capability=<name>    Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
                               KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
@@ -53,7 +52,7 @@ Options:
 import logging
 
 from docopt import docopt
-from btgatt import service_names, charac_names, descriptor_names
+# from btgatt import service_names, charac_names, descriptor_names
 from pyclui import red, yellow, blue, green, \
     Logger
 

@@ -15,6 +15,7 @@ from halo import Halo
 from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
 from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
 from serial import Serial
+
 from bthci import HCI, ERR_REMOTE_USER_TERMINATED_CONNECTION
 import btsmp
 from btsmp import *
