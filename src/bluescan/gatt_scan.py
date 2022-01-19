@@ -462,6 +462,7 @@ class GattScanner(BlueScanner):
                     try:
                         self.spinner.text = "Discovering all descriptors of characteristic 0x{:04x}...".format(characts[idx].declar.handle)
                         descriptors = self.gatt_client.discover_all_charact_descriptors(start_handle, end_handle)
+                        logger.debug("Number of discovered descriptors: {}".format(len(descriptors)))
                         for descriptor in descriptors:
                             characts[idx].add_descriptor_declar(descriptor)
                     except TimeoutError:
