@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202021.4%20(x64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202022.1%20(x64)-brightgreen">
 </p>
 
 > This project is maintained by Sourcell Xu from DBAPP Security HatLab.
