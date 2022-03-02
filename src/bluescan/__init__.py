@@ -12,7 +12,7 @@ from bthci import HCI
 logger = Logger(__name__, logging.INFO)
 
 PROJECT_NAME = 'bluescan'
-VERSION = '0.7.1'
+VERSION = '0.7.2'
 
 PKG_ROOT = Path(__file__).parent
 

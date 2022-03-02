@@ -2,6 +2,8 @@ PROJECT_NAME := bluescan
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
 
+TWINE_PROXY := HTTPS_PROXY=http://localhost:7890
+
 .PHONY: build
 build:
 	# @pyarmor obfuscate --recursive \
@@ -45,4 +47,4 @@ purge:
 
 .PHONY: release
 release:
-	twine upload dist/*.whl dist/*.tar.gz
+	$(TWINE_PROXY) twine upload dist/*.whl dist/*.tar.gz

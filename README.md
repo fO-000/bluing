@@ -5,12 +5,15 @@
 </p>
 
 <p align="center">
-    <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
-    <a href="https://pypis.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
-    <!-- <img src="https://img.shields.io/pypi/pyversions/bluescan?color=blue"> -->
     <img src="https://img.shields.io/badge/python-3.9-blue">
+    <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
+    <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
+    <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads">
+    <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
+</p>
+
+<p align="center">
     <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202021.4%20(x64)-brightgreen">
-    <!-- <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a> -->
 </p>
 
 > This project is maintained by Sourcell Xu from DBAPP Security HatLab.

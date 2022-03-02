@@ -176,7 +176,7 @@ class GattScanResult(ScanResult):
                 uuid_str_for_show = '{:08X}'.format(int.from_bytes(
                     uuid.bytes[0:4], 'big', signed=False))
         else:
-            uuid_str_for_show = str(uuid)
+            uuid_str_for_show = str(uuid).upper()
             
         return uuid_str_for_show
 
@@ -345,7 +345,7 @@ class GattScanner(BlueScanner):
 
             self.gatt_client = GattClient(self.iface)
             
-            logger.debug("Address:      {}\b".format(self.result.addr) + 
+            logger.debug("Address:      {}\n".format(self.result.addr) + 
                          "Address type: {}".format(self.result.addr_type))
             
             try:
@@ -367,12 +367,13 @@ class GattScanner(BlueScanner):
                 except TimeoutError:
                     raise RuntimeError("Can't discover primary service, the remote device may be not connectable")
             
+            logger.debug("number of services: {}".format(len(services)))
             for service in services:
                 self.result.add_service(service)
-                # logger.debug("Service\n" +
-                #              "start_handle: 0x{:04x}\n".format(service.start_handle) + 
-                #              "end_handle:   0x{:04x}\n".format(service.end_handle) +
-                #              "UUID:         {}".format(service.uuid))
+                logger.debug("Service\n" +
+                             "start_handle: 0x{:04x}\n".format(service.start_handle) + 
+                             "end_handle:   0x{:04x}\n".format(service.end_handle) +
+                             "UUID:         {}".format(service.uuid))
         
             self.spinner.text = "Discovering all characteristics of each service..."
             
@@ -380,13 +381,14 @@ class GattScanner(BlueScanner):
                 try:
                     self.spinner.text = "Discovering all characteristics of service 0x{:04x}...".format(service.start_handle)
                     characts = self.gatt_client.discover_all_characts_of_a_service(service)
+                    logger.debug("characts: {}".format(characts))
                 
                     for charact in characts:
-                        # logger.debug("Characteristics\n" +
-                        #             "Handle:       0x{:04x}\n".format(charact.declar.handle) +
-                        #             "Properties:   0x{:02X}\n".format(charact.declar.value.properties) +
-                        #             "Value handle: 0x{:04x}\n".format(charact.declar.value.handle) +
-                        #             "UUID:         {}".format(charact.declar.value.uuid))
+                        logger.debug("Characteristics\n" +
+                                    "Handle:       0x{:04x}\n".format(charact.declar.handle) +
+                                    "Properties:   0x{:02X}\n".format(charact.declar.value.properties) +
+                                    "Value handle: 0x{:04x}\n".format(charact.declar.value.handle) +
+                                    "UUID:         {}".format(charact.declar.value.uuid))
                         service.add_charact(charact)
                 except TimeoutError as e:
                     # When discovering all characteristics fo a service encounters a timeout,

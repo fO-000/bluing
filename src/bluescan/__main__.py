@@ -5,6 +5,7 @@ import sys
 import logging
 import time
 import subprocess
+import traceback
 from subprocess import STDOUT
 from pathlib import PosixPath
 
@@ -30,6 +31,10 @@ logger.debug("__name__: {}".format(__name__))
 
 
 def init_hci(iface='hci0'):
+    output = subprocess.check_output(
+        ' '.join(['sudo', 'systemctl', 'restart', 'bluetooth.service']), 
+        stderr=STDOUT, timeout=60, shell=True)
+    
     hci = HCI(iface)
 
     exitcode, output = subprocess.getstatusoutput(
@@ -170,8 +175,9 @@ def main():
             scan_result.store()
     except (RuntimeError, ValueError, BluetoothError) as e:
         logger.error("{}: {}".format(e.__class__.__name__, e))
+        traceback.print_exc()
         exit(1)
-    except (BTLEException, ValueError) as e:
+    except (BTLEException) as e:
         logger.error(str(e) + ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) else ""))
     except KeyboardInterrupt:
         if args != None and args['-i'] != None:
