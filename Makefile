@@ -3,6 +3,7 @@ $(info machine: $(shell uname -m))
 PROJECT_NAME := $(shell basename `pwd`)
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
+NETHUNTER_ROOT = /data/local/nhsystem/kali-arm64
 
 TWINE_PROXY := HTTPS_PROXY=http://localhost:7890
 
@@ -50,3 +51,10 @@ microbit-purge:
 .PHONY: release
 release:
 	$(TWINE_PROXY) twine upload dist/*.whl dist/*.tar.gz
+
+
+.PHONY: push
+push:
+	@adb push dist/*.whl /sdcard/Download/
+	@adb shell su -c mv /sdcard/Download/*.whl $(NETHUNTER_ROOT)/root/Desktop/temp
+	@scp dist/*.whl Raspberry-Pi-4-via-Local-Ethernet:~/Desktop/temp

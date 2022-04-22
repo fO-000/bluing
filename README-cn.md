@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202022.1%20(x64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202022.1%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.1%20(aarch64)-brightgreen">
 </p>
 
 > 本项目由 Sourcell Xu（杭州安恒信息 海特实验室）维护。
