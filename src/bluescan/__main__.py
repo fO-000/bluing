@@ -22,7 +22,6 @@ from .le_scan import LeScanner
 from .gatt_scan import GattScanner
 from .sdp_scan import SDPScanner
 from .stack_scan import StackScanner
-from .vuln_scan import VulnScanner
 
 
 logger = Logger(__name__, logging.INFO)
@@ -158,8 +157,6 @@ def main():
                 args['BD_ADDR'], args['--addr-type']) 
         elif args['-m'] == 'stack':
             StackScanner(args['-i']).scan(args['BD_ADDR'])
-        elif args['-m'] == 'vuln':
-            VulnScanner(args['-i']).scan(args['BD_ADDR'], args['--addr-type'])
         elif args['--clean']:
             BlueScanner(args['-i'])
             clean(BlueScanner(args['-i']).hci_bdaddr, args['BD_ADDR'])

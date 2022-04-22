@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 
 import sys
-import time
-import select
-import subprocess
 import warnings
 import struct
 import logging
-
-from bluetooth import DeviceDiscoverer
-from bluetooth.btcommon import INTERCOM_CLASS
 
 # Temporary solution for PyBlueZ problems
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -21,7 +15,7 @@ from bluetooth._bluetooth import HCI_EVENT_PKT, EVT_CMD_STATUS, \
     EVT_INQUIRY_RESULT, EVT_INQUIRY_RESULT_WITH_RSSI, \
     EVT_EXTENDED_INQUIRY_RESULT, EVT_INQUIRY_COMPLETE
 
-from bthci import HCI
+from bthci import HCI, ControllerErrorCodes
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
 
@@ -126,21 +120,15 @@ class BRScanner(BlueScanner):
 
     def scan_lmp_feature(self, paddr):
         hci = HCI(self.iface)
-        event_params = hci.create_connection({
-            'BD_ADDR': paddr,
-            'Packet_Type': 0xcc18,
-            'Page_Scan_Repetition_Mode': 0x02,
-            'Reserved': 0x00,
-            'Clock_Offset': 0x0000,
-            'Allow_Role_Switch': 0x01
-        })
+        conn_complete_evt = hci.create_connection(paddr,
+                                                  page_scan_repetition_mode = 0x02)
 
-        if event_params['Status'] != 0:
+        if conn_complete_evt.status != 0:
             logger.error('Failed to create ACL connection')
             sys.exit(1)
 
         event_params = hci.read_remote_version_information(cmd_params={
-            'Connection_Handle': event_params['Connection_Handle']
+            'Connection_Handle': conn_complete_evt.conn_handle
         })
 
         if event_params['Status'] != 0:
@@ -154,36 +142,29 @@ class BRScanner(BlueScanner):
         print('    Manufacturer name:', green(company_identfiers[event_params['Manufacturer_Name']]))
         print('    Subversion:', event_params['Subversion'], '\n')
 
-        event_params = hci.read_remote_supported_features({
-            'Connection_Handle': event_params['Connection_Handle']
-        })
-        if event_params['Status'] != 0:
+        complete_evt = hci.read_remote_supported_features(event_params['Connection_Handle'])
+        if complete_evt.status != ControllerErrorCodes.SUCCESS:
             logger.error('Failed to read remote supported features')
         else:
             print(blue('LMP features'))
-            pp_lmp_features(event_params['LMP_Features'])
+            pp_lmp_features(complete_evt.lmp_features)
             print()
 
-        if not True if (event_params['LMP_Features'][7] >> 7) & 0x01 else False:
+        if not True if (complete_evt.lmp_features[7] >> 7) & 0x01 else False:
             sys.exit(1)
 
         print(blue('Extended LMP features'))
-        event_params = hci.read_remote_extended_features({
-            'Connection_Handle': event_params['Connection_Handle'],
-            'Page_Number': 0x00
-        })
-        if event_params['Status'] != 0:
+        complete_evt = hci.read_remote_extended_features(event_params['Connection_Handle'], 0x00)
+        if complete_evt.status != ControllerErrorCodes.SUCCESS:
             logger.error('Failed to read remote extented features')
         else:
-            pp_ext_lmp_features(event_params['Extended_LMP_Features'], 0)
-            for i in range(1, event_params['Maximum_Page_Number']+1):
-                event_params = hci.read_remote_extended_features({
-                    'Connection_Handle': event_params['Connection_Handle'],
-                    'Page_Number': i})
-                if event_params['Status'] != 0:
+            pp_ext_lmp_features(complete_evt.ext_lmp_features, 0)
+            for i in range(1, complete_evt.max_page_num+1):
+                complete_evt = hci.read_remote_extended_features(event_params['Connection_Handle'], i)
+                if complete_evt.status != ControllerErrorCodes.SUCCESS:
                     logger.error('Failed to read remote extented features, page {}'.format(i))
                 else:
-                    pp_ext_lmp_features(event_params['Extended_LMP_Features'], i)
+                    pp_ext_lmp_features(complete_evt.ext_lmp_features, i)
 
 
     def pp_inquiry_result(self, params):

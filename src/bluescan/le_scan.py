@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 import pickle
-import re
-import sys
-import signal
 import struct
 import logging
 import subprocess
@@ -12,11 +9,9 @@ from subprocess import STDOUT
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate
 from halo import Halo
-from scapy.layers.bluetooth import HCI_Cmd_LE_Create_Connection
-from scapy.layers.bluetooth import HCI_Cmd_LE_Read_Remote_Used_Features as HCI_Cmd_LE_Read_Remote_Features
 from serial import Serial
 
-from bthci import HCI, ERR_REMOTE_USER_TERMINATED_CONNECTION
+from bthci import HCI, ControllerErrorCodes
 import btsmp
 from btsmp import *
 from pyclui import Logger
@@ -285,7 +280,7 @@ class LeScanner:
         return self.devs_scan_result
 
 
-    def scan_ll_feature(self, paddr, patype, timeout:int=10):
+    def scan_ll_feature(self, paddr, patype, timeout: int=10):
         """LL feature scanning
 
         paddr   - Peer addresss for scanning LL features.
@@ -301,9 +296,7 @@ class LeScanner:
         spinner.start()
 
         try:
-            event_params = hci.le_create_connection(
-                HCI_Cmd_LE_Create_Connection(paddr=bytes.fromhex(
-                    paddr.replace(':', ''))[::-1], patype=patype), timeout)
+            event_params = hci.le_create_connection(paddr, patype, timeout=timeout)
             logger.debug(event_params)
         except RuntimeError as e:
             logger.error(str(e))
@@ -313,16 +306,13 @@ class LeScanner:
             # logger.error("TimeoutError {}".format(e))
             return
 
-        event_params = hci.le_read_remote_features(HCI_Cmd_LE_Read_Remote_Features(
-            handle=event_params['Connection_Handle']))
+        event_params = hci.le_read_remote_features(event_params['Connection_Handle'])
         spinner.stop()
         logger.debug(event_params)
         print(blue('LE LL Features:'))
         pp_le_features(event_params['LE_Features'])
 
-        event_params = hci.disconnect({
-            'Connection_Handle': event_params['Connection_Handle'],
-            'Reason': ERR_REMOTE_USER_TERMINATED_CONNECTION})
+        event_params = hci.disconnect(event_params['Connection_Handle'], ControllerErrorCodes.REMOTE_USER_TERM_CONN)
         logger.debug(event_params)
         return
 
@@ -357,9 +347,7 @@ class LeScanner:
         spinner.start()
         
         try:
-            event_params = hci.le_create_connection(
-                HCI_Cmd_LE_Create_Connection(paddr=bytes.fromhex(
-                    paddr.replace(':', ''))[::-1], patype=patype), timeout)
+            event_params = hci.le_create_connection(paddr, patype, timeout=timeout)
             logger.debug(event_params)
 
             result = btsmp.send_pairing_request(event_params['Connection_Handle'], pairing_req, self.hci)
@@ -381,10 +369,8 @@ class LeScanner:
             # logger.error("detect_pairing_feature(), TimeoutError {}".format(e))
 
         if event_params != None:
-            hci.disconnect({
-                'Connection_Handle': event_params['Connection_Handle'],
-                'Reason': 0x1A
-            })
+            hci.disconnect(event_params['Connection_Handle'],
+                           ControllerErrorCodes.UNSUPPORTED_REMOTE_FEATURE)
 
         return
 

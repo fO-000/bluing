@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import io
-import sys
 import pkg_resources
 import logging
 from pathlib import Path
@@ -12,7 +11,7 @@ from bthci import HCI
 logger = Logger(__name__, logging.INFO)
 
 PROJECT_NAME = 'bluescan'
-VERSION = '0.7.3'
+VERSION = '0.7.4'
 
 PKG_ROOT = Path(__file__).parent
 

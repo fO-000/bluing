@@ -2,7 +2,7 @@
 
 r"""bluescan
 
-A powerful Bluetooth scanner.
+A Bluetooth scanner for hacking.
 
 Author: Sourcell Xu from DBAPP Security HatLab.
 
@@ -19,7 +19,6 @@ Usage:
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
-    bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
     BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
@@ -29,7 +28,7 @@ Options:
     -h, --help                Display this help.
     -v, --version             Show the version.
     -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
-    -m <mode>                 Scan mode, support BR, LE, SDP, GATT and vuln.
+    -m <mode>                 Scan mode, support br, le, sdp and gatt.
     --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --lmp-feature             Scan LMP features of the remote BR/EDR device.
     --scan-type=<type>        Scan type used for scanning LE devices, active or 

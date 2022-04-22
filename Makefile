@@ -1,24 +1,25 @@
-PROJECT_NAME := bluescan
+$(info machine: $(shell uname -m))
+
+PROJECT_NAME := $(shell basename `pwd`)
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
 
 TWINE_PROXY := HTTPS_PROXY=http://localhost:7890
 
+
 .PHONY: build
 build:
-	# @pyarmor obfuscate --recursive \
+	@pip3 install -U xpycommon pyclui bthci btsmp btatt btgatt
+
+    # @pyarmor obfuscate --recursive \
     #                    --output dist/obfuscated/$(PROJECT_NAME) \
     #                    src/$(PROJECT_NAME)/__init__.py
 	@python3 -m build --no-isolation
 
-.PHONY: all
-all:
-	@yotta build
-
 
 .PHONY: flash
 flash:
-	@yotta build
+	@yotta build bluescan-advsniff
 
 	@if [ -d $(MICROBIT_PATH) ]; then \
 		cp $(MICROBIT_BIN) $(MICROBIT_PATH); \
@@ -40,10 +41,11 @@ clean:
 
 
 .PHONY: microbit-purge
-purge:
+microbit-purge:
 	-@yotta clean
 	-@rm -r yotta_modules
 	-@rm -r yotta_targets
+
 
 .PHONY: release
 release:

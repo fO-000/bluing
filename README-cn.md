@@ -1,4 +1,4 @@
-# bluescan：一个强大的蓝牙扫描器
+# bluescan：为 Hacking 而生的蓝牙扫描器
 
 <p align="center">
     <a href="https://github.com/fO-000/bluescan/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluescan/blob/master/README-cn.md">简体中文</a>
@@ -30,7 +30,7 @@
 * 嗅探 advertising physical channel PDU
 * SDP 服务扫描
 * GATT 服务扫描
-* 漏洞扫描 (demo)
+* 漏洞扫描 (已弃用，将已另一种方式呈现)
 
 ## 依赖
 
@@ -119,7 +119,7 @@ sudo python3.9 -m pip install bluescan
 $ bluescan -h
 bluescan
 
-A powerful Bluetooth scanner.
+A Bluetooth scanner for hacking.
 
 Author: Sourcell Xu from DBAPP Security HatLab.
 
@@ -136,7 +136,6 @@ Usage:
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--io-capability=<name>] --addr-type=<type> BD_ADDR
-    bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
     BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
@@ -146,7 +145,7 @@ Options:
     -h, --help                Display this help.
     -v, --version             Show the version.
     -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
-    -m <mode>                 Scan mode, support BR, LE, SDP, GATT and vuln.
+    -m <mode>                 Scan mode, support br, le, sdp, and gatt.
     --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --lmp-feature             Scan LMP features of the remote BR/EDR device.
     --scan-type=<type>        Scan type used for scanning LE devices, active or 
@@ -220,16 +219,6 @@ Options:
 低功耗蓝牙设备通过 GATT 告诉外界自己开放的服务。通过 GATT 扫描，我们可以拿到它们的 GATT 数据。之后可以尝试读写这些 GATT 数据，做进一步的安全测试：
 
 ![GATT scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/example-gatt-scan.png)
-
-### 漏洞扫描 `-m vuln` (demo)
-
-漏洞扫描还处于 demo 阶段，目前仅支持 CVE-2017-0785：
-
-```txt
-$ sudo bluescan -m vuln --addr-type=br ??:??:??:??:??:??
-... ...
-CVE-2017-0785
-```
 
 ## FAQ
 

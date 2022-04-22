@@ -22,12 +22,14 @@
 /src/bluescan/bluescan_prompt.bash
 
 # symbolic link, not directory
+/src/xpycommon
+/src/pyclui
 /src/btatt
 /src/btgatt
-/src/bthci
+/src/btl2cap
 /src/btsmp
-/src/pyclui
-/src/xpycommon
+/src/btsdp
+/src/bthci
 
 __pycache__/
 bluescan.spec

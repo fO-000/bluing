@@ -1,4 +1,4 @@
-# bluescan ---- A powerful Bluetooth scanner
+# bluescan ---- A Bluetooth scanner for hacking
 
 <p align="center">
     <a href="https://github.com/fO-000/bluescan/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluescan/blob/master/README-cn.md">简体中文</a>
@@ -30,7 +30,7 @@ When hacking Bluetooth targets, bluescan can be very useful for **intelligence c
 * Real-time advertising physical channel PDU
 * SDP services
 * GATT services
-* Vulnerabilities (demo)
+* Vulnerabilities (deprecated and will be presented in another way)
 
 ## Requirements
 
@@ -68,8 +68,6 @@ When you play this tool in a Linux virtual machine, **making a USB Bluetooth ada
 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) is better than the above-mentioned Ostran adapter. But of course it will be a little more expensive, 560 RMB：
 
 ![Parani UD100-G03](https://raw.githubusercontent.com/fO-000/bluescan//master/res/Parani-UD100-G03.jpg)
-
-And if you want to try the vulnerability scanning, see `README.md` of [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) to resolve dependencies.
 
 ### Dedicated firmware for [micro:bit](https://microbit.org/)
 
@@ -119,7 +117,7 @@ sudo python3.9 -m pip install bluescan
 $ bluescan -h
 bluescan
 
-A powerful Bluetooth scanner.
+A Bluetooth scanner for hacking.
 
 Author: Sourcell Xu from DBAPP Security HatLab.
 
@@ -136,7 +134,6 @@ Usage:
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
     bluescan [-i <hci>] -m gatt [--io-capability=<name>] --addr-type=<type> BD_ADDR
-    bluescan [-i <hci>] -m vuln [--addr-type=<type>] BD_ADDR
 
 Arguments:
     BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
@@ -146,7 +143,7 @@ Options:
     -h, --help                Display this help.
     -v, --version             Show the version.
     -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
-    -m <mode>                 Scan mode, support BR, LE, SDP, GATT and vuln.
+    -m <mode>                 Scan mode, support br, le, sdp and gatt.
     --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --lmp-feature             Scan LMP features of the remote BR/EDR device.
     --scan-type=<type>        Scan type used for scanning LE devices, active or 
@@ -220,16 +217,6 @@ You can try to connect to these services for further hacking.
 LE devices tell the outside world about their open services through GATT. After GATT scanning, we can get the GATT service of them. You can try to read and write these GATT data for further hacking:
 
 ![GATT scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-gatt-scan.png)
-
-### Vulnerabilities scanning `-m vuln` (demo)
-
-Vulnerability scanning is still in the demo stage, and currently only supports CVE-2017-0785:
-
-```txt
-$ sudo bluescan -m vuln --addr-type=br ??:??:??:??:??:??
-... ...
-CVE-2017-0785
-```
 
 ## FAQ
 
