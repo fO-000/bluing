@@ -47,12 +47,12 @@ def valid_bdaddr(addr:str) -> bool:
 
 
 def find_rfkill_devid(dev='hci0') -> int:
-    exitcode, output = subprocess.getstatusoutput('rfkill -rno ID,DEVICE')
-
-    for line in output.splitlines():
-        id_dev = line.split()
-        if len(id_dev) == 2 and id_dev[1] == dev:
-            return int(id_dev[0])
+    exitcode, output = subprocess.getstatusoutput('rfkill list')
+    
+    output = output.split("\n")
+    for idx in range(0, len(output), 3):
+        if output[idx].split(": ")[1] == dev:
+            return int(output[idx][0])
         else:
             continue
     
