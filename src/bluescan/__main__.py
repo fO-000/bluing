@@ -12,7 +12,8 @@ from pathlib import PosixPath
 from bthci import HCI
 from pyclui import Logger, blue
 from bluepy.btle import BTLEException
-from bluetooth.btcommon import BluetoothError
+
+from xpycommon.bluetooth import is_bluetooth_service_active
 
 from . import BlueScanner
 from .ui import parse_cmdline, INDENT
@@ -21,7 +22,7 @@ from .br_scan import BRScanner
 from .le_scan import LeScanner
 from .gatt_scan import GattScanner
 from .sdp_scan import SDPScanner
-from .stack_scan import StackScanner
+# from .stack_scan import StackScanner
 
 
 logger = Logger(__name__, logging.INFO)
@@ -29,32 +30,23 @@ logger = Logger(__name__, logging.INFO)
 logger.debug("__name__: {}".format(__name__))
 
 
-def init_hci(iface='hci0'):
-    output = subprocess.check_output(
-        ' '.join(['sudo', 'systemctl', 'restart', 'bluetooth.service']), 
-        stderr=STDOUT, timeout=60, shell=True)
-    
+def init_hci(iface: str = 'hci0'):
+    # hciconfig <hci> up 的前提是 rfkill 先 unblock
+    subprocess.check_output('rfkill unblock %d' % find_rfkill_devid(iface), 
+                            stderr=STDOUT, timeout=5, shell=True)
+    subprocess.check_output('hciconfig {} up'.format(iface),
+                            stderr=STDOUT, timeout=5, shell=True)
+    subprocess.check_output('systemctl restart bluetooth.service', 
+                            stderr=STDOUT, timeout=5, shell=True)
+
     hci = HCI(iface)
 
-    exitcode, output = subprocess.getstatusoutput(
-        'rfkill unblock %d' % find_rfkill_devid(iface))
-    if exitcode != 0:
-        logger.error('rfkill: ' + output)
-        sys.exit(exitcode)
-
-    exitcode, output = subprocess.getstatusoutput('hciconfig {} up'.format(iface))
-    if exitcode != 0:
-        logger.error("Failed to up " + iface)
-        sys.exit(exitcode)
-    else:
-        time.sleep(0.5)
-
-    # hci.reset()
+    # 下面在发送各种 HCI command 时，如果出现如下异常：
+    #     BlockingIOError: [Errno 11] Resource temporarily unavailable
+    # 那么可能是 hci socket 被设为了 non-blocking mode。
     hci.inquiry_cancel()
     hci.exit_periodic_inquiry_mode()
-
     hci.write_scan_enable() # No scan enabled
-
     event_params = hci.le_set_advertising_enable() # Advertising is disabled
     if event_params['Status'] != 0x00:
         #print(WARNING, 'Status of HCI_LE_Set_Advertising_Enable command: 0x%02x'%event_params['Status'])
@@ -83,6 +75,8 @@ def init_hci(iface='hci0'):
         for file in cache_path.iterdir():
             os.remove(file)
 
+    hci.close()
+
 
 def clean(laddr: str, raddr: str):
     output = subprocess.check_output(
@@ -109,22 +103,20 @@ def clean(laddr: str, raddr: str):
 
 
 def main():
-    args = None
     try:
         args = parse_cmdline()
         logger.debug("main(), args: {}".format(args))
 
         if not args['--adv']:
-            if args['-i'] == 'The first HCI device':
-                exitcode, output = subprocess.getstatusoutput(
-                    'systemctl start bluetooth.service')
-                if exitcode != 0:
-                    logger.error("Failed to start bluetooth.service")
-                    sys.exit(exitcode)
+            # 在不使用 microbit 的情况下，我们需要将选中的 hci 设备配置到一个干净的状态。
+            
+            if args['-i'] == 'The default HCI device':
+                # 当 user 没有显示指明 hci 设备情况下，我们需要自动获取一个可用的 hci 
+                # 设备。注意这个设备不一定是 hci0。因为系统中可能只有 hci1，而没有 hci0。
                 try:
-                    args['-i'] = HCI.get_default_hcistr() # May raise IndexError
+                    args['-i'] = HCI.get_default_hcistr()
                 except IndexError:
-                    logger.error('There is no available HCI device')
+                    logger.error('No available HCI device')
                     exit(-1)
 
             init_hci(args['-i'])
@@ -155,8 +147,8 @@ def main():
         elif args['-m'] == 'gatt':
             scan_result = GattScanner(args['-i'], args['--io-capability']).scan(
                 args['BD_ADDR'], args['--addr-type']) 
-        elif args['-m'] == 'stack':
-            StackScanner(args['-i']).scan(args['BD_ADDR'])
+        # elif args['-m'] == 'stack':
+        #     StackScanner(args['-i']).scan(args['BD_ADDR'])
         elif args['--clean']:
             BlueScanner(args['-i'])
             clean(BlueScanner(args['-i']).hci_bdaddr, args['BD_ADDR'])
@@ -170,7 +162,8 @@ def main():
             print(blue("----------------"+scan_result.type+" Scan Result"+"----------------"))
             scan_result.print()
             scan_result.store()
-    except (RuntimeError, ValueError, BluetoothError) as e:
+    # except (RuntimeError, ValueError, BluetoothError) as e:
+    except (RuntimeError, ValueError) as e:
         logger.error("{}: {}".format(e.__class__.__name__, e))
         traceback.print_exc()
         exit(1)

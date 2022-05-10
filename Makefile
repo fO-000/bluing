@@ -10,12 +10,8 @@ TWINE_PROXY := HTTPS_PROXY=http://localhost:7890
 
 .PHONY: build
 build:
-	@pip3 install -U xpycommon pyclui bthci btsmp btatt btgatt
-
-    # @pyarmor obfuscate --recursive \
-    #                    --output dist/obfuscated/$(PROJECT_NAME) \
-    #                    src/$(PROJECT_NAME)/__init__.py
-	@python3 -m build --no-isolation
+	@python3.10 -m pip install -U xpycommon pyclui bthci btsmp btatt btgatt
+	@python3.10 -m build --no-isolation
 
 
 .PHONY: flash

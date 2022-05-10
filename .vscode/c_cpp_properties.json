@@ -3,8 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                //"${workspaceFolder}/**",
-                "/usr/include/python3.8",
+                "/usr/include/python3.10",
                 "/usr/include/newlib",
                 "${workspaceFolder}/yotta_modules/microbit/inc",
                 "${workspaceFolder}/yotta_modules/mbed-classic/api",

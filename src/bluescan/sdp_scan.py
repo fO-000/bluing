@@ -4,7 +4,6 @@ import re
 import sys
 import logging
 import subprocess
-from bluetooth import find_service
 from xml.etree import ElementTree
 
 from pyclui import Logger
@@ -33,20 +32,6 @@ class SDPScanner(BlueScanner):
         
         # print('[DEBUG] output:', output)
         self.pp_sdptool_output(output)
-        
-        # services = find_service(address=addr)
-        # # print(services)
-        # # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        # for service in services:
-        #     print('Name:', service['name'] )
-        #     print('ProtocolDescriptorList', service['protocol'])
-        #     print('channel/PSM', service['port'])
-        #     print('ServiceClassIDList:', service['service-classes'])
-        #     print('Profiles:', service['profiles'])
-        #     print('Description:', service['description'])
-        #     print('Provider:', service['provider'])
-        #     print('ServiceID', service['service-id'])
-        #     print()
 
 
     @classmethod

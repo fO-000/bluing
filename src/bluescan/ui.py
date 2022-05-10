@@ -27,7 +27,7 @@ Arguments:
 Options:
     -h, --help                Display this help.
     -v, --version             Show the version.
-    -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
+    -i <hci>                  HCI device used for subsequent scans. [default: The default HCI device]
     -m <mode>                 Scan mode, support br, le, sdp and gatt.
     --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
     --lmp-feature             Scan LMP features of the remote BR/EDR device.

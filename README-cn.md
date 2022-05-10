@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/python-3.9-blue">
+    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
     <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202022.1%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.1%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.2%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.2%20(aarch64)-brightgreen">
 </p>
 
 > 本项目由 Sourcell Xu（杭州安恒信息 海特实验室）维护。
@@ -38,7 +38,7 @@ bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Li
 
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools python3-bluez
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
 ```
 
 如果后续在[安装](https://github.com/fO-000/bluescan/blob/master/README-cn.md#%E5%AE%89%E8%A3%85) bluescan 时仍遇到错误，请尝试继续安装如下 package 来解决：
@@ -107,10 +107,10 @@ make flash
 sudo pip3 install bluescan
 ```
 
-如果你没有使用系统默认的 Python，而是自己安装的 Python 3.9，那么需要这样安装 bluescan：
+如果你没有使用系统默认的 Python，而是自己安装的 Python 3.9 或 3.10，那么需要这样安装 bluescan：
 
-```sh
-sudo python3.9 -m pip install bluescan
+```txt
+sudo python<3.9|3.10> -m pip install bluescan
 ```
 
 ## 使用

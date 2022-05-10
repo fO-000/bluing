@@ -1,5 +1,7 @@
-#.gitignore
 /.vscode/.ropeproject
+/.vscode/configurationCache.log
+/.vscode/dryrun.log
+/.vscode/targets.log
 /.vscode/launch.json
 /.vscode/settings.json
 

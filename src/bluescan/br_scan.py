@@ -5,22 +5,12 @@ import warnings
 import struct
 import logging
 
-# Temporary solution for PyBlueZ problems
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-from bluetooth._bluetooth import SOL_HCI, HCI_FILTER
-from bluetooth._bluetooth import hci_open_dev, hci_filter_new, \
-    hci_filter_set_ptype, hci_filter_all_events, hci_send_cmd, hci_close_dev
-from bluetooth._bluetooth import OGF_LINK_CTL, OCF_INQUIRY
-from bluetooth._bluetooth import HCI_EVENT_PKT, EVT_CMD_STATUS, \
-    EVT_INQUIRY_RESULT, EVT_INQUIRY_RESULT_WITH_RSSI, \
-    EVT_EXTENDED_INQUIRY_RESULT, EVT_INQUIRY_COMPLETE
-
-from bthci import HCI, ControllerErrorCodes
+from bthci import HCI, HciRuntimeError, ControllerErrorCodes, HciEventCodes, \
+    HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, HCI_Extended_Inquiry_Result
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
 
-from . import BlueScanner
-from . import service_cls_profile_ids
+from . import BlueScanner, service_cls_profile_ids
 from .ui import INDENT
 from .common import bdaddr_to_company_name
 from .ll import ll_vers
@@ -29,9 +19,7 @@ from .gap_data import gap_type_names, \
     COMPLETE_LIST_OF_32_BIT_SERVICE_CLASS_UUIDS, \
     COMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, COMPLETE_LOCAL_NAME, \
     SHORTENED_LOCAL_NAME, TX_POWER_LEVEL
-
-from .lmp import lmp_vers, company_identfiers
-from .lmp import pp_lmp_features, pp_ext_lmp_features
+from .lmp import lmp_vers, company_identfiers, pp_lmp_features, pp_ext_lmp_features
 
 
 logger = Logger(__name__, logging.INFO)
@@ -52,71 +40,56 @@ major_dev_clses = {
 }
 
 
-
 class BRScanner(BlueScanner):
-    def inquiry(self, lap=0x9e8b33, inquiry_len=0x08, num_rsp=0x00):
+    def inquiry(self, inquiry_len=0x08):
         logger.info('BR scanning on ' + blue("hci%d"%self.devid) + \
               ' with timeout ' + blue("%.2f sec\n"%(inquiry_len*1.28))+'\n')
-        
+
         self.scanned_dev = []
         self.remote_name_req_flag = True
-        
-        cmd_params = lap.to_bytes(3, 'little') + \
-            inquiry_len.to_bytes(1, 'little') + num_rsp.to_bytes(1, 'little')
-        
-        # If no filter is set, we can't receive any inquiry result.
-        flt = hci_filter_new()
-        hci_filter_set_ptype(flt, HCI_EVENT_PKT)
-        hci_filter_all_events(flt)
+        hci = HCI(self.iface)
 
-        dd = hci_open_dev(self.devid)
-        dd.setsockopt(SOL_HCI, HCI_FILTER, flt)
+        def inquiry_result_handler(result: bytes):
+            event_code = result[0]
 
-        hci_send_cmd(dd, OGF_LINK_CTL, OCF_INQUIRY, cmd_params)
+            logger.debug("Entered inquiry(), inquiry_result_handler()\n"
+                         "{}".format(HciEventCodes[event_code].name))
+
+            if event_code == HCI_Inquiry_Result.evt_code:
+                self.pp_inquiry_result(result[2:])
+            elif event_code == HCI_Inquiry_Result_with_RSSI.evt_code:
+                self.pp_inquiry_result_with_rssi(result[2:])
+            elif event_code == HCI_Extended_Inquiry_Result.evt_code:
+                self.pp_extended_inquiry_result(result[2:])
+            else:
+                logger.warning('Unknow inquiry result: {}'.format(result))
 
         try:
-            while True:
-                data = dd.recv(300)
-                if len(data) >= 4:
-                    event_code = data[1]
-                    if event_code == EVT_CMD_STATUS:
-                        logger.debug('HCI_Command_Status')
-                        pass
-                    elif event_code == EVT_INQUIRY_RESULT:
-                        logger.debug('HCI_Inquiry_Result')
-                        self.pp_inquiry_result(data[3:])
-                    elif event_code == EVT_INQUIRY_RESULT_WITH_RSSI:
-                        logger.debug('HCI_Inquiry_Result_with_RSSI')
-                        self.pp_inquiry_result_with_rssi(data[3:])
-                    elif event_code == EVT_EXTENDED_INQUIRY_RESULT:
-                        logger.debug('HCI_Extended_Inquiry_Result')
-                        self.pp_extended_inquiry_result(data[3:])
-                    elif event_code == EVT_INQUIRY_COMPLETE:
-                        logger.debug('HCI_Inquiry_Complete')
-                        logger.info('Inquiry completed\n')
+            hci.inquiry(inquiry_len=inquiry_len, inquiry_result_handler=inquiry_result_handler)
+            logger.info('Inquiry completed\n')
 
-                        if self.remote_name_req_flag and len(self.scanned_dev) != 0:
-                            logger.info('Requesting the name of the scanned devices...')
-                            for bd_addr in self.scanned_dev:
-                                try:
-                                    name = HCI(self.iface).remote_name_request({
-                                        'BD_ADDR': bytes.fromhex(bd_addr.replace(':', '')),
-                                        'Page_Scan_Repetition_Mode': 0x01, 
-                                        'Reserved': 0x00, 'Clock_Offset': 0x0000
-                                    })['Remote_Name'].decode().strip()
-                                except Exception as e:
-                                    print(e)
-                                    name = ''
+            if self.remote_name_req_flag and len(self.scanned_dev) != 0:
+                logger.info('Requesting the name of the scanned devices...')
+                for bd_addr in self.scanned_dev:
+                    try:
+                        name = hci.remote_name_request({
+                            'BD_ADDR': bytes.fromhex(bd_addr.replace(':', '')),
+                            'Page_Scan_Repetition_Mode': 0x01, 
+                            'Reserved': 0x00, 'Clock_Offset': 0x0000
+                        })['Remote_Name'].decode().strip()
+                    except Exception as e:
+                        print(e)
+                        name = ''
 
-                                print(bd_addr+':', blue(name))
-                        break
-                    else:
-                        logger.debug('Unknow: {}'.format(data))
+                    print(bd_addr+':', blue(name))
+        except HciRuntimeError as e:
+            logger.error("{}".format(e))
         except KeyboardInterrupt as e:
             logger.info('BR/EDR devices scan canceled\n')
-            HCI(self.iface).inquiry_cancel()
+            hci.inquiry_cancel()
+            
+        hci.close()
 
-        hci_close_dev(dd.fileno())
 
     def scan_lmp_feature(self, paddr):
         hci = HCI(self.iface)

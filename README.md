@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/python-3.9-blue">
+    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
     <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2021.10%20(x64)%20%7C%20Kali%202022.1%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.1%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.2%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.2%20(aarch64)-brightgreen">
 </p>
 
 > This project is maintained by Sourcell Xu from DBAPP Security HatLab.
@@ -38,7 +38,7 @@ bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports
 
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools python3-bluez
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
 ```
 
 If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
@@ -105,10 +105,10 @@ The lastest bluescan will be uploaded to PyPI, so the following command can inst
 sudo pip3 install bluescan
 ```
 
-If you do not use the system default Python, but install Python 3.9 yourself, then you need to install bluescan like this: 
+If you do not use the system default Python, but install Python 3.9 or 3.10 yourself, then you need to install bluescan like this: 
 
-```sh
-sudo python3.9 -m pip install bluescan
+```txt
+sudo python<3.9|3.10> -m pip install bluescan
 ```
 
 ## Usage
