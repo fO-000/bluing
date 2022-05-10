@@ -6,9 +6,9 @@
 
 <p align="center">
     <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
-    <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
+    <a href="https://pepy.tech/badge/bluescan"><img src="https://pepy.tech/badge/bluescan"></a>
     <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
 </p>
 
@@ -17,6 +17,24 @@
 </p>
 
 > This project is maintained by Sourcell Xu from DBAPP Security HatLab.
+
+## TL;DR
+
+```sh
+# Install dependencies
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
+
+# Install bluescan
+sudo pip3 install bluescan
+
+bluescan --help
+
+# Perform scan
+sudo bluescan -m <br|le|sdp|gatt> [opt]... [BD_ADDR]
+```
+
+## Introduction
 
 Bluetooth is a complex protocol, and a good scanner can quickly help us peek inside its secrets. But previous Bluetooth scanners suffered from a number of problems such as incomplete functionality, unintuitive information and out of repair. So we came up with this powerful Bluetooth scanner based on modern Python 3 ---- bluescan.
 

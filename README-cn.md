@@ -6,9 +6,9 @@
 
 <p align="center">
     <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
-    <!-- <a href="https://github.com/fO-000/bluescan/releases/latest"><img src="https://img.shields.io/github/v/release/fO-000/bluescan?style=plastic"></a> -->
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
+    <a href="https://pepy.tech/badge/bluescan"><img src="https://pepy.tech/badge/bluescan"></a>
     <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
 </p>
 
@@ -17,6 +17,24 @@
 </p>
 
 > 本项目由 Sourcell Xu（杭州安恒信息 海特实验室）维护。
+
+## TL;DR
+
+```sh
+# 安装依赖
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
+
+# 安装 bluescan
+sudo pip3 install bluescan
+
+bluescan --help
+
+# 执行扫描
+sudo bluescan -m <br|le|sdp|gatt> [opt]... [BD_ADDR]
+```
+
+## 介绍
 
 蓝牙是一个复杂的协议，一个好用的扫描器可以快速帮我们窥探其内部的秘密。但先前的蓝牙扫描器存在功能不全、信息不直观以及年久失修等诸多问题。于是我们就有了这个基于现代 Python 3 开发的强大蓝牙扫描器 —— bluescan。
 
