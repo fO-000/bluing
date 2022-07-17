@@ -16,8 +16,6 @@
     <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.2%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.2%20(aarch64)-brightgreen">
 </p>
 
-> This project is maintained by Sourcell Xu from DBAPP Security HatLab.
-
 ## TL;DR
 
 ```sh
@@ -136,8 +134,6 @@ $ bluescan -h
 bluescan
 
 A Bluetooth scanner for hacking.
-
-Author: Sourcell Xu from DBAPP Security HatLab.
 
 License: GPL-3.0
 

@@ -1,17 +1,25 @@
-$(info machine: $(shell uname -m))
+include /home/x/OneDrive/Projects/makefile-common/src/Makefile.twine
+include /home/x/OneDrive/Projects/makefile-common/src/Makefile.python
+include /home/x/OneDrive/Projects/makefile-common/src/Makefile.nethunter
 
-PROJECT_NAME := $(shell basename `pwd`)
+
+$(info PROJECT_NAME: $(PROJECT_NAME))
+$(info machine: $(MACHINE))
+$(info INSTALL_REQUIRED_PY_PKGS: $(INSTALL_REQUIRED_PY_PKGS))
+
+
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
-NETHUNTER_ROOT = /data/local/nhsystem/kali-arm64
-
-TWINE_PROXY := HTTPS_PROXY=http://localhost:7890
 
 
 .PHONY: build
 build:
-	@python3.10 -m pip install -U xpycommon pyclui bthci btsmp btatt btgatt
-	@python3.10 -m build --no-isolation
+	$(call python-build)
+
+
+.PHONY: install
+install:
+	$(call python-install)
 
 
 .PHONY: flash
@@ -33,7 +41,7 @@ flash:
 
 .PHONY: clean
 clean:
-	-@rm -r dist/* src/$(PROJECT_NAME)/__pycache__ src/*.egg-info
+	$(call python-clean)
 	-@yotta clean
 
 
@@ -46,11 +54,10 @@ microbit-purge:
 
 .PHONY: release
 release:
-	$(TWINE_PROXY) twine upload dist/*.whl dist/*.tar.gz
+	$(call twine-release)
 
 
 .PHONY: push
 push:
-	@adb push dist/*.whl /sdcard/Download/
-	@adb shell su -c mv /sdcard/Download/*.whl $(NETHUNTER_ROOT)/root/Desktop/temp
+	$(call push-to-nethunter)
 	@scp dist/*.whl Raspberry-Pi-4-via-Local-Ethernet:~/Desktop/temp

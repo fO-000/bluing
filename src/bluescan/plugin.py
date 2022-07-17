@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+
+import subprocess
+from typing import Union
+from abc import ABCMeta, abstractmethod
+from importlib.metadata import metadata, version
+
+import pkg_resources
+from pyclui import Logger, INFO, DEBUG, blue
+from docopt import DocoptExit
+
+
+logger = Logger(__name__, DEBUG)
+
+
+class PluginError(Exception):
+    pass
+
+class PluginOptionsError(PluginError):
+    pass
+
+class PluginRuntimeError(PluginError):
+    pass
+
+class PluginPrepareError(PluginError):
+    pass
+
+class PluginCleanError(PluginError):
+    pass
+
+
+class PluginHelpException(Exception):
+    """给 plugin 传递 -h, --help 时，plugin 应该抛出该异常，表示自己只打印了帮助，并没有
+    执行核心内容"""
+    pass
+
+class Plugin(metaclass=ABCMeta):
+    MAGIC_CLASSIFIER = 'Framework :: Bluescan :: Plugin'
+    
+    @abstractmethod
+    def __init__(self, argv: Union[list[str], None] = None) -> None:
+        pass
+
+    @abstractmethod
+    def prepare(self):
+        """如果一个 plugin 的某些初始化代码，会影响到其他 plugin 的创建，那么应该把它们写
+        在 prepare() 中，而不是 __init__() 中。"""
+        pass
+    
+    @abstractmethod
+    def run(self):
+        pass
+    
+    @abstractmethod
+    def clean(self):
+        pass
+
+
+def list_plugins():
+    for dist in pkg_resources.working_set:
+        pkg_name = dist.key
+        try:
+            if Plugin.MAGIC_CLASSIFIER in str(metadata(pkg_name)):
+                print(pkg_name, version(pkg_name))
+        except:
+            pass
+
+        # if 'meta' in str(metadata(pkg_name)):
+        #     version(pkg_name)
+
+        #     metadata(pkg_name)
+        #     print(pkg_name)
+
+        # try:
+        #     dist.get_metadata('METADATA'))
+        # except FileNotFoundError:
+        #     pass
+        
+        # print(distri.key)
+
+
+def install_plugin(whl_path: str):
+    subprocess.check_output('pip install {} 2>&1 | grep -v "pip as the \'root\'"'.format(whl_path), shell=True)
+    logger.info("Installed {}".format(whl_path))
+
+
+def uninstall_plugin(name: str):
+    subprocess.check_output('pip uninstall -y {}  2>&1 | grep -v "pip as the \'root\'"'.format(name), shell=True)
+    logger.info("Uninstalled {}".format(name))
+
+
+def run_plugin(name: str, opts: str):
+    if ' ' in name or ';' in name or '(' in name or ')' in name or '{' in name or \
+       '}' in name or ':' in name or '\'' in name or '"' in name or '.' in name or \
+       len(name) > 34:
+        raise ValueError("malicious name")
+    
+    # cmd = 'python -m {} {}'.format(name, opts)
+    # logger.debug("{}: {}".format(blue("run_plugin()"), cmd))
+    # try:
+        # subprocess.run(cmd, shell=True, check=True)
+    # except CalledProcessError as e:
+        # logger.error("{}".format(e))
+        
+    exec("import {}".format(name))
+    plugin__all__ = eval("{}.__all__".format(name))
+    for i in plugin__all__:
+        if issubclass(i, Plugin):
+            PluginSubclass = i
+            logger.debug("PluginSubclass: {}".format(i))
+    
+    try:
+        logger.debug("opts: {}".format(opts))
+        plugin = PluginSubclass(argv=opts)
+        
+        plugin.prepare()
+        result = plugin.run()
+        plugin.clean()
+        logger.info('{}: {}'.format(plugin.__class__, result))
+    except DocoptExit as e:
+        # 当不给 plugin 提供任何参数时，解析 plugin 参数的 docopt() 会抛出携带帮助信息的
+        # DocoptExit 异常。
+        logger.debug("{}".format(type(e)))
+        help_msg = str(e)
+        print(help_msg)
+    except PluginHelpException as e:
+        logger.debug("{}".format(type(e)))
+    except PluginOptionsError as e:
+        logger.error("{}: {}".format(name, e))
+    except PluginPrepareError as e:
+        logger.error("{}: {}".format(name, e))
+    except PluginRuntimeError as e:
+        logger.error("{}: {}".format(name, e))
+    except PluginCleanError as e:
+        logger.error("{}: {}".format(name, e))

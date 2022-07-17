@@ -2,7 +2,6 @@
 
 import os
 import sys
-import logging
 import time
 import subprocess
 import traceback
@@ -10,7 +9,7 @@ from subprocess import STDOUT
 from pathlib import PosixPath
 
 from bthci import HCI
-from pyclui import Logger, blue
+from pyclui import Logger, DEBUG, INFO, blue
 from bluepy.btle import BTLEException
 
 from xpycommon.bluetooth import is_bluetooth_service_active
@@ -18,16 +17,21 @@ from xpycommon.bluetooth import is_bluetooth_service_active
 from . import BlueScanner
 from .ui import parse_cmdline, INDENT
 from .helper import find_rfkill_devid, get_microbit_devpaths
+from .plugin import list_plugins, install_plugin, uninstall_plugin, run_plugin
 from .br_scan import BRScanner
 from .le_scan import LeScanner
 from .gatt_scan import GattScanner
 from .sdp_scan import SDPScanner
+
 # from .stack_scan import StackScanner
 
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, DEBUG)
 
 logger.debug("__name__: {}".format(__name__))
+
+
+PLUGIN_PATH = '/root/.bluescan/plugins'
 
 
 def init_hci(iface: str = 'hci0'):
@@ -105,7 +109,27 @@ def clean(laddr: str, raddr: str):
 def main():
     try:
         args = parse_cmdline()
-        logger.debug("main(), args: {}".format(args))
+        logger.debug(blue("main()") + ", args: {}".format(args))
+
+        if args['--list-installed-plugins']:
+            list_plugins()
+            return
+        
+        if args['--install-plugin']:
+            plugin_wheel_path = args['--install-plugin']
+            install_plugin(plugin_wheel_path)
+            return
+        
+        if args['--uninstall-plugin']:
+            plugin_name = args['--uninstall-plugin']
+            uninstall_plugin(plugin_name)
+            return
+        
+        if args['--run-plugin']:
+            plugin_name = args['--run-plugin']
+            opts = args['<plugin-opt>']
+            run_plugin(plugin_name, opts)
+            return
 
         if not args['--adv']:
             # 在不使用 microbit 的情况下，我们需要将选中的 hci 设备配置到一个干净的状态。

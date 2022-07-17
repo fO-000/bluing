@@ -37,15 +37,6 @@ logger = Logger(__name__, logging.INFO)
 #     raise RuntimeError("Couldn't determine the LE address type. Please provide it explicitly.")
 
 
-def valid_bdaddr(addr:str) -> bool:
-    regexp = r'(?:[\da-fA-F]{2}:){5}[\da-fA-F]{2}'
-    result = re.findall(regexp, addr)
-    if len(result) == 0 or result[0] != addr:
-        return False
-    else:
-        return True
-
-
 def find_rfkill_devid(dev='hci0') -> int:
     exitcode, output = subprocess.getstatusoutput('rfkill -rno ID,DEVICE')
 
