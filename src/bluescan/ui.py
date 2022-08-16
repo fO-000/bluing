@@ -60,21 +60,21 @@ Options:
 
 from docopt import docopt
 # from btgatt import service_names, charac_names, descriptor_names
-from pyclui import red, yellow, blue, green, \
-    Logger, INFO, DEBUG
+from pyclui import red, Logger
 
 from xpycommon import valid_bdaddr
 
-from . import VERSION
+from . import VERSION, LOG_LEVEL
 
 
-logger = Logger(__name__, INFO)
+logger = Logger(__name__, LOG_LEVEL)
 INDENT = ' ' * 4
 
 
 def parse_cmdline() -> dict:
     args = docopt(__doc__, version="v"+VERSION, options_first=True)
-    logger.debug("parse_cmdline, args: {}".format(args))
+    logger.debug("docopt() returned\n"
+                 "    args: {}".format(args))
     
     try:
         if args['-m'] is not None:

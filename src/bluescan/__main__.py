@@ -9,29 +9,23 @@ from subprocess import STDOUT
 from pathlib import PosixPath
 
 from bthci import HCI
-from pyclui import Logger, DEBUG, INFO, blue
+from pyclui import Logger, blue
 from bluepy.btle import BTLEException
 
 from xpycommon.bluetooth import is_bluetooth_service_active
 
-from . import BlueScanner
-from .ui import parse_cmdline, INDENT
+from . import BlueScanner, LOG_LEVEL
+from .ui import parse_cmdline
 from .helper import find_rfkill_devid, get_microbit_devpaths
-from .plugin import list_plugins, install_plugin, uninstall_plugin, run_plugin
+from .plugin import PluginInstallError, list_plugins, install_plugin, uninstall_plugin, run_plugin
 from .br_scan import BRScanner
 from .le_scan import LeScanner
 from .gatt_scan import GattScanner
 from .sdp_scan import SDPScanner
 
-# from .stack_scan import StackScanner
-
-
-logger = Logger(__name__, DEBUG)
-
-logger.debug("__name__: {}".format(__name__))
-
 
 PLUGIN_PATH = '/root/.bluescan/plugins'
+logger = Logger(__name__, LOG_LEVEL)
 
 
 def init_hci(iface: str = 'hci0'):
@@ -109,7 +103,8 @@ def clean(laddr: str, raddr: str):
 def main():
     try:
         args = parse_cmdline()
-        logger.debug(blue("main()") + ", args: {}".format(args))
+        logger.debug("parse_cmdline() returned\n"
+                     "    args: {}".format(args))
 
         if args['--list-installed-plugins']:
             list_plugins()
@@ -193,6 +188,8 @@ def main():
         exit(1)
     except (BTLEException) as e:
         logger.error(str(e) + ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) else ""))
+    except PluginInstallError as e:
+        logger.error("Failed to install plugin: {}".format(e))
     except KeyboardInterrupt:
         if args != None and args['-i'] != None:
             output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 

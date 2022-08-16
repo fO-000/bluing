@@ -1,13 +1,14 @@
+
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.twine
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.python
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.nethunter
-
 
 $(info PROJECT_NAME: $(PROJECT_NAME))
 $(info machine: $(MACHINE))
 $(info INSTALL_REQUIRED_PY_PKGS: $(INSTALL_REQUIRED_PY_PKGS))
 
-
+.DEFAULT_GOAL := build
+PKG_NAME := $(PY_PKG_NAME)
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
 
@@ -61,3 +62,8 @@ release:
 push:
 	$(call push-to-nethunter)
 	@scp dist/*.whl Raspberry-Pi-4-via-Local-Ethernet:~/Desktop/temp
+
+
+.PHONY: push-to-ubuntu-server-vm
+push-to-ubuntu-server-vm:
+	scp dist/$(PKG_NAME)-*-py3-none-any.whl Ubuntu-Server-VM:~/Downloads/

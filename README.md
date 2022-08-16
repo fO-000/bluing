@@ -135,6 +135,8 @@ bluescan
 
 A Bluetooth scanner for hacking.
 
+Author: Sourcell Xu
+
 License: GPL-3.0
 
 Usage:
@@ -147,33 +149,43 @@ Usage:
     bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
     bluescan -m le --adv [--channel=<num>]
     bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--io-capability=<name>] --addr-type=<type> BD_ADDR
+    bluescan [-i <hci>] -m gatt [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
+    bluescan --list-installed-plugins
+    bluescan --install-plugin=<path>
+    bluescan --uninstall-plugin=<name>
+    bluescan --run-plugin=<name> [--] [<plugin-opt>...]
+
 
 Arguments:
-    BD_ADDR    Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
-               device.
+    BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
+                  device.
+    plugin-opt    Options for a plugin.
 
 Options:
-    -h, --help                Display this help.
-    -v, --version             Show the version.
-    -i <hci>                  HCI device used for subsequent scans. [default: The first HCI device]
-    -m <mode>                 Scan mode, support br, le, sdp and gatt.
-    --inquiry-len=<n>         Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
-    --lmp-feature             Scan LMP features of the remote BR/EDR device.
-    --scan-type=<type>        Scan type used for scanning LE devices, active or 
-                              passive. [default: active]
-    --timeout=<sec>           Duration of the LE scanning, but may not be precise. [default: 10]
-    --sort=<key>              Sort the discovered devices by key, only support 
-                              RSSI now. [default: rssi]
-    --adv                     Sniff advertising physical channel PDU. Need at 
-                              least one micro:bit.
-    --ll-feature              Scan LL features of the remote LE device.
-    --smp-feature             Detect pairing features of the remote LE device.
-    --channel=<num>           LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --addr-type=<type>        Type of the LE address, public or random.
-    --io-capability=<name>    Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
-                              KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
-    --clean                   Clean the cached data of a remote device.
+    -h, --help                   Display this help.
+    -v, --version                Show the version.
+    -i <hci>                     HCI device used for subsequent scans. [default: The default HCI device]
+    -m <mode>                    Scan mode, support br, le, sdp and gatt.
+    --inquiry-len=<n>            Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
+    --lmp-feature                Scan LMP features of the remote BR/EDR device.
+    --scan-type=<type>           Scan type used for scanning LE devices, active or 
+                                 passive. [default: active]
+    --timeout=<sec>              Duration of the LE scanning, but may not be precise. [default: 10]
+    --sort=<key>                 Sort the discovered devices by key, only support 
+                                 RSSI now. [default: rssi]
+    --adv                        Sniff advertising physical channel PDU. Need at 
+                                 least one micro:bit.
+    --ll-feature                 Scan LL features of the remote LE device.
+    --smp-feature                Detect pairing features of the remote LE device.
+    --channel=<num>              LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
+    --addr-type=<type>           Type of the LE address, public or random.
+    --io-capability=<name>       Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
+                                 KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
+    --clean                      Clean the cached data of a remote device.
+    --list-installed-plugins     List plugins in local system
+    --install-plugin=<path>      Install a plugin
+    --uninstall-plugin=<name>    Uninstall a plugin
+    --run-plugin=<name>          Execute plugin by name.
 ```
 
 ### Scan BR devices `-m br`

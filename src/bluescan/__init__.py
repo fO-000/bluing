@@ -1,17 +1,25 @@
 #!/usr/bin/env python3
 
+PKG_NAME = 'bluescan'
+VERSION = '0.8.3'
+DEBUG_VERSION = None
+
+from pyclui import Logger, INFO, DEBUG
+
+LOG_LEVEL = INFO
+logger = Logger(__name__, LOG_LEVEL)
+
+if DEBUG_VERSION is not None:
+    LOG_LEVEL = DEBUG
+    logger.setLevel(LOG_LEVEL)
+    logger.warning("Using the debug version {} of {}".format(DEBUG_VERSION, PKG_NAME))
+
 import io
 import pkg_resources
-import logging
 from pathlib import Path
 
-from pyclui import Logger
 from bthci import HCI
 
-logger = Logger(__name__, logging.INFO)
-
-PROJECT_NAME = 'bluescan'
-VERSION = '0.8.2'
 
 PKG_ROOT = Path(__file__).parent
 
