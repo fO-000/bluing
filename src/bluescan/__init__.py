@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 PKG_NAME = 'bluescan'
-VERSION = '0.8.3'
+VERSION = '0.8.4'
 DEBUG_VERSION = None
 
 from pyclui import Logger, INFO, DEBUG
+
 
 LOG_LEVEL = INFO
 logger = Logger(__name__, LOG_LEVEL)
@@ -18,7 +19,8 @@ import io
 import pkg_resources
 from pathlib import Path
 
-from bthci import HCI
+from bthci import HCI, ControllerErrorCodes
+from xpycommon.bluetooth import bd_addr_bytes2str
 
 
 PKG_ROOT = Path(__file__).parent
@@ -58,26 +60,25 @@ for line in service_cls_profile_ids_file:
         'Specification': items[1],
         'Allowed Usage': items[2]
     }
-    
-    
-from .plugin import Plugin, PluginHelpException, \
-    PluginOptionsError, PluginPrepareError, PluginRuntimeError, PluginCleanError
 
-__all__ = [Plugin, PluginHelpException, 
-    PluginOptionsError, PluginPrepareError, PluginRuntimeError, PluginCleanError]
 
 class BlueScanner():
     def __init__(self, iface='hci0'):
         self.iface = iface
         self.devid = HCI.hcistr2devid(self.iface)
-        try:
-            self.hci_bdaddr = HCI(iface).read_bdaddr()['BD_ADDR'].upper()
-        except Exception as e:
-            logger.error(str(e))
-            exit(1)
+        
+        hci = HCI(iface)
+        cmd_complete = hci.read_bd_addr()
+        hci.close()
+
+        if cmd_complete.status != ControllerErrorCodes.SUCCESS:
+            raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} {}".format(
+                cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        else:
+            self.hci_bd_addr = bd_addr_bytes2str(cmd_complete.bd_addr).upper()
 
 
-class ScanResult:
+class ScanResult:  
     def __init__(self, type: str) -> None:
         """
         type - May be 'GATT', 'LE Devices', 'BR/EDR Devices' ...
@@ -86,3 +87,11 @@ class ScanResult:
 
     def store(self):
         logger.debug("Not implemented")
+
+    
+from .plugin import Plugin, PluginHelpException, \
+    PluginOptionError, PluginPrepareError, PluginRuntimeError, PluginCleanError
+
+
+__all__ = [Plugin, PluginHelpException, 
+    PluginOptionError, PluginPrepareError, PluginRuntimeError, PluginCleanError]

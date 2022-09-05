@@ -19,10 +19,10 @@ logger = Logger(__name__, LOG_LEVEL)
 class PluginError(Exception):
     pass
 
-class PluginInstallError(Exception):
+class PluginInstallError(PluginError):
     pass
 
-class PluginOptionsError(PluginError):
+class PluginOptionError(PluginError):
     pass
 
 class PluginRuntimeError(PluginError):
@@ -165,8 +165,8 @@ def run_plugin(name: str, opts: str):
         # print help doc of the plugin
         # logger.debug("PluginHelpException, {}".format(type(e)))
         print(e)
-    except PluginOptionsError as e:
-        logger.error("PluginOptionsError, {}: {}".format(name, e))
+    except PluginOptionError as e:
+        logger.error("PluginOptionError, {}: {}".format(name, e))
     except PluginPrepareError as e:
         logger.error("PluginPrepareError, {}: {}".format(name, e))
     except PluginRuntimeError as e:

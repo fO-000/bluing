@@ -2,13 +2,13 @@
 
 import io
 import csv
-import logging
 import pkg_resources
 
-from pyclui import Logger
-from pyclui import green, red
+from pyclui import Logger, green, red
 
-logger = Logger(__name__, logging.INFO)
+from . import LOG_LEVEL
+
+logger = Logger(__name__, LOG_LEVEL)
 
 company_identfiers_file = pkg_resources.resource_stream(__name__, 'res/CompanyIdentfiers.csv')
 company_identfiers_file = io.TextIOWrapper(company_identfiers_file)

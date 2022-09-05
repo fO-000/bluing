@@ -2,7 +2,6 @@
 
 import io
 import pickle
-import logging
 import threading
 import subprocess
 import traceback
@@ -26,9 +25,9 @@ from . import BlueScanner, ScanResult
 from .le_scan import LeScanner, LE_DEVS_SCAN_RESULT_CACHE
 from .common import BLUEZ_NAME, mainloop
 from .agent import Agent
-from .ui import INDENT
+from .ui import INDENT, LOG_LEVEL
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 IFACE_AGENT_MGR_1 = 'org.bluez.AgentManager1'
 
@@ -428,6 +427,7 @@ class GattScanner(BlueScanner):
                             # When reading the characteristic value encounters a timeout,
                             # reconnect and try to read once again
                             self.spinner.text = "Reconnecting..."
+                            print("reconnect")
                             self.gatt_client.reconnect()
                             
                             try:
@@ -565,7 +565,7 @@ class GattScanner(BlueScanner):
 
             output = subprocess.check_output(
                 ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
-                        self.hci_bdaddr + '/' + addr.upper()]), 
+                        self.hci_bd_addr + '/' + addr.upper()]), 
                 stderr=STDOUT, timeout=60, shell=True)
 
             output = subprocess.check_output(

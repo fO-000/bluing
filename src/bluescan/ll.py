@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-import logging
+from pyclui import Logger, green, blue, yellow, red
 
-from pyclui import Logger
-from pyclui import green, blue, yellow, red
+from . import LOG_LEVEL
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 ll_vers = {
     0:  'Reserved',

@@ -2,17 +2,15 @@
 
 import dbus
 from dbus import SystemBus
-import logging
 from pyclui import Logger
 
-from .common import mainloop
-from .common import Rejected
-from .common import APP_NAME
+from . import LOG_LEVEL
+from .common import mainloop, Rejected, APP_NAME
 
 
 IFACE_AGENT1 = 'org.bluez.Agent1'
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 
 def set_trusted(bus:SystemBus, path):

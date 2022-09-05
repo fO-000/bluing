@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import struct
-import logging
 import threading
 from enum import Enum, unique
 
@@ -9,8 +8,9 @@ from serial import Serial
 from pyclui import Logger
 
 from .ll import pp_adv_phych_pdu
+from . import LOG_LEVEL
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 # public_addrs = set()
 # random_addrs = set()

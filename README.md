@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
+    <img src="https://img.shields.io/badge/python-3.10-blue">
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
     <a href="https://pepy.tech/badge/bluescan"><img src="https://pepy.tech/badge/bluescan"></a>
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.2%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.2%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.3%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
 </p>
 
 ## TL;DR
@@ -24,11 +24,10 @@ sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
 
 # Install bluescan
-sudo pip3 install bluescan
+sudo pip install bluescan
 
+# Have fun!
 bluescan --help
-
-# Perform scan
 sudo bluescan -m <br|le|sdp|gatt> [opt]... [BD_ADDR]
 ```
 
@@ -64,24 +63,9 @@ sudo apt install libglib2.0-dev gir1.2-gtk-3.0 \
                  python3-dbus python3-gi python3-gi-cairo
 ```
 
-More importantly, **bluescan requires at least Python 3.9 support**. If the system default Python version is lower than 3.9, then you need to do some extra operations. For example, in Ubuntu 20.04.2 LTS (Focal Fossa), the system uses Python 3.8 by default, and the **extra operations** are as follows: 
+When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**; If you play this tool in a Raspberry Pi, it is also recommended to connect a better USB Bluetooth adapter, although the Raspberry Pi itself has one.
 
-```sh
-sudo apt install python3.9 python3.9-dev
-
-# To solve the runtime error "No module named '_dbus_bindings'"
-cd /usr/lib/python3/dist-packages
-sudo cp _dbus_bindings.cpython-38-x86_64-linux-gnu.so \
-        _dbus_bindings.cpython-39-x86_64-linux-gnu.so
-sudo cp _dbus_glib_bindings.cpython-38-x86_64-linux-gnu.so \
-        _dbus_glib_bindings.cpython-39-x86_64-linux-gnu.so
-```
-
-When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**, like the [Ostran Bluetooth USB Adapter OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail) for 99 RMB：
-
-![OST-105](https://raw.githubusercontent.com/fO-000/bluescan//master/res/OST-105.jpg)
-
-[Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) is better than the above-mentioned Ostran adapter. But of course it will be a little more expensive, 560 RMB：
+The recommended USB Bluetooth adapter is [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)：
 
 ![Parani UD100-G03](https://raw.githubusercontent.com/fO-000/bluescan//master/res/Parani-UD100-G03.jpg)
 
@@ -118,13 +102,13 @@ make flash
 The lastest bluescan will be uploaded to PyPI, so the following command can install bluescan:
 
 ```sh
-sudo pip3 install bluescan
+sudo pip install bluescan
 ```
 
-If you do not use the system default Python, but install Python 3.9 or 3.10 yourself, then you need to install bluescan like this: 
+If you do not use the system default Python, but install Python 3.10 yourself, then you need to install bluescan like this: 
 
 ```txt
-sudo python<3.9|3.10> -m pip install bluescan
+sudo python3.10 -m pip install bluescan
 ```
 
 ## Usage
@@ -154,7 +138,6 @@ Usage:
     bluescan --install-plugin=<path>
     bluescan --uninstall-plugin=<name>
     bluescan --run-plugin=<name> [--] [<plugin-opt>...]
-
 
 Arguments:
     BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 

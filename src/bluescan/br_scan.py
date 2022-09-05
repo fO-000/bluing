@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 import sys
-import warnings
 import struct
-import logging
 
 from bthci import HCI, HciRuntimeError, ControllerErrorCodes, HciEventCodes, \
     HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, HCI_Extended_Inquiry_Result
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
 
-from . import BlueScanner, service_cls_profile_ids
+from . import BlueScanner, service_cls_profile_ids, LOG_LEVEL
 from .ui import INDENT
 from .common import bdaddr_to_company_name
 from .ll import ll_vers
@@ -22,7 +20,7 @@ from .gap_data import gap_type_names, \
 from .lmp import lmp_vers, company_identfiers, pp_lmp_features, pp_ext_lmp_features
 
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 
 major_dev_clses = {
@@ -91,53 +89,59 @@ class BRScanner(BlueScanner):
         hci.close()
 
 
-    def scan_lmp_feature(self, paddr):
+    def scan_lmp_feature(self, paddr: str):
         hci = HCI(self.iface)
-        conn_complete_evt = hci.create_connection(paddr,
-                                                  page_scan_repetition_mode = 0x02)
+        conn_complete = hci.create_connection(paddr, page_scan_repetition_mode = 0x02)
 
-        if conn_complete_evt.status != 0:
-            logger.error('Failed to create ACL connection')
+        if conn_complete.status != ControllerErrorCodes.SUCCESS:
+            logger.error("Failed to connect {} BD/EDR address\n"
+                         "    status {} {}".format(
+                             paddr,
+                             conn_complete.status, ControllerErrorCodes[conn_complete.status].name))
             sys.exit(1)
 
-        event_params = hci.read_remote_version_information(cmd_params={
-            'Connection_Handle': conn_complete_evt.conn_handle
-        })
+        read_remote_version_info_complete = hci.read_remote_version_information(conn_complete.conn_handle)
 
-        if event_params['Status'] != 0:
+        if read_remote_version_info_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error('Failed to read remote version')
             sys.exit(1)
 
         print(blue('Version'))
         print('    Version:')
-        print(' '*8+lmp_vers[event_params['Version']], '(LMP)')
-        print(' '*8+ll_vers[event_params['Version']], '(LL)')
-        print('    Manufacturer name:', green(company_identfiers[event_params['Manufacturer_Name']]))
-        print('    Subversion:', event_params['Subversion'], '\n')
+        print(' '*8+lmp_vers[read_remote_version_info_complete.version], '(LMP)')
+        print(' '*8+ll_vers[read_remote_version_info_complete.version], '(LL)')
+        print('    Manufacturer name:', green(company_identfiers[read_remote_version_info_complete.company_id]))
+        print('    Subversion:', read_remote_version_info_complete.subversion, '\n')
 
-        complete_evt = hci.read_remote_supported_features(event_params['Connection_Handle'])
-        if complete_evt.status != ControllerErrorCodes.SUCCESS:
+        read_remote_supported_features_complete = hci.read_remote_supported_features(conn_complete.conn_handle)
+        if read_remote_supported_features_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error('Failed to read remote supported features')
-        else:
-            print(blue('LMP features'))
-            pp_lmp_features(complete_evt.lmp_features)
-            print()
+            hci.disconnect(conn_complete.conn_handle)
+            exit(1)
+  
+        print(blue('LMP features'))
+        pp_lmp_features(read_remote_supported_features_complete.lmp_features)
+        print()
 
-        if not True if (complete_evt.lmp_features[7] >> 7) & 0x01 else False:
+        if not True if (read_remote_supported_features_complete.lmp_features[7] >> 7) & 0x01 else False:
             sys.exit(1)
 
         print(blue('Extended LMP features'))
-        complete_evt = hci.read_remote_extended_features(event_params['Connection_Handle'], 0x00)
-        if complete_evt.status != ControllerErrorCodes.SUCCESS:
+        read_remote_ext_features_complete = hci.read_remote_extended_features(conn_complete.conn_handle, 0x00)
+        if read_remote_ext_features_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error('Failed to read remote extented features')
-        else:
-            pp_ext_lmp_features(complete_evt.ext_lmp_features, 0)
-            for i in range(1, complete_evt.max_page_num+1):
-                complete_evt = hci.read_remote_extended_features(event_params['Connection_Handle'], i)
-                if complete_evt.status != ControllerErrorCodes.SUCCESS:
-                    logger.error('Failed to read remote extented features, page {}'.format(i))
-                else:
-                    pp_ext_lmp_features(complete_evt.ext_lmp_features, i)
+            hci.disconnect(conn_complete.conn_handle)
+            exit(1)
+      
+        pp_ext_lmp_features(read_remote_ext_features_complete.ext_lmp_features, 0)
+        for i in range(1, read_remote_ext_features_complete.max_page_num+1):
+            read_remote_ext_features_complete_i = hci.read_remote_extended_features(conn_complete.conn_handle, i)
+            if read_remote_ext_features_complete_i.status != ControllerErrorCodes.SUCCESS:
+                logger.error('Failed to read remote extented features, page {}'.format(i))
+            else:
+                pp_ext_lmp_features(read_remote_ext_features_complete_i.ext_lmp_features, i)
+                
+        hci.disconnect(conn_complete.conn_handle)
 
 
     def pp_inquiry_result(self, params):

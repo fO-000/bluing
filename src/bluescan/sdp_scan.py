@@ -2,7 +2,6 @@
 
 import re
 import sys
-import logging
 import subprocess
 from xml.etree import ElementTree
 
@@ -10,11 +9,11 @@ from pyclui import Logger
 from pyclui import green, blue, yellow, red
 from halo import Halo
 
-from . import BlueScanner
+from . import BlueScanner, LOG_LEVEL
 from .service_record import ServiceRecord
 
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 
 class SDPScanner(BlueScanner):

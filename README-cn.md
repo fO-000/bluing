@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue">
+    <img src="https://img.shields.io/badge/python-3.10-blue">
     <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
     <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
     <a href="https://pepy.tech/badge/bluescan"><img src="https://pepy.tech/badge/bluescan"></a>
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.2%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.2%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.3%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
 </p>
 
 ## TL;DR
@@ -24,11 +24,10 @@ sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev
 
 # 安装 bluescan
-sudo pip3 install bluescan
+sudo pip install bluescan
 
+# 耍起！
 bluescan --help
-
-# 执行扫描
 sudo bluescan -m <br|le|sdp|gatt> [opt]... [BD_ADDR]
 ```
 
@@ -64,28 +63,11 @@ sudo apt install libglib2.0-dev gir1.2-gtk-3.0 \
                  python3-dbus python3-gi python3-gi-cairo
 ```
 
-更重要的，**bluescan 至少需要 Python 3.9 的支持**。如果系统默认的 Python 版本低于 3.9，那么你需要做些额外的操作。比如在 Ubuntu 20.04.2 LTS (Focal Fossa) 中，系统默使用 Python 3.8，此时**额外的操作**如下：
+若在 Linux 虚拟机中使用该工具，则建议让虚拟机**独占一个 USB 蓝牙适配器**；若在树莓派中使用该工具，也建议外接一个更好的 USB 蓝牙适配器。
 
-```sh
-sudo apt install python3.9 python3.9-dev
-
-# To solve the runtime error "No module named '_dbus_bindings'"
-cd /usr/lib/python3/dist-packages
-sudo cp _dbus_bindings.cpython-38-x86_64-linux-gnu.so \
-        _dbus_bindings.cpython-39-x86_64-linux-gnu.so
-sudo cp _dbus_glib_bindings.cpython-38-x86_64-linux-gnu.so \
-        _dbus_glib_bindings.cpython-39-x86_64-linux-gnu.so
-```
-
-若在 Linux 虚拟机中使用该工具，则建议让虚拟机**独占一个 USB 蓝牙适配器**。比如售价 99 块的 [Ostran 奥视通 USB 蓝牙适配器 OST-105 CSR 8150 v4.0](https://item.taobao.com/item.htm?spm=a230r.1.14.14.21b6705fm5gjj3&id=38948169460&ns=1&abbucket=6#detail)：
-
-![OST-105](https://raw.githubusercontent.com/fO-000/bluescan/master/res/OST-105.jpg)
-
-[Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail) 比上面奥视通的适配器好用一些，但 560 元的价格有点小贵：
+推荐的 USB 蓝牙适配器是 [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)：
 
 ![Parani UD100-G03](https://raw.githubusercontent.com/fO-000/bluescan/master/res/Parani-UD100-G03.jpg)
-
-如果你想尝试下漏洞扫描 (demo)，请参考 [ojasookert/CVE-2017-0785](https://github.com/ojasookert/CVE-2017-0785) 的 `README.md` 来解决依赖问题。
 
 ### [micro:bit](https://microbit.org/) 以及专用固件
 
@@ -120,13 +102,13 @@ make flash
 最新的 bluescan 会被上传到 PyPI 上，因此执行如下命令即可安装 bluescan：
 
 ```sh
-sudo pip3 install bluescan
+sudo pip install bluescan
 ```
 
-如果你没有使用系统默认的 Python，而是自己安装的 Python 3.9 或 3.10，那么需要这样安装 bluescan：
+如果你没有使用系统默认的 Python，而是自己安装的 Python 3.10，那么需要这样安装 bluescan：
 
 ```txt
-sudo python<3.9|3.10> -m pip install bluescan
+sudo python3.10 -m pip install bluescan
 ```
 
 ## 使用
@@ -156,7 +138,6 @@ Usage:
     bluescan --install-plugin=<path>
     bluescan --uninstall-plugin=<name>
     bluescan --run-plugin=<name> [--] [<plugin-opt>...]
-
 
 Arguments:
     BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 

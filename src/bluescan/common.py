@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import io
-import logging
 import pkg_resources
 
 from dbus.exceptions import DBusException
 from gi.repository import GObject
 
 from pyclui import Logger, blue, red
+
+from . import LOG_LEVEL
 
 APP_NAME = 'bluescan'
 BLUEZ_NAME = 'org.bluez' # The well-known name of bluetoothd
@@ -16,7 +17,7 @@ IFACE_PROP = 'org.freedesktop.DBus.Properties'
 
 mainloop = GObject.MainLoop()
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 oui_file = pkg_resources.resource_stream(__name__, "res/oui.txt")
 oui_file = io.TextIOWrapper(oui_file)

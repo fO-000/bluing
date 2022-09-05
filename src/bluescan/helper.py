@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
-import logging
-import re
 # import pickle
 import subprocess
 
 from serial.tools.list_ports import comports
 
-from pyclui import blue, green, yellow, red
-from pyclui import Logger
+from pyclui import Logger, blue, green, yellow, red
+
+from . import LOG_LEVEL
 
 # from . import LE_DEVS_SCAN_RESULT_CACHE
 
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 
 # def determine_addr_type(self):

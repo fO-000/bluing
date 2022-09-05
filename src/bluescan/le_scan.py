@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
+from pdb import runeval
 import pickle
 import struct
-import logging
 import subprocess
 from subprocess import STDOUT
 
@@ -12,12 +12,12 @@ from halo import Halo
 from serial import Serial
 
 from bthci import HCI, ControllerErrorCodes
+from bthci.hci import HciRuntimeError
 import btsmp
 from btsmp import *
-from pyclui import Logger
-from pyclui import blue, green, red
+from pyclui import Logger, blue, green, red
 
-from . import ScanResult, LE_DEVS_SCAN_RESULT_CACHE
+from . import ScanResult, LE_DEVS_SCAN_RESULT_CACHE, LOG_LEVEL
 from .common import bdaddr_to_company_name
 from .gap_data import SERVICE_DATA_128_BIT_UUID, SERVICE_DATA_16_BIT_UUID, SERVICE_DATA_32_BIT_UUID, gap_type_names, company_names, \
     COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \
@@ -28,7 +28,7 @@ from .ui import INDENT
 from .serial_protocol import serial_reset
 from .serial_protocol import SerialEventHandler
 
-logger = Logger(__name__, logging.INFO)
+logger = Logger(__name__, LOG_LEVEL)
 
 microbit_infos = {}
 
@@ -280,7 +280,7 @@ class LeScanner:
         return self.devs_scan_result
 
 
-    def scan_ll_feature(self, paddr, patype, timeout: int=10):
+    def scan_ll_feature(self, paddr: str, patype: str, timeout: int = 10):
         """LL feature scanning
 
         paddr   - Peer addresss for scanning LL features.
@@ -296,8 +296,10 @@ class LeScanner:
         spinner.start()
 
         try:
-            event_params = hci.le_create_connection(paddr, patype, timeout=timeout)
-            logger.debug(event_params)
+            le_conn_complete = hci.le_create_connection(paddr, patype, timeout=timeout)
+            if le_conn_complete.status != ControllerErrorCodes.SUCCESS:
+                logger.error("Failed to connect {} {} LE address\n"
+                             "    status: 0x{:02x} {}".format(le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status]))
         except RuntimeError as e:
             logger.error(str(e))
             return
@@ -306,14 +308,22 @@ class LeScanner:
             # logger.error("TimeoutError {}".format(e))
             return
 
-        event_params = hci.le_read_remote_features(event_params['Connection_Handle'])
-        spinner.stop()
-        logger.debug(event_params)
-        print(blue('LE LL Features:'))
-        pp_le_features(event_params['LE_Features'])
+        le_read_remote_features_complete = hci.le_read_remote_features(le_conn_complete.conn_handle)
+        if le_read_remote_features_complete.status != ControllerErrorCodes.SUCCESS:
+            try:
+                hci.disconnect(le_conn_complete.conn_handle)
+            except HciRuntimeError as e:
+                logger.warning("HciRuntimeError, {}".format(e))
 
-        event_params = hci.disconnect(event_params['Connection_Handle'], ControllerErrorCodes.REMOTE_USER_TERM_CONN)
-        logger.debug(event_params)
+            logger.error("Failed to le read remote features\n"
+                         "    status: 0x{:02x} {}".format(le_read_remote_features_complete.status, ControllerErrorCodes[le_read_remote_features_complete.status].name))
+            exit(1)
+            
+        spinner.stop()
+        print(blue('LE LL Features:'))
+        pp_le_features(le_read_remote_features_complete.le_features)
+
+        hci.disconnect(le_conn_complete.conn_handle)
         return
 
 
@@ -346,31 +356,31 @@ class LeScanner:
         
         spinner.start()
         
+        le_conn_complete = None
+        
         try:
-            event_params = hci.le_create_connection(paddr, patype, timeout=timeout)
-            logger.debug(event_params)
-
-            result = btsmp.send_pairing_request(event_params['Connection_Handle'], pairing_req, self.hci)
+            le_conn_complete = hci.le_create_connection(paddr, patype, timeout=timeout)
+            if le_conn_complete.status != ControllerErrorCodes.SUCCESS:
+                raise RuntimeError("Failed to connect {} {} LE address\n"
+                                   "    status: 0x{:02x} {}".format(
+                                       paddr, patype, 
+                                       le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status].name))
+    
+            result = btsmp.send_pairing_request(hci, le_conn_complete.conn_handle, pairing_req)
             logger.debug("detect_pairing_feature(), result: {}".format(result))
 
-            rsp = btsmp.recv_pairing_response(timeout, self.hci)
+            rsp = btsmp.recv_pairing_response(hci, timeout)
             logger.debug("detect_pairing_feature(), rsp: {}".format(rsp))
-            
+                    
+            hci.disconnect(le_conn_complete.conn_handle,
+                           ControllerErrorCodes.UNSUPPORTED_REMOTE_FEATURE)
             spinner.stop()
 
             pp_smp_pkt(rsp)
-        except RuntimeError as e:
-            logger.error(str(e))
         except TimeoutError as e:
             output = subprocess.check_output(' '.join(['hciconfig', self.hci, 'reset']), 
                 stderr=STDOUT, timeout=60, shell=True)
-            event_params = None
             logger.info("Timeout")
-            # logger.error("detect_pairing_feature(), TimeoutError {}".format(e))
-
-        if event_params != None:
-            hci.disconnect(event_params['Connection_Handle'],
-                           ControllerErrorCodes.UNSUPPORTED_REMOTE_FEATURE)
 
         return
 
@@ -477,7 +487,7 @@ def pp_smp_pkt(pkt:bytes):
         logger.warning("unknown SMP packet: {}".format(pkt))
 
 
-def pp_le_features(features:bytes):
+def pp_le_features(features: bytes):
     """
     features - LE LL features. The Bluetooth specification calls this FeatureSet.
     待处理 Valid from Controller to Controller, Masked to Peer, Host Controlled
