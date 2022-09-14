@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import io
+from multiprocessing.sharedctypes import Value
 import pickle
 import threading
 import subprocess
@@ -9,6 +10,7 @@ from subprocess import STDOUT
 from uuid import UUID
 
 import pkg_resources
+from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
 from pyclui import green, blue, yellow, red
 from pyclui import Logger
 from halo import Halo
@@ -323,7 +325,7 @@ class GattScanner(BlueScanner):
             reply_handler=register_agent_callback,
             error_handler=register_agent_error_callback)
         
-    def scan(self, addr: str, addr_type: str) -> GattScanResult:
+    def scan(self, addr: str, addr_type: int = ADDR_TYPE_PUBLIC) -> GattScanResult:
         logger.debug("Entered scan()")
         
         try:
@@ -339,8 +341,14 @@ class GattScanner(BlueScanner):
             self.result.addr_type = addr_type
             
             if self.result.addr_type is None:
-                self.result.addr_type = self.determine_addr_type()
-
+                found_addr_type = self.determine_addr_type()
+                if found_addr_type == 'public':
+                    self.result.addr_type = ADDR_TYPE_PUBLIC
+                elif found_addr_type == 'random':
+                    self.result.addr_type = ADDR_TYPE_RANDOM
+                else:
+                    raise ValueError("Unknown found_addr_type: {}".format(found_addr_type))
+                    
             self.gatt_client = GattClient(self.iface)
             
             logger.debug("Address:      {}\n".format(self.result.addr) + 
@@ -593,8 +601,3 @@ class GattScanner(BlueScanner):
                 return dev_info.addr_type
 
         raise RuntimeError("Couldn't determine the LE address type. Please provide it explicitly.")
-
-
-if __name__ == '__main__':
-    result = GattScanner().scan('6F:45:66:76:41:12', 'random', True)
-    result.print()

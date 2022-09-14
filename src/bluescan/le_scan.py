@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pdb import runeval
+import sys
 import pickle
 import struct
 import subprocess
@@ -11,8 +11,8 @@ from bluepy.btle import DefaultDelegate
 from halo import Halo
 from serial import Serial
 
-from bthci import HCI, ControllerErrorCodes
-from bthci.hci import HciRuntimeError
+from xpycommon.bluetooth import IoCapabilities
+from bthci import HCI, ControllerErrorCodes, HciRuntimeError, ADDR_TYPE_PUBLIC
 import btsmp
 from btsmp import *
 from pyclui import Logger, blue, green, red
@@ -64,7 +64,7 @@ class LEDelegate(DefaultDelegate):
 
 
 class LeDeviceInfo:
-    def __init__(self, addr: str, addr_type : str, connectable : bool, rssi : int) -> None:
+    def __init__(self, addr: str, addr_type: str, connectable : bool, rssi : int) -> None:
         """
         addr - Upper case
         """
@@ -244,7 +244,7 @@ class LeScanner:
             devs.sort(key=lambda d:d.rssi)
         
         for dev in devs:
-            dev_info = LeDeviceInfo(dev.addr.upper(), dev.addrType, dev.connectable, dev.rssi)
+            dev_info = LeDeviceInfo(dev.addr.upper(), dev.addrType.lower(), dev.connectable, dev.rssi)
             self.devs_scan_result.add_device_info(dev_info)
             
             # print('Addr:       ', blue(dev.addr.upper()))
@@ -280,11 +280,11 @@ class LeScanner:
         return self.devs_scan_result
 
 
-    def scan_ll_feature(self, paddr: str, patype: str, timeout: int = 10):
+    def scan_ll_feature(self, paddr: str, patype: int = ADDR_TYPE_PUBLIC, timeout: int = 10):
         """LL feature scanning
 
         paddr   - Peer addresss for scanning LL features.
-        patype  - Peer address type, public or random.
+        patype  - Peer address type, ADDR_TYPE_PUBLIC or ADDR_TYPE_RANDOM.
         timeout - sec
         """
         spinner = Halo(text="Scanning", spinner={'interval': 200,
@@ -317,7 +317,7 @@ class LeScanner:
 
             logger.error("Failed to le read remote features\n"
                          "    status: 0x{:02x} {}".format(le_read_remote_features_complete.status, ControllerErrorCodes[le_read_remote_features_complete.status].name))
-            exit(1)
+            sys.exit(1)
             
         spinner.stop()
         print(blue('LE LL Features:'))
@@ -327,7 +327,7 @@ class LeScanner:
         return
 
 
-    def detect_pairing_feature(self, paddr, patype, timeout:int=10):
+    def detect_pairing_feature(self, paddr, patype: int = ADDR_TYPE_PUBLIC, timeout: int = 10):
         """
         """
         # TODO Mac OS 会弹窗，需要解决。
@@ -352,7 +352,6 @@ class LeScanner:
                                                  'frames': ['', '.', '.'*2, '.'*3]},
                        placement='right')
         hci = HCI(self.hci)
-        logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
         
         spinner.start()
         
@@ -441,8 +440,8 @@ def pp_smp_pkt(pkt:bytes):
 
     if code == btsmp.CmdCode.PAIRING_RESPONSE:
         print(blue("Pairing Response"))
-        iocap, oob, auth_req, max_enc_key_size, init_key_distr, rsp_key_distr = struct.unpack('BBBBBB', pkt[1:])
-        print("    IO Capability: 0x%02x - %s" % (iocap, green(IOCapability[iocap].hname)))
+        io_cap, oob, auth_req, max_enc_key_size, init_key_distr, rsp_key_distr = struct.unpack('BBBBBB', pkt[1:])
+        print("    IO Capability: 0x%02x - %s" % (io_cap, green(IoCapabilities[io_cap].name)))
         print("    OOB data flag: 0x%02x - %s" % (oob, OOBDataFlag[oob].hname))
         print("    AuthReq: 0x%02x" % auth_req)
         bonding_flag = (auth_req & BONDING_FLAGS_MSK) >> BONDING_FLAGS_POS

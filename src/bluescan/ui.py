@@ -57,10 +57,12 @@ Options:
     --run-plugin=<name>          Execute plugin by name.
 """
 
+import sys
 
 from docopt import docopt
 # from btgatt import service_names, charac_names, descriptor_names
 from pyclui import red, Logger
+from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
 
 from xpycommon import valid_bdaddr
 
@@ -109,15 +111,18 @@ def parse_cmdline() -> dict:
 
         if args['--addr-type'] is not None:
             args['--addr-type'] = args['--addr-type'].lower()
-            if args['--addr-type'] not in ('public', 'random'):
-                raise ValueError("Invalid address type %s, " % \
-                    args['--addr-type'] + "must be public or random.")
+            if args['--addr-type'] == 'public':
+                args['--addr-type'] = ADDR_TYPE_PUBLIC
+            elif args['--addr-type'] == 'random':
+                args['--addr-type'] = ADDR_TYPE_RANDOM
+            else:
+                raise ValueError("Invalid address type %s, must be public or random.".format(args['--addr-type']))
         
         if args['--io-capability'] not in ['DisplayOnly', 'DisplayYesNo', 'KeyboardOnly', 'NoInputNoOutput', 'KeyboardDisplay', 'KeyboardOnly']:
             raise ValueError("Invalid IO capability %s" % args['--io-capability'])
     except ValueError as e:
         logger.error(str(e))
-        exit(1)
+        sys.exit(1)
 
     return args
 

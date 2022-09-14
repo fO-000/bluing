@@ -5,8 +5,10 @@ import struct
 
 from bthci import HCI, HciRuntimeError, ControllerErrorCodes, HciEventCodes, \
     HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, HCI_Extended_Inquiry_Result
+from bthci.bluez_hci import HCI_CHANNEL_USER
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
+from xpycommon.bluetooth import bd_addr_str2bytes
 
 from . import BlueScanner, service_cls_profile_ids, LOG_LEVEL
 from .ui import INDENT
@@ -64,22 +66,25 @@ class BRScanner(BlueScanner):
 
         try:
             hci.inquiry(inquiry_len=inquiry_len, inquiry_result_handler=inquiry_result_handler)
-            logger.info('Inquiry completed\n')
+            # logger.info('Inquiry completed\n')
 
             if self.remote_name_req_flag and len(self.scanned_dev) != 0:
                 logger.info('Requesting the name of the scanned devices...')
                 for bd_addr in self.scanned_dev:
                     try:
-                        name = hci.remote_name_request({
-                            'BD_ADDR': bytes.fromhex(bd_addr.replace(':', '')),
-                            'Page_Scan_Repetition_Mode': 0x01, 
-                            'Reserved': 0x00, 'Clock_Offset': 0x0000
-                        })['Remote_Name'].decode().strip()
-                    except Exception as e:
-                        print(e)
+                        remote_name_req_compelte = hci.remote_name_request(bd_addr)
+                        if remote_name_req_compelte.status !=ControllerErrorCodes.SUCCESS:
+                            logger.error("Failed to request remote name {}\n"
+                                         "    remote name request complete status: 0x{:02x} {}".format(
+                                             bd_addr,
+                                             remote_name_req_compelte.status, ControllerErrorCodes[remote_name_req_compelte.status].name))
+                            name = ''
+                        else:
+                            name = remote_name_req_compelte.remote_name
+                    except TimeoutError as e:
                         name = ''
 
-                    print(bd_addr+':', blue(name))
+                    print("{} : {}".format(bd_addr, blue(name)))
         except HciRuntimeError as e:
             logger.error("{}".format(e))
         except KeyboardInterrupt as e:
@@ -90,12 +95,12 @@ class BRScanner(BlueScanner):
 
 
     def scan_lmp_feature(self, paddr: str):
-        hci = HCI(self.iface)
+        hci = HCI(self.iface, HCI_CHANNEL_USER)
         conn_complete = hci.create_connection(paddr, page_scan_repetition_mode = 0x02)
 
         if conn_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error("Failed to connect {} BD/EDR address\n"
-                         "    status {} {}".format(
+                         "    connection complete status: 0x{:02x} {}".format(
                              paddr,
                              conn_complete.status, ControllerErrorCodes[conn_complete.status].name))
             sys.exit(1)
@@ -115,9 +120,11 @@ class BRScanner(BlueScanner):
 
         read_remote_supported_features_complete = hci.read_remote_supported_features(conn_complete.conn_handle)
         if read_remote_supported_features_complete.status != ControllerErrorCodes.SUCCESS:
-            logger.error('Failed to read remote supported features')
+            logger.error("Failed to read remote extented features\n"
+                         "    read remote extented features complete status: 0x{:02x} {}".format(
+                             read_remote_ext_features_complete.status, ControllerErrorCodes[read_remote_ext_features_complete.status].name))
             hci.disconnect(conn_complete.conn_handle)
-            exit(1)
+            sys.exit(1)
   
         print(blue('LMP features'))
         pp_lmp_features(read_remote_supported_features_complete.lmp_features)
@@ -127,14 +134,17 @@ class BRScanner(BlueScanner):
             sys.exit(1)
 
         print(blue('Extended LMP features'))
+        # Get Max_Page_Number
         read_remote_ext_features_complete = hci.read_remote_extended_features(conn_complete.conn_handle, 0x00)
         if read_remote_ext_features_complete.status != ControllerErrorCodes.SUCCESS:
-            logger.error('Failed to read remote extented features')
+            logger.error("Failed to read remote extented features\n"
+                         "    read remote extented features complete status: 0x{:02x} {}".format(
+                             read_remote_ext_features_complete.status, ControllerErrorCodes[read_remote_ext_features_complete.status].name))
             hci.disconnect(conn_complete.conn_handle)
-            exit(1)
-      
-        pp_ext_lmp_features(read_remote_ext_features_complete.ext_lmp_features, 0)
-        for i in range(1, read_remote_ext_features_complete.max_page_num+1):
+            sys.exit(1)
+            
+        max_page_num = read_remote_ext_features_complete.max_page_num
+        for i in range(1, max_page_num+1):
             read_remote_ext_features_complete_i = hci.read_remote_extended_features(conn_complete.conn_handle, i)
             if read_remote_ext_features_complete_i.status != ControllerErrorCodes.SUCCESS:
                 logger.error('Failed to read remote extented features, page {}'.format(i))

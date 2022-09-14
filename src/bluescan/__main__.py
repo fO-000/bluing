@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import subprocess
 import traceback
@@ -9,8 +10,6 @@ from pathlib import PosixPath
 from bthci import HCI, ControllerErrorCodes, HciError
 from pyclui import Logger, blue
 from bluepy.btle import BTLEException
-
-from xpycommon.bluetooth import bd_addr_bytes2str
 
 from . import BlueScanner, LOG_LEVEL
 from .ui import parse_cmdline
@@ -48,44 +47,51 @@ def prepare_hci(iface: str = 'hci0'):
     logger.debug("Sending hci.inquiry_cancel()")
     cmd_complete = hci.inquiry_cancel()
     if cmd_complete.status not in (ControllerErrorCodes.SUCCESS, ControllerErrorCodes.COMMAND_DISALLOWED):
-        logger.warning("hci.inquiry_cancel() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to inquiry cancel\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
         
     logger.debug("Sending hci.exit_periodic_inquiry_mode()")
     cmd_complete = hci.exit_periodic_inquiry_mode()
     if cmd_complete.status not in (ControllerErrorCodes.SUCCESS, ControllerErrorCodes.COMMAND_DISALLOWED):
-        logger.warning("hci.exit_periodic_inquiry_mode() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to exit periodic inquiry mode\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
     
     hci.write_scan_enable() # No scan enabled
     if cmd_complete.status not in (ControllerErrorCodes.SUCCESS, ControllerErrorCodes.COMMAND_DISALLOWED):
-        logger.warning("hci.write_scan_enable() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to write scan enable\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
     
     cmd_complete = hci.le_set_advertising_enable() # Advertising is disabled
     if cmd_complete.status not in (ControllerErrorCodes.SUCCESS, ControllerErrorCodes.COMMAND_DISALLOWED):
-        logger.warning("hci.le_set_advertising_enable() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to le set advertising enable\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
     
     cmd_complete = hci.le_set_scan_enable(False, True)
     if cmd_complete.status not in (ControllerErrorCodes.SUCCESS, ControllerErrorCodes.COMMAND_DISALLOWED):
-        logger.warning("hci.le_set_scan_enable() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to le set scan enable\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
 
     cmd_complete = hci.set_event_filter(0x00) # Clear All Filters
     if cmd_complete.status != ControllerErrorCodes.SUCCESS:
-        logger.warning("hci.set_event_filter() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        logger.warning("Failed to set event filter\n"
+                       "    command complete status: 0x{:02x} {}".format(
+                           cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
 
     cmd_complete = hci.read_bd_addr()
     if cmd_complete.status != ControllerErrorCodes.SUCCESS:
-        raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} {}".format(
-            cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+        raise RuntimeError("Failed to read BD_ADDR\n"
+                           "    command complete status: 0x{:02x} {}".format(
+                               cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
     else:
-        local_bd_addr = bd_addr_bytes2str(cmd_complete.bd_addr).upper()
+        local_bd_addr = cmd_complete.bd_addr
 
     # Clear bluetoothd cache
-    cache_path = PosixPath('/var/lib/bluetooth/')/local_bd_addr/'cache'
+    cache_path = PosixPath('/var/lib/bluetooth/')/local_bd_addr.upper()/'cache'
     if cache_path.exists():
         for file in cache_path.iterdir():
             os.remove(file)
@@ -150,10 +156,10 @@ def main():
                 # 当 user 没有显示指明 hci 设备情况下，我们需要自动获取一个可用的 hci 
                 # 设备。注意这个设备不一定是 hci0。因为系统中可能只有 hci1，而没有 hci0。
                 try:
-                    args['-i'] = HCI.get_default_hcistr()
+                    args['-i'] = HCI.get_default_iface()
                 except HciError:
                     logger.error('No available HCI device')
-                    exit(-1)
+                    sys.exit(-1)
 
             prepare_hci(args['-i'])
             
@@ -202,7 +208,7 @@ def main():
     except (RuntimeError, ValueError) as e:
         logger.error("{}: {}".format(e.__class__.__name__, e))
         traceback.print_exc()
-        exit(1)
+        sys.exit(1)
     except (BTLEException) as e:
         logger.error(str(e) + ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) else ""))
     except PluginInstallError as e:

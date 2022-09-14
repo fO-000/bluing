@@ -112,7 +112,7 @@ def pp_lmp_features(lmp_features:bytes):
             print('    Extended features:', green('True') if (b >> 7) & 0x01 else red('False'))
 
 
-def pp_ext_lmp_features(ext_lmp_features:bytes, page_num:int):
+def pp_ext_lmp_features(ext_lmp_features: bytes, page_num: int):
     '''Parse and print Extended LMP Features
 
     ext_lmp_features -- when page_num is 0, 8 bytes;

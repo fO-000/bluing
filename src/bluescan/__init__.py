@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 PKG_NAME = 'bluescan'
-VERSION = '0.8.4'
+VERSION = '0.8.5'
 DEBUG_VERSION = None
 
 from pyclui import Logger, INFO, DEBUG
-
 
 LOG_LEVEL = INFO
 logger = Logger(__name__, LOG_LEVEL)
@@ -15,12 +14,12 @@ if DEBUG_VERSION is not None:
     logger.setLevel(LOG_LEVEL)
     logger.warning("Using the debug version {} of {}".format(DEBUG_VERSION, PKG_NAME))
 
+
 import io
 import pkg_resources
 from pathlib import Path
 
 from bthci import HCI, ControllerErrorCodes
-from xpycommon.bluetooth import bd_addr_bytes2str
 
 
 PKG_ROOT = Path(__file__).parent
@@ -75,7 +74,7 @@ class BlueScanner():
             raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} {}".format(
                 cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
         else:
-            self.hci_bd_addr = bd_addr_bytes2str(cmd_complete.bd_addr).upper()
+            self.hci_bd_addr = cmd_complete.bd_addr.upper()
 
 
 class ScanResult:  
