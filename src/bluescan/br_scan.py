@@ -3,8 +3,9 @@
 import sys
 import struct
 
-from bthci import HCI, HciRuntimeError, ControllerErrorCodes, HciEventCodes, \
-    HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, HCI_Extended_Inquiry_Result
+from bthci import HCI, HciRuntimeError, ControllerErrorCodes
+from bthci.events import HciEventCodes, HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, \
+                         HCI_Extended_Inquiry_Result
 from bthci.bluez_hci import HCI_CHANNEL_USER
 from pyclui import Logger
 from pyclui import green, blue, yellow, red
@@ -75,7 +76,7 @@ class BRScanner(BlueScanner):
                         remote_name_req_compelte = hci.remote_name_request(bd_addr)
                         if remote_name_req_compelte.status !=ControllerErrorCodes.SUCCESS:
                             logger.error("Failed to request remote name {}\n"
-                                         "    remote name request complete status: 0x{:02x} {}".format(
+                                         "    remote name request complete status: 0x{:02x} - {}".format(
                                              bd_addr,
                                              remote_name_req_compelte.status, ControllerErrorCodes[remote_name_req_compelte.status].name))
                             name = ''
@@ -100,7 +101,7 @@ class BRScanner(BlueScanner):
 
         if conn_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error("Failed to connect {} BD/EDR address\n"
-                         "    connection complete status: 0x{:02x} {}".format(
+                         "    connection complete status: 0x{:02x} - {}".format(
                              paddr,
                              conn_complete.status, ControllerErrorCodes[conn_complete.status].name))
             sys.exit(1)
@@ -121,7 +122,7 @@ class BRScanner(BlueScanner):
         read_remote_supported_features_complete = hci.read_remote_supported_features(conn_complete.conn_handle)
         if read_remote_supported_features_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error("Failed to read remote extented features\n"
-                         "    read remote extented features complete status: 0x{:02x} {}".format(
+                         "    read remote extented features complete status: 0x{:02x} - {}".format(
                              read_remote_ext_features_complete.status, ControllerErrorCodes[read_remote_ext_features_complete.status].name))
             hci.disconnect(conn_complete.conn_handle)
             sys.exit(1)
@@ -138,7 +139,7 @@ class BRScanner(BlueScanner):
         read_remote_ext_features_complete = hci.read_remote_extended_features(conn_complete.conn_handle, 0x00)
         if read_remote_ext_features_complete.status != ControllerErrorCodes.SUCCESS:
             logger.error("Failed to read remote extented features\n"
-                         "    read remote extented features complete status: 0x{:02x} {}".format(
+                         "    read remote extented features complete status: 0x{:02x} - {}".format(
                              read_remote_ext_features_complete.status, ControllerErrorCodes[read_remote_ext_features_complete.status].name))
             hci.disconnect(conn_complete.conn_handle)
             sys.exit(1)

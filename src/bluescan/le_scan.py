@@ -2,7 +2,6 @@
 
 import sys
 import pickle
-import struct
 import subprocess
 from subprocess import STDOUT
 
@@ -13,8 +12,8 @@ from serial import Serial
 
 from xpycommon.bluetooth import IoCapabilities
 from bthci import HCI, ControllerErrorCodes, HciRuntimeError, ADDR_TYPE_PUBLIC
-import btsmp
-from btsmp import *
+from btsm import SmRuntimeError, SecurityManager
+from btsm.commands import OOBDataFlags, BondingFlags, AuthReq, KeyDist
 from pyclui import Logger, blue, green, red
 
 from . import ScanResult, LE_DEVS_SCAN_RESULT_CACHE, LOG_LEVEL
@@ -195,15 +194,15 @@ class LeScanner:
     2. LL features scanning
     3. Advertising physical channel PDU sniffing.
     """
-    def __init__(self, hci='hci0', microbit_devpaths=None):
+    def __init__(self, iface: str ='hci0', microbit_devpaths=None):
         """
         hci               - HCI device for scaning LE devices and LL features.
         microbit_devpaths - When sniffing advertising physical channel PDU, we 
                             need at least one micro:bit.
         """
         self.devs_scan_result = LeDevicesScanResult()
-        self.hci = hci
-        self.devid = HCI.hcistr2devid(self.hci)
+        self.iface = iface
+        self.devid = HCI.hcistr2devid(self.iface)
         self.microbit_devpaths = microbit_devpaths
 
     def scan_devs(self, timeout=8, scan_type='active', sort='rssi') -> LeDevicesScanResult:
@@ -290,8 +289,8 @@ class LeScanner:
         spinner = Halo(text="Scanning", spinner={'interval': 200,
                                                  'frames': ['', '.', '.'*2, '.'*3]},
                        placement='right')
-        hci = HCI(self.hci)
-        logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.hci)))
+        hci = HCI(self.iface)
+        logger.info('Scanning LE LL Features of %s, using %s\n'%(blue(paddr), blue(self.iface)))
         
         spinner.start()
 
@@ -299,7 +298,7 @@ class LeScanner:
             le_conn_complete = hci.le_create_connection(paddr, patype, timeout=timeout)
             if le_conn_complete.status != ControllerErrorCodes.SUCCESS:
                 logger.error("Failed to connect {} {} LE address\n"
-                             "    status: 0x{:02x} {}".format(le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status]))
+                             "    status: 0x{:02x} - {}".format(le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status]))
         except RuntimeError as e:
             logger.error(str(e))
             return
@@ -316,7 +315,7 @@ class LeScanner:
                 logger.warning("HciRuntimeError, {}".format(e))
 
             logger.error("Failed to le read remote features\n"
-                         "    status: 0x{:02x} {}".format(le_read_remote_features_complete.status, ControllerErrorCodes[le_read_remote_features_complete.status].name))
+                         "    status: 0x{:02x} - {}".format(le_read_remote_features_complete.status, ControllerErrorCodes[le_read_remote_features_complete.status].name))
             sys.exit(1)
             
         spinner.stop()
@@ -331,56 +330,34 @@ class LeScanner:
         """
         """
         # TODO Mac OS 会弹窗，需要解决。
-        hci = HCI(self.hci)
-        logger.info("Detecting SMP pairing feature of %s, using %s\n"%(blue(paddr), blue(self.hci)))
-
-        pairing_req = SM_Hdr(sm_command=btsmp.CmdCode.PAIRING_REQUEST) / \
-            SM_Pairing_Request(iocap="NoInputNoOutput", oob='Not Present', 
-                authentication=(0b00 << AUTHREQ_RFU_POS) | (0 << CT2_POS) | \
-                    (0 << KEYPRESS_POS) | (1 << SC_POS) | (0 << MITM_POS) | \
-                    (BONDING << BONDING_FLAGS_POS), max_key_size=16,
-                initiator_key_distribution=(0b0000 << INIT_RESP_KEY_DIST_RFU_POS) \
-                    | (1 << LINKKEY_POS) | (1 << SIGNKEY_POS) | (1 << IDKEY_POS) \
-                    | (1 << ENCKEY_POS),
-                responder_key_distribution=(0b0000 << INIT_RESP_KEY_DIST_RFU_POS) \
-                    | (1 << LINKKEY_POS) | (1 << SIGNKEY_POS) | (1 << IDKEY_POS) \
-                    | (1 << ENCKEY_POS))
-
-        event_params = None
-        
+        logger.info("Detecting SMP pairing feature of %s, using %s\n"%(blue(paddr), blue(self.iface)))
+        self.sm = SecurityManager(self.iface)
         spinner = Halo(text="Scanning", spinner={'interval': 200,
                                                  'frames': ['', '.', '.'*2, '.'*3]},
                        placement='right')
-        hci = HCI(self.hci)
-        
         spinner.start()
         
-        le_conn_complete = None
-        
         try:
-            le_conn_complete = hci.le_create_connection(paddr, patype, timeout=timeout)
-            if le_conn_complete.status != ControllerErrorCodes.SUCCESS:
-                raise RuntimeError("Failed to connect {} {} LE address\n"
-                                   "    status: 0x{:02x} {}".format(
-                                       paddr, patype, 
-                                       le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status].name))
+            self.sm.connect(paddr, patype)
+            auth_req = AuthReq(BondingFlags.NO_BONDING, False, True, False, False)
+            initiator_key_dist = KeyDist(True, True, True, True)
+            responder_key_dist = KeyDist(True, True, True, True)
+            self.sm.pairing_request(IoCapabilities.NoInputNoOutput, OOBDataFlags.NOT_PRESENT, 
+                                    int(auth_req), 16, initiator_key_dist, responder_key_dist)
+            try:
+                pairing_response = self.sm.wait_pairing_response(timeout)
+                print('\r' + pairing_response.to_human_readable_str(title=blue("Pairing Response")))
+            except SmRuntimeError as e:
+                print("SmRuntimeError: {}".format(e))
     
-            result = btsmp.send_pairing_request(hci, le_conn_complete.conn_handle, pairing_req)
-            logger.debug("detect_pairing_feature(), result: {}".format(result))
-
-            rsp = btsmp.recv_pairing_response(hci, timeout)
-            logger.debug("detect_pairing_feature(), rsp: {}".format(rsp))
-                    
-            hci.disconnect(le_conn_complete.conn_handle,
-                           ControllerErrorCodes.UNSUPPORTED_REMOTE_FEATURE)
+            self.sm.disconnect()
+            self.sm.close()
             spinner.stop()
 
-            pp_smp_pkt(rsp)
         except TimeoutError as e:
-            output = subprocess.check_output(' '.join(['hciconfig', self.hci, 'reset']), 
+            output = subprocess.check_output(' '.join(['hciconfig', self.iface, 'reset']), 
                 stderr=STDOUT, timeout=60, shell=True)
             logger.info("Timeout")
-
         return
 
 
@@ -432,58 +409,7 @@ class LeScanner:
                 logger.debug("LeScanner.scan, close()")
                 serial_reset(dev)
                 dev.close()
-
-
-def pp_smp_pkt(pkt:bytes):
-    logger.debug("pp_smp_pkt(), pkt: {}".format(pkt))
-    code = pkt[0]
-
-    if code == btsmp.CmdCode.PAIRING_RESPONSE:
-        print(blue("Pairing Response"))
-        io_cap, oob, auth_req, max_enc_key_size, init_key_distr, rsp_key_distr = struct.unpack('BBBBBB', pkt[1:])
-        print("    IO Capability: 0x%02x - %s" % (io_cap, green(IoCapabilities[io_cap].name)))
-        print("    OOB data flag: 0x%02x - %s" % (oob, OOBDataFlag[oob].hname))
-        print("    AuthReq: 0x%02x" % auth_req)
-        bonding_flag = (auth_req & BONDING_FLAGS_MSK) >> BONDING_FLAGS_POS
-        mitm = (auth_req & MITM_MSK) >> MITM_POS
-        sc = (auth_req & SC_MSK) >> SC_POS
-        keypress = (auth_req & KEYPRESS_MSK) >> KEYPRESS_POS
-        ct2 = (auth_req & CT2_MSK) >> CT2_POS
-        rfu = (auth_req & AUTHREQ_RFU_MSK) >> AUTHREQ_RFU_POS
-        print("        Bonding Flag:      0b{:02b} - {}".format(bonding_flag, BondingFlag[bonding_flag].hname))
-        print("        MitM:              {}".format(green("True") if mitm else red("False")))
-        print("        Secure Connection: {}".format(green("True") if sc else red("False")))
-        print("        Keypress:          {}".format(green("True") if keypress else red("False")))
-        print("        CT2:               {}".format(green("True") if ct2 else red("False")))
-        print("        RFU:               0b{:02b}".format(rfu))
-        print("    Maximum Encryption Key Size: %d" % max_enc_key_size)
-        print("    Initiator Key Distribution: 0x%02x" % init_key_distr)
-        enckey = (init_key_distr & ENCKEY_MSK) >> ENCKEY_POS
-        idkey = (init_key_distr & IDKEY_MSK) >> IDKEY_POS
-        signkey = (init_key_distr & SIGNKEY_MSK) >> SIGNKEY_POS
-        linkkey = (init_key_distr & LINKKEY_MSK) >> LINKKEY_POS
-        print("        EncKey:  {}".format(green("True") if enckey else red("False")))
-        print("        IdKey:   {}".format(green("True") if idkey else red("False")))
-        print("        SignKey: {}".format(green("True") if signkey else red("False")))
-        print("        LinkKey: {}".format(green("True") if linkkey else red("False")))
-        print("        RFU:     0b{:04b}".format((init_key_distr & INIT_RESP_KEY_DIST_RFU_MSK) >> INIT_RESP_KEY_DIST_RFU_POS))
-        print("    Responder Key Distribution: 0x%02x" % rsp_key_distr)
-        enckey = (rsp_key_distr & ENCKEY_MSK) >> ENCKEY_POS
-        idkey = (rsp_key_distr & IDKEY_MSK) >> IDKEY_POS
-        signkey = (rsp_key_distr & SIGNKEY_MSK) >> SIGNKEY_POS
-        linkkey = (rsp_key_distr & LINKKEY_MSK) >> LINKKEY_POS
-        print("        EncKey:  {}".format(green("True") if enckey else red("False")))
-        print("        IdKey:   {}".format(green("True") if idkey else red("False")))
-        print("        SignKey: {}".format(green("True") if signkey else red("False")))
-        print("        LinkKey: {}".format(green("True") if linkkey else red("False")))
-        print("        RFU:     0b{:04b}".format((rsp_key_distr & INIT_RESP_KEY_DIST_RFU_MSK) >> INIT_RESP_KEY_DIST_RFU_POS))
-    elif code == btsmp.CmdCode.PAIRING_FAILED:
-        reason = pkt[1]
-        print(red("Pairing Failed"))
-        print("    Reason: 0x%02x (%s)"%(reason, PairingFailedReason[reason].hname))
-        print("            %s"%PairingFailedReason[reason].desc)
-    else:
-        logger.warning("unknown SMP packet: {}".format(pkt))
+       
 
 
 def pp_le_features(features: bytes):

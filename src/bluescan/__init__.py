@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 PKG_NAME = 'bluescan'
-VERSION = '0.8.5'
+VERSION = '0.8.6'
 DEBUG_VERSION = None
 
 from pyclui import Logger, INFO, DEBUG
@@ -71,7 +71,7 @@ class BlueScanner():
         hci.close()
 
         if cmd_complete.status != ControllerErrorCodes.SUCCESS:
-            raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} {}".format(
+            raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} - {}".format(
                 cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
         else:
             self.hci_bd_addr = cmd_complete.bd_addr.upper()
@@ -87,10 +87,5 @@ class ScanResult:
     def store(self):
         logger.debug("Not implemented")
 
-    
-from .plugin import Plugin, PluginHelpException, \
-    PluginOptionError, PluginPrepareError, PluginRuntimeError, PluginCleanError
 
-
-__all__ = [Plugin, PluginHelpException, 
-    PluginOptionError, PluginPrepareError, PluginRuntimeError, PluginCleanError]
+__all__ = []

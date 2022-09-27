@@ -64,7 +64,7 @@ from docopt import docopt
 from pyclui import red, Logger
 from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
 
-from xpycommon import valid_bdaddr
+from xpycommon.bluetooth import valid_bdaddr
 
 from . import VERSION, LOG_LEVEL
 

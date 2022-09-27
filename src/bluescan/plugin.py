@@ -3,7 +3,7 @@
 import subprocess
 from subprocess import CalledProcessError
 from typing import Union
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from importlib.metadata import metadata, version
 
 import pkg_resources
@@ -16,40 +16,52 @@ from .ui import LOG_LEVEL
 logger = Logger(__name__, LOG_LEVEL)
 
 
-class PluginError(Exception):
-    pass
-
-class PluginInstallError(PluginError):
-    pass
-
-class PluginOptionError(PluginError):
-    pass
-
-class PluginRuntimeError(PluginError):
-    pass
-
-class PluginPrepareError(PluginError):
-    pass
-
-class PluginCleanError(PluginError):
+class BluescanPluginError(Exception):
     pass
 
 
-class PluginHelpException(Exception):
+class BluescanPluginInstallError(BluescanPluginError):
+    pass
+
+
+class BluescanPluginOptionError(BluescanPluginError):
+    pass
+
+
+class BluescanPluginRuntimeError(BluescanPluginError):
+    pass
+
+
+class BluescanPluginPrepareError(BluescanPluginError):
+    pass
+
+
+class BluescanPluginCleanError(BluescanPluginError):
+    pass
+
+
+class BluescanPluginHelpException(Exception):
     """给 plugin 传递 -h, --help 时，plugin 应该抛出该异常，表示自己只打印了帮助，并没有
     执行核心内容"""
     pass
 
-class Plugin(metaclass=ABCMeta):
+
+class BluescanPlugin(ABC):
     MAGIC_CLASSIFIER = 'Framework :: Bluescan :: Plugin'
     
     @abstractmethod
     def __init__(self, argv: Union[list[str], None] = None) -> None:
+        """
+        如果只是创建了 plugin 实例，那么 clean() 不需要调用
+        """
         pass
 
     @abstractmethod
     def prepare(self):
-        """如果一个 plugin 的某些初始化代码，会影响到其他 plugin 的创建，那么应该把它们写
+        """
+        只要调用了 prepare()，那么 clean() 就必须被调用。
+        
+        如果一个 plugin 的某些初始化代码，会影响到其他 plugin 的创建，那么应该把它们写
         在 prepare() 中，而不是 __init__() 中。"""
         pass
     
@@ -70,8 +82,8 @@ def list_plugins():
     for dist in pkg_resources.working_set:
         pkg_name = dist.key
         try:
-            if Plugin.MAGIC_CLASSIFIER in str(metadata(pkg_name)):
-                logger.debug("Plugin.MAGIC_CLASSIFIER: {}".format(Plugin.MAGIC_CLASSIFIER))
+            if BluescanPlugin.MAGIC_CLASSIFIER in str(metadata(pkg_name)):
+                logger.debug("BluescanPlugin.MAGIC_CLASSIFIER: {}".format(BluescanPlugin.MAGIC_CLASSIFIER))
                 logger.debug("str(metadata(pkg_name): {}".format(str(metadata(pkg_name))))
                 print(pkg_name.replace('-', '_'), version(pkg_name))
         except:
@@ -109,7 +121,7 @@ def install_plugin(whl_path: str):
         subprocess.check_output('pip install --force-reinstall --no-deps {}'.format(whl_path), shell=True)
         logger.info("Installed {}".format(whl_path))
     except CalledProcessError:
-        raise PluginInstallError(whl_path)
+        raise BluescanPluginInstallError(whl_path)
 
 
 def uninstall_plugin(name: str):
@@ -121,7 +133,7 @@ def run_plugin(name: str, opts: str):
     """
     Parameters
         name
-            Plugin 的名字。
+            plugin 的名字。
             
         opts
             传给 plugin 的所有命令行选项，是一个单独的字符串。该字符串不包括 plugin 的名字本身。
@@ -142,34 +154,32 @@ def run_plugin(name: str, opts: str):
     exec("import {}".format(name))
     plugin__all__ = eval("{}.__all__".format(name))
     for i in plugin__all__:
-        if issubclass(i, Plugin):
+        if issubclass(i, BluescanPlugin):
             PluginSubclass = i
             logger.debug("PluginSubclass: {}".format(i))
     
     try:
         logger.debug("opts: {}".format(opts))
         plugin = PluginSubclass(argv=opts)
-        
-        plugin.prepare()
-        plugin.run()
-        plugin.clean()
-        
-        plugin.print_result()
     except DocoptExit as e:
         # 当不给 plugin 提供任何参数时，解析 plugin 参数的 docopt() 会抛出携带帮助信息的
         # DocoptExit 异常。
         logger.debug("{}".format(type(e)))
         help_msg = str(e)
         print(help_msg)
-    except PluginHelpException as e:
+    except BluescanPluginHelpException as e:
         # print help doc of the plugin
-        # logger.debug("PluginHelpException, {}".format(type(e)))
+        # logger.debug("BluescanPluginHelpException, {}".format(type(e)))
         print(e)
-    except PluginOptionError as e:
-        logger.error("PluginOptionError, {}: {}".format(name, e))
-    except PluginPrepareError as e:
-        logger.error("PluginPrepareError, {}: {}".format(name, e))
-    except PluginRuntimeError as e:
-        logger.error("PluginRuntimeError, {}: {}".format(name, e))
-    except PluginCleanError as e:
-        logger.error("PluginCleanError, {}: {}".format(name, e))
+    except Exception as e:
+        logger.error("{}: {}".format(e.__class__.__name__, e))
+        return
+        
+    try:
+        plugin.prepare()
+        plugin.run()
+    except Exception as e:
+        logger.error("{}: {}".format(e.__class__.__name__, e))
+    finally:
+        plugin.print_result()
+        plugin.clean()
