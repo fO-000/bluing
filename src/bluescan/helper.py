@@ -1,11 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # import pickle
 import subprocess
 
 from serial.tools.list_ports import comports
 
-from pyclui import Logger, blue, green, yellow, red
+from xpycommon.log import Logger
+from xpycommon.ui import blue, green, yellow, red
 
 from . import LOG_LEVEL
 
@@ -34,19 +35,6 @@ logger = Logger(__name__, LOG_LEVEL)
 #             return dev_info.addr_type
 
 #     raise RuntimeError("Couldn't determine the LE address type. Please provide it explicitly.")
-
-
-def find_rfkill_devid(dev='hci0') -> int:
-    exitcode, output = subprocess.getstatusoutput('rfkill -rno ID,DEVICE')
-
-    for line in output.splitlines():
-        id_dev = line.split()
-        if len(id_dev) == 2 and id_dev[1] == dev:
-            return int(id_dev[0])
-        else:
-            continue
-    
-    raise RuntimeError("Can't find the ID of %s in rfkill" % blue(dev))
 
 
 def get_microbit_devpaths() -> list:
@@ -84,15 +72,3 @@ def get_microbit_devpaths() -> list:
 
     logger.debug("get_microbit_devpaths, dev_paths: {}".format(dev_paths))
     return dev_paths
-
-
-def __test():
-    #valid_bdaddr('11:22:33:44:55:66')
-    try:
-        print(find_rfkill_devid('hci0'))
-    except RuntimeError as e:
-        print(e)
-
-
-if __name__ == '__main__':
-    __test()

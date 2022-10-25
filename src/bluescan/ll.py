@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-from pyclui import Logger, green, blue, yellow, red
+from xpycommon.log import Logger
+from xpycommon.ui import green, blue, yellow, red
 
 from . import LOG_LEVEL
 

@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import dbus
 from dbus import SystemBus
-from pyclui import Logger
+from xpycommon.log import Logger
 
 from . import LOG_LEVEL
 from .common import mainloop, Rejected, APP_NAME

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import io
 import pkg_resources
@@ -6,7 +6,8 @@ import pkg_resources
 from dbus.exceptions import DBusException
 from gi.repository import GObject
 
-from pyclui import Logger, blue, red
+from xpycommon.log import Logger
+from xpycommon.ui import blue, red
 
 from . import LOG_LEVEL
 
@@ -28,7 +29,7 @@ for line in oui_file:
         company_id = items[0].removesuffix('   (hex)')
         oui_company_names[company_id] = items[1]
         
-logger.debug("oui_company_names: {}".format(oui_company_names))
+# logger.debug("oui_company_names: {}".format(oui_company_names))
 
 
 class InvalidArgsException(DBusException):

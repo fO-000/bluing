@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 r"""bluescan
 
@@ -22,8 +22,7 @@ Usage:
     bluescan --list-installed-plugins
     bluescan --install-plugin=<path>
     bluescan --uninstall-plugin=<name>
-    bluescan --run-plugin=<name> [--] [<plugin-opt>...]
-
+    bluescan --plugin=<name> [--] [<plugin-opt>...]
 
 Arguments:
     BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
@@ -54,19 +53,20 @@ Options:
     --list-installed-plugins     List plugins in local system
     --install-plugin=<path>      Install a plugin
     --uninstall-plugin=<name>    Uninstall a plugin
-    --run-plugin=<name>          Execute plugin by name.
+    --plugin=<name>              Execute plugin by name.
 """
 
 import sys
 
 from docopt import docopt
 # from btgatt import service_names, charac_names, descriptor_names
-from pyclui import red, Logger
+from xpycommon.ui import red
+from xpycommon.log import Logger
 from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
 
-from xpycommon.bluetooth import valid_bdaddr
+from xpycommon.bluetooth import verify_bd_addr
 
-from . import VERSION, LOG_LEVEL
+from . import VERSION_STR, LOG_LEVEL
 
 
 logger = Logger(__name__, LOG_LEVEL)
@@ -74,7 +74,7 @@ INDENT = ' ' * 4
 
 
 def parse_cmdline() -> dict:
-    args = docopt(__doc__, version="v"+VERSION, options_first=True)
+    args = docopt(__doc__, version=VERSION_STR, options_first=True)
     logger.debug("docopt() returned\n"
                  "    args: {}".format(args))
     
@@ -100,7 +100,7 @@ def parse_cmdline() -> dict:
 
         if args['BD_ADDR'] is not None:
             args['BD_ADDR'] = args['BD_ADDR'].lower()
-            if not valid_bdaddr(args['BD_ADDR']):
+            if not verify_bd_addr(args['BD_ADDR']):
                 raise ValueError("Invalid BD_ADDR: " + red(args['BD_ADDR']))
         
         if args['--scan-type'] is not None:

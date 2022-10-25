@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import io
 from multiprocessing.sharedctypes import Value
@@ -11,8 +11,8 @@ from uuid import UUID
 
 import pkg_resources
 from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
-from pyclui import green, blue, yellow, red
-from pyclui import Logger
+from xpycommon.ui import green, blue, yellow, red
+from xpycommon.log import Logger
 from halo import Halo
 
 import dbus

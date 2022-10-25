@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import re
 import sys
 import subprocess
 from xml.etree import ElementTree
 
-from pyclui import Logger
-from pyclui import green, blue, yellow, red
+from xpycommon.log import Logger
+from xpycommon.ui import green, blue, yellow, red
 from halo import Halo
 
 from . import BlueScanner, LOG_LEVEL

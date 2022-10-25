@@ -139,7 +139,7 @@ Usage:
     bluescan --list-installed-plugins
     bluescan --install-plugin=<path>
     bluescan --uninstall-plugin=<name>
-    bluescan --run-plugin=<name> [--] [<plugin-opt>...]
+    bluescan --plugin=<name> [--] [<plugin-opt>...]
 
 Arguments:
     BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
@@ -170,7 +170,7 @@ Options:
     --list-installed-plugins     List plugins in local system
     --install-plugin=<path>      Install a plugin
     --uninstall-plugin=<name>    Uninstall a plugin
-    --run-plugin=<name>          Execute plugin by name.
+    --plugin=<name>              Execute plugin by name.
 ```
 
 ### BR 设备扫描 `-m br`

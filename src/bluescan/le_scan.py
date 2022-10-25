@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import pickle
@@ -14,7 +14,8 @@ from xpycommon.bluetooth import IoCapabilities
 from bthci import HCI, ControllerErrorCodes, HciRuntimeError, ADDR_TYPE_PUBLIC
 from btsm import SmRuntimeError, SecurityManager
 from btsm.commands import OOBDataFlags, BondingFlags, AuthReq, KeyDist
-from pyclui import Logger, blue, green, red
+from xpycommon.log import Logger
+from xpycommon.ui import blue, green, red
 
 from . import ScanResult, LE_DEVS_SCAN_RESULT_CACHE, LOG_LEVEL
 from .common import bdaddr_to_company_name
@@ -337,27 +338,23 @@ class LeScanner:
                        placement='right')
         spinner.start()
         
-        try:
-            self.sm.connect(paddr, patype)
-            auth_req = AuthReq(BondingFlags.NO_BONDING, False, True, False, False)
-            initiator_key_dist = KeyDist(True, True, True, True)
-            responder_key_dist = KeyDist(True, True, True, True)
-            self.sm.pairing_request(IoCapabilities.NoInputNoOutput, OOBDataFlags.NOT_PRESENT, 
-                                    int(auth_req), 16, initiator_key_dist, responder_key_dist)
-            try:
-                pairing_response = self.sm.wait_pairing_response(timeout)
-                print('\r' + pairing_response.to_human_readable_str(title=blue("Pairing Response")))
-            except SmRuntimeError as e:
-                print("SmRuntimeError: {}".format(e))
-    
-            self.sm.disconnect()
-            self.sm.close()
-            spinner.stop()
 
-        except TimeoutError as e:
-            output = subprocess.check_output(' '.join(['hciconfig', self.iface, 'reset']), 
-                stderr=STDOUT, timeout=60, shell=True)
-            logger.info("Timeout")
+        self.sm.connect(paddr, patype)
+        auth_req = AuthReq(BondingFlags.NO_BONDING, False, True, False, False)
+        initiator_key_dist = KeyDist(True, True, True, True)
+        responder_key_dist = KeyDist(True, True, True, True)
+        self.sm.pairing_request(IoCapabilities.NoInputNoOutput, OOBDataFlags.NOT_PRESENT, 
+                                int(auth_req), 16, initiator_key_dist, responder_key_dist)
+        try:
+            pairing_response = self.sm.wait_pairing_response(timeout)
+            print('\r' + pairing_response.to_human_readable_str(title=blue("Pairing Response")))
+        except SmRuntimeError as e:
+            print("SmRuntimeError: {}".format(e))
+
+        self.sm.disconnect()
+        self.sm.close()
+        spinner.stop()
+
         return
 
 

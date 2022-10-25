@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # EIR Data Type, Advertising Data Type (AD Type) and OOB Data Type Definitions
 # https://www.bluetooth.com/specifications/assigned-numbers/generic-access-profile/

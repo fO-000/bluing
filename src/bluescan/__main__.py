@@ -1,21 +1,23 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
 import subprocess
 import traceback
+from traceback import format_exception
 from subprocess import STDOUT, CalledProcessError
 from pathlib import PosixPath
 
-from pyclui import Logger, blue
+from xpycommon.log import Logger
+from xpycommon.ui import blue
 from bthci import HCI, ControllerErrorCodes, HciError
 from bluepy.btle import BTLEException
-from xpycommon.bluetooth import restart_bluetooth_service
+from xpycommon.bluetooth import restart_bluetooth_service, find_rfkill_devid
 
 from . import BlueScanner, LOG_LEVEL
 from .ui import parse_cmdline
-from .helper import find_rfkill_devid, get_microbit_devpaths
-from .plugin import BluescanPluginInstallError, list_plugins, install_plugin, uninstall_plugin, run_plugin
+from .helper import get_microbit_devpaths
+from .plugin import BluescanPluginError, BluescanPluginNotFoundError, BluescanPluginInstallError, list_plugins, install_plugin, uninstall_plugin, exec_plugin
 from .br_scan import BRScanner
 from .le_scan import LeScanner
 from .gatt_scan import GattScanner
@@ -35,7 +37,11 @@ def prepare_hci(iface: str = 'hci0'):
     # hciconfig <hci> up 的前提是 rfkill 先 unblock
     subprocess.check_output('rfkill unblock %d' % find_rfkill_devid(iface), 
                             stderr=STDOUT, timeout=5, shell=True)
-    restart_bluetooth_service()
+    try:
+        restart_bluetooth_service()
+    except CalledProcessError as e:
+        logger.warning("Failed to restart bluetooth service")
+
     subprocess.check_output('hciconfig {} up'.format(iface),
                             stderr=STDOUT, timeout=5, shell=True)
 
@@ -143,10 +149,9 @@ def main():
             uninstall_plugin(plugin_name)
             return
         
-        if args['--run-plugin']:
-            plugin_name = args['--run-plugin']
-            opts = args['<plugin-opt>']
-            run_plugin(plugin_name, opts)
+        if args['--plugin']:
+            plugin_name = args['--plugin']
+            exec_plugin(plugin_name)
             return
 
         if not args['--adv']:
@@ -205,20 +210,34 @@ def main():
             scan_result.print()
             scan_result.store()
     # except (RuntimeError, ValueError, BluetoothError) as e:
-    except (RuntimeError, ValueError) as e:
+    except BluescanPluginError as e:
         logger.error("{}: {}".format(e.__class__.__name__, e))
-        traceback.print_exc()
         sys.exit(1)
-    except (BTLEException) as e:
+    except BTLEException as e:
         logger.error(str(e) + ("\nNo BLE adapter or missing sudo?" if 'le on' in str(e) else ""))
-    except BluescanPluginInstallError as e:
-        logger.error("Failed to install plugin: {}".format(e))
+        sys.exit(1)
     except KeyboardInterrupt:
         if args != None and args['-i'] != None:
-            output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 
-                    stderr=STDOUT, timeout=60, shell=True)
+            try:
+                output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 
+                                                 stderr=STDOUT, timeout=60, shell=True)
+            except CalledProcessError as e:
+                logger.warning("{}: {}".format(e.__class__.__name__, e))
         print()
         logger.info("Canceled\n")
+    except TimeoutError as e:
+        logger.error("Timeout")
+        if args != None and args['-i'] != None:
+            try:
+                output = subprocess.check_output(' '.join(['hciconfig', args['-i'], 'reset']), 
+                                                 stderr=STDOUT, timeout=60, shell=True)
+            except CalledProcessError as e:
+                logger.warning("{}: {}".format(e.__class__.__name__, e))
+    except Exception as e:
+        e_info = ''.join(format_exception(*sys.exc_info()))
+        logger.debug("e_info: {{}}".format(e_info))
+        logger.error("{}: {}".format(e.__class__.__name__, e))
+        sys.exit(1)
 
 
 if __name__ == '__main__':

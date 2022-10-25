@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import struct
 import threading
 from enum import Enum, unique
 
 from serial import Serial
-from pyclui import Logger
+from xpycommon.log import Logger
 
 from .ll import pp_adv_phych_pdu
 from . import LOG_LEVEL

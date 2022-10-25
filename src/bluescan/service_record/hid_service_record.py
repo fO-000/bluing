@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from . import ServiceRecord
 from xml.etree import ElementTree
 
-from pyclui import blue, green, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR
+from xpycommon.ui import blue, green, yellow, red
+from xpycommon.log import DEBUG, INFO, WARNING, ERROR
 
 
 class HIDServiceRecord(ServiceRecord):

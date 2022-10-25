@@ -1,18 +1,16 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 PKG_NAME = 'bluescan'
-VERSION = '0.8.6'
-DEBUG_VERSION = None
+VERSION = '0.8.7'
+DEBUG_VERSION = ''
 
-from pyclui import Logger, INFO, DEBUG
 
-LOG_LEVEL = INFO
-logger = Logger(__name__, LOG_LEVEL)
+from xpycommon import py_pkg_init
 
-if DEBUG_VERSION is not None:
-    LOG_LEVEL = DEBUG
-    logger.setLevel(LOG_LEVEL)
-    logger.warning("Using the debug version {} of {}".format(DEBUG_VERSION, PKG_NAME))
+locals_dict = {}
+py_pkg_init(globals(), locals_dict)
+LOG_LEVEL = locals_dict['LOG_LEVEL']
+VERSION_STR = locals_dict['VERSION_STR']
 
 
 import io
@@ -85,7 +83,7 @@ class ScanResult:
         self.type = type
 
     def store(self):
-        logger.debug("Not implemented")
+        pass
 
 
 __all__ = []

@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import logging
 from typing import Sequence
 
-from pyclui import Logger, blue, green, yellow, red, \
-    DEBUG, INFO, WARNING, ERROR
+from xpycommon.log import Logger, DEBUG, INFO, WARNING, ERROR
+from xpycommon.ui import blue, green, yellow, red
 from xml.etree import ElementTree
 
 from . import ServiceRecord

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import struct
@@ -7,8 +7,8 @@ from bthci import HCI, HciRuntimeError, ControllerErrorCodes
 from bthci.events import HciEventCodes, HCI_Inquiry_Result, HCI_Inquiry_Result_with_RSSI, \
                          HCI_Extended_Inquiry_Result
 from bthci.bluez_hci import HCI_CHANNEL_USER
-from pyclui import Logger
-from pyclui import green, blue, yellow, red
+from xpycommon.log import Logger
+from xpycommon.ui import green, blue, yellow, red
 from xpycommon.bluetooth import bd_addr_str2bytes
 
 from . import BlueScanner, service_cls_profile_ids, LOG_LEVEL

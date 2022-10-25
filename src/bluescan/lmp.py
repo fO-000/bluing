@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import io
 import csv
 import pkg_resources
 
-from pyclui import Logger, green, red
+from xpycommon.log import Logger
+from xpycommon.ui import green, red
 
 from . import LOG_LEVEL
 

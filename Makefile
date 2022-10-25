@@ -2,9 +2,10 @@
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.twine
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.python
 include /home/x/OneDrive/Projects/makefile-common/src/Makefile.nethunter
+include ./plugins/Makefile
 
 $(info PROJECT_NAME: $(PROJECT_NAME))
-$(info machine: $(MACHINE))
+$(info MACHINE: $(MACHINE))
 $(info INSTALL_REQUIRED_PY_PKGS: $(INSTALL_REQUIRED_PY_PKGS))
 
 .DEFAULT_GOAL := build

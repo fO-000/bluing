@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=59.6.0",
+    "setuptools>=65.3.0",
     "wheel", 
     "stdeb"
 ]
