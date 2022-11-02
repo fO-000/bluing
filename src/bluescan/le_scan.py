@@ -2,8 +2,6 @@
 
 import sys
 import pickle
-import subprocess
-from subprocess import STDOUT
 
 from bluepy.btle import Scanner
 from bluepy.btle import DefaultDelegate

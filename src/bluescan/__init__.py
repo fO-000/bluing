@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 PKG_NAME = 'bluescan'
-VERSION = '0.8.7'
+VERSION = '0.8.8'
 DEBUG_VERSION = ''
 
 
@@ -70,7 +70,7 @@ class BlueScanner():
 
         if cmd_complete.status != ControllerErrorCodes.SUCCESS:
             raise RuntimeError("hci.read_bd_addr() returned, status: 0x{:02x} - {}".format(
-                cmd_complete.status, ControllerErrorCodes[cmd_complete.status].name))
+                cmd_complete.status, cmd_complete.status.name))
         else:
             self.hci_bd_addr = cmd_complete.bd_addr.upper()
 

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 import io
-from multiprocessing.sharedctypes import Value
 import pickle
 import threading
 import subprocess
-import traceback
 from subprocess import STDOUT
 from uuid import UUID
 

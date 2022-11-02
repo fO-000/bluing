@@ -22,7 +22,7 @@
 # 安装依赖
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf
+                 rfkill meson patchelf bluez
 
 # 安装 bluescan
 sudo pip install bluescan
@@ -55,7 +55,7 @@ bluescan 基于 Linux 官方的 BlueZ 蓝牙协议栈开发。它仅支持在 Li
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf
+                 rfkill meson patchelf bluez
 ```
 
 如果后续在[安装](https://github.com/fO-000/bluescan/blob/master/README-cn.md#%E5%AE%89%E8%A3%85) bluescan 时仍遇到错误，请尝试继续安装如下 package 来解决：

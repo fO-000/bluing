@@ -6,7 +6,7 @@ import subprocess
 from xml.etree import ElementTree
 
 from xpycommon.log import Logger
-from xpycommon.ui import green, blue, yellow, red
+from xpycommon.ui import blue
 from halo import Halo
 
 from . import BlueScanner, LOG_LEVEL
@@ -22,14 +22,24 @@ class SDPScanner(BlueScanner):
                                                  'frames': ['', '.', '.'*2, '.'*3]},
                        placement='right')
         spinner.start()
-        # exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
+
         exitcode, output = subprocess.getstatusoutput('sdptool browse --xml ' + addr)
+        if output == "Browsing {} ...".format(addr.upper()):
+            exitcode, output = subprocess.getstatusoutput('sdptool records --xml ' + addr)
+        else:
+            lines = output.split('\n')
+            lines = list(filter("Browsing {} ...".format(addr.upper()).__ne__, lines))
+            lines = list(filter("Service Search failed: Invalid argument".__ne__, lines))
+            
+            output = '\n'.join(lines)
+            
         if exitcode != 0:
             spinner.fail()
             sys.exit(exitcode)
+            
         spinner.stop()
         
-        # print('[DEBUG] output:', output)
+        logger.debug("output: {}".format(output))
         self.pp_sdptool_output(output)
 
 

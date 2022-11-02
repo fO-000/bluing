@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
 # import pickle
-import subprocess
 
 from serial.tools.list_ports import comports
 
 from xpycommon.log import Logger
-from xpycommon.ui import blue, green, yellow, red
 
 from . import LOG_LEVEL
 

@@ -18,6 +18,7 @@
 /yotta_targets/
 
 /install.rec
+/install.sh
 
 /src/bluescan/res/*.cache
 /src/bluescan/bluescan_prompt.bash
