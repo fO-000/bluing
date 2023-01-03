@@ -1,3 +1,5 @@
+/.idea/
+
 /.vscode/.ropeproject
 /.vscode/configurationCache.log
 /.vscode/dryrun.log
@@ -5,24 +7,24 @@
 /.vscode/launch.json
 /.vscode/settings.json
 
-/.idea/
+/assets/private/
 /backup/
-/build/
 /dist/
-/deb_dist/
 /doc/private/
 /plugins/
 /res/private/
+
+/src/bluing/res/*.cache
+/src/bluing/bluing_prompt.zsh
+/src/bluing/le/res/le_devs_scan_result.cache
+
+/temp/
 /test/
 /yotta_modules/
 /yotta_targets/
 
 /install.rec
-/install.sh
-
-/src/bluescan/res/*.cache
-/src/bluescan/bluescan_prompt.bash
 
 __pycache__/
-bluescan.spec
+bluing.spec
 *.egg-info

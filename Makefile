@@ -6,11 +6,12 @@ include ./plugins/Makefile
 
 $(info PROJECT_NAME: $(PROJECT_NAME))
 $(info MACHINE: $(MACHINE))
-$(info INSTALL_REQUIRED_PY_PKGS: $(INSTALL_REQUIRED_PY_PKGS))
+$(info DEPENDENCY_PY_PKGS: $(DEPENDENCY_PY_PKGS))
+$(info )
 
 .DEFAULT_GOAL := build
 PKG_NAME := $(PY_PKG_NAME)
-MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluescan-advsniff-combined.hex
+MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
 
 
@@ -26,7 +27,7 @@ install:
 
 .PHONY: flash
 flash:
-	@yotta build bluescan-advsniff
+	@yotta build bluing-advsniff
 
 	@if [ -d $(MICROBIT_PATH) ]; then \
 		cp $(MICROBIT_BIN) $(MICROBIT_PATH); \

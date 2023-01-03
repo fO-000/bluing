@@ -1,256 +1,512 @@
-# bluescan ---- A Bluetooth scanner for hacking
+# Bluing: An intelligence gathering tool for hacking Bluetooth
 
 <p align="center">
-    <a href="https://github.com/fO-000/bluescan/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluescan/blob/master/README-cn.md">简体中文</a>
+    <a href="https://github.com/fO-000/bluing/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluing/blob/master/README-cn.md">简体中文</a>
 </p>
 
 <p align="center">
     <img src="https://img.shields.io/badge/python-3.10-blue">
-    <a href="https://pypi.org/project/bluescan/"><img src="https://img.shields.io/pypi/v/bluescan?color=blue"></a>
-    <!-- <img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads"> -->
-    <a href="https://pepy.tech/badge/bluescan"><img src="https://pepy.tech/badge/bluescan"></a>
-    <a href="https://github.com/fO-000/bluescan/blob/master/LICENSE"><img src="https://img.shields.io/github/license/fO-000/bluescan"></a>
+    <a href="https://pypi.org/project/bluing/"><img src="https://img.shields.io/pypi/v/bluing?color=blue"></a>
+    <a href="https://pepy.tech/badge/bluing"><img src="https://pepy.tech/badge/bluing"></a>
+    <a href="https://pepy.tech/badge/bluescan"><img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&units=international_system&left_color=grey&right_color=blue&left_text=predecessor%20downloads"></a>
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.3%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
 </p>
 
-## TL;DR
+Bluing (formerly [bluescan](https://pypi.org/project/bluescan/)) is a **Blu**etooth **In**telligence **G**athering tool written primarily in Python. It can help us snoop on the internal structure of Bluetooth which is a complex protocol, or hack Bluetooth devices. Here are the main features of the tool:
 
-```sh
-# Install dependencies
-sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez
-
-# Install bluescan
-sudo pip install bluescan
-
-# Have fun!
-bluescan --help
-sudo bluescan -m <br|le|sdp|gatt> [opt]... [BD_ADDR]
-```
-
-## Introduction
-
-Bluetooth is a complex protocol, and a good scanner can quickly help us peek inside its secrets. But previous Bluetooth scanners suffered from a number of problems such as incomplete functionality, unintuitive information and out of repair. So we came up with this powerful Bluetooth scanner based on modern Python 3 ---- bluescan.
-
-When hacking Bluetooth targets, bluescan can be very useful for **intelligence collecting**. It can collect the following information:
-
-* BR devices
-* LE devices
-* BR LMP features
-* LE LL features
-* SMP Pairing features
-* Real-time advertising physical channel PDU
-* SDP services
-* GATT services
-* Vulnerabilities (deprecated and will be presented in another way)
-
-## Requirements
-
-bluescan is based on BlueZ, the official Linux Bluetooth stack. It only supports running on Linux, and the following packages need to be installed:
-
-```sh
-sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez
-```
-
-If you still encounter errors when [installing](https://github.com/fO-000/bluescan#install) bluescan, please try to install the following packages to solve: 
-
-```sh
-sudo apt install libglib2.0-dev gir1.2-gtk-3.0 \
-                 python3-dbus python3-gi python3-gi-cairo
-```
-
-When you play this tool in a Linux virtual machine, **making a USB Bluetooth adapter exclusive to it is recommended**; If you play this tool in a Raspberry Pi, it is also recommended to connect a better USB Bluetooth adapter, although the Raspberry Pi itself has one.
-
-The recommended USB Bluetooth adapter is [Parani UD100-G03](https://item.taobao.com/item.htm?spm=a230r.1.14.16.19bcf4b2koxeWN&id=561488544550&ns=1&abbucket=19#detail)：
-
-![Parani UD100-G03](https://raw.githubusercontent.com/fO-000/bluescan//master/res/Parani-UD100-G03.jpg)
-
-### Dedicated firmware for [micro:bit](https://microbit.org/)
-
-If you want to use bluescan to sniff the advertising physical channel PDU (`-m le --adv`), you need to execute the following command to download the dedicated firmware `bin/bluescan-advsniff-combined.hex` to 1 or 3 micro:bit(s). It is recommended to use 3 micro:bits at the same time.
-
-```sh
-cd bluescan
-cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT
-cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT1
-cp bin/bluescan-advsniff-combined.hex /media/${USER}/MICROBIT2
-```
-
-![3 micro:bit](https://raw.githubusercontent.com/fO-000/bluescan//master/res/3-microbit.jpg)
-
-If you want to compile the firmware yourself, first install the following packages:
-
-```sh
-sudo apt install yotta ninja-build
-```
-
-Then execute the following command, it will automatically compile (**requires network to automatically resolve dependencies**) and download the firmware to the micro:bit(s) which connected to your PC:
-
-```sh
-cd bluescan
-make flash
-```
+![](https://raw.githubusercontent.com/fO-000/bluescan/master/assets/bluing-features-mermaid-mindmap.svg)
 
 ## Install
 
-> Please read the "[Requirements](https://github.com/fO-000/bluescan#requirements)" section first to avoid installation and runtime errors.
+Bluing partially depend on [BlueZ](http://www.bluez.org/), the official Linux Bluetooth protocol stack. So it only supports running on Linux. The following command is used to install dependencies:
 
-The lastest bluescan will be uploaded to PyPI, so the following command can install bluescan:
+<pre>
+<span style="font-weight: bold; color: #9fab76">sudo apt</span> install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
+                 rfkill meson patchelf bluez
+</pre>
 
-```sh
-sudo pip install bluescan
-```
+Currently, bluing is distributed via [PyPI](https://pypi.org/project/bluing/) and **only supports Python 3.10**. The following is an installation command:
 
-If you do not use the system default Python, but install Python 3.10 yourself, then you need to install bluescan like this: 
+<pre>
+<span style="font-weight: bold; color: #9fab76">sudo pip3.10</span> install bluing
+</pre>
 
-```txt
-sudo python3.10 -m pip install bluescan
-```
+## Hardware Requirements
+
+### Bluetooth adapter
+
+Many features of bluing require access to at least 1 Bluetooth adapter. Although it is possible to use the adapter that comes with the Linux physical machine or make the Linux virtual machine exclusive to an adapter of the host machine, it is still recommended to use an external USB Bluetooth adapter for more stability, such as [Parani UD100-G03](http://www.senanetworks.com/ud100-g03.html).
+
+### Original micro:bit
+
+Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit) when sniffing advertising physical channel PDUs (`le --sniff-adv`), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:
+
+<pre>
+<span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
+</pre>
+
+### Ubertooth One
+
+The future features of bluing may require [Ubertooth One](https://greatscottgadgets.com/ubertoothone/).
 
 ## Usage
 
-```txt
-$ bluescan -h
-bluescan
-
-A Bluetooth scanner for hacking.
-
-Author: Sourcell Xu
-
-License: GPL-3.0
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help
+An intelligence gathering tool for hacking Bluetooth
 
 Usage:
-    bluescan (-h | --help)
-    bluescan (-v | --version)
-    bluescan [-i <hci>] --clean BD_ADDR
-    bluescan [-i <hci>] -m br [--inquiry-len=<n>]
-    bluescan [-i <hci>] -m br --lmp-feature BD_ADDR
-    bluescan [-i <hci>] -m le [--scan-type=<type>] [--timeout=<sec>] [--sort=<key>]
-    bluescan [-i <hci>] -m le [--ll-feature|--smp-feature] [--timeout=<sec>] --addr-type=<type> BD_ADDR
-    bluescan -m le --adv [--channel=<num>]
-    bluescan [-i <hci>] -m sdp BD_ADDR
-    bluescan [-i <hci>] -m gatt [--io-capability=<name>] [--addr-type=<type>] BD_ADDR
-    bluescan --list-installed-plugins
-    bluescan --install-plugin=<path>
-    bluescan --uninstall-plugin=<name>
-    bluescan --plugin=<name> [--] [<plugin-opt>...]
+    bluing [-h | --help]
+    bluing (-v | --version)
+    bluing [-i &lthci>] --clean BD_ADDR
+    bluing [-i &lthci>] --spoof-bd-addr BD_ADDR
+    bluing --flash-micro-bit
+    bluing &ltcommand> [&ltargs>...]
 
 Arguments:
-    BD_ADDR       Target Bluetooth device address. FF:FF:FF:00:00:00 means local 
-                  device.
-    plugin-opt    Options for a plugin.
+    BD_ADDR    Bluetooth device address
 
 Options:
-    -h, --help                   Display this help.
-    -v, --version                Show the version.
-    -i <hci>                     HCI device used for subsequent scans. [default: The default HCI device]
-    -m <mode>                    Scan mode, support br, le, sdp and gatt.
-    --inquiry-len=<n>            Inquiry_Length parameter of HCI_Inquiry command. [default: 8]
-    --lmp-feature                Scan LMP features of the remote BR/EDR device.
-    --scan-type=<type>           Scan type used for scanning LE devices, active or 
-                                 passive. [default: active]
-    --timeout=<sec>              Duration of the LE scanning, but may not be precise. [default: 10]
-    --sort=<key>                 Sort the discovered devices by key, only support 
-                                 RSSI now. [default: rssi]
-    --adv                        Sniff advertising physical channel PDU. Need at 
-                                 least one micro:bit.
-    --ll-feature                 Scan LL features of the remote LE device.
-    --smp-feature                Detect pairing features of the remote LE device.
-    --channel=<num>              LE advertising physical channel, 37, 38 or 39). [default: 37,38,39]
-    --addr-type=<type>           Type of the LE address, public or random.
-    --io-capability=<name>       Set IO capability of the agent. Available value: DisplayOnly, DisplayYesNo, 
-                                 KeyboardOnly, NoInputNoOutput, KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
-    --clean                      Clean the cached data of a remote device.
-    --list-installed-plugins     List plugins in local system
-    --install-plugin=<path>      Install a plugin
-    --uninstall-plugin=<name>    Uninstall a plugin
-    --plugin=<name>              Execute plugin by name.
-```
+    -h, --help           Print this help and quit
+    -v, --version        Print version information and quit
+    -i &lthci>             HCI device
+    --clean              Clean cached data of a remote device
+    --spoof-bd-addr      Spoof the BD_ADDR of a local controller
+    --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
 
-### Scan BR devices `-m br`
+Commands:
+    br        Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
+    le        Low Energy system
+    plugin    Manage plugins
 
-Classic Bluetooth devices may use three technologies: BR (Basic Rate), EDR (Enhanced Data Rate), and AMP (Alternate MAC/PHY). Since they all belong to the Basic Rate system, so when scanning these devices we call them BR device scanning:
+Run `bluing &ltcommand> --help` for more information on a command.
+</pre>
 
-![BR dev scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-br-dev-scan.png)
+### `--spoof-bd-addr`: Spoof the BD_ADDR of a local controller
 
-As shown above, through BR device scanning, we can get the address, page scan repetition mode, class of device, clock offset, RSSI, and the extended inquiry response (Name, TX power, and so on) of the surrounding classic Bluetooth devices.
+<pre>
+$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
+</pre>
 
-### Scan LE devices `-m le`
+### `br` command: Basic Rate system
 
-Bluetooth technology, in addition to the Basic Rate system, is Low Energy (LE) system. When scanning Bluetooth low energy devices, it is called LE device scanning:
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --help
 
-![LE dev scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-le-dev-scan.png)
+Usage:
+    bluing br [-h | --help]
+    bluing br [-i &lthci>] [--inquiry-len=&ltn>] --inquiry
+    bluing br [-i &lthci>] --sdp BD_ADDR
+    bluing br [-i &lthci>] --local --sdp
+    bluing br [-i &lthci>] --lmp-features BD_ADDR
+    bluing br [-i &lthci>] --local --lmp-features
+    bluing br [-i &lthci>] --stack BD_ADDR
+    bluing br [-i &lthci>] --local --stack
+    bluing br [-i &lthci>] [--inquiry-scan] --mon-incoming-conn
 
-As shown above, through LE device scanning, we can get the address, address type, connection status, RSSI, and GAP data of the surrounding LE devices.
+Arguments:
+    BD_ADDR    BR/EDR Bluetooth device address
 
-### Scan BR LMP features `-m br --lmp-feature`
+Options:
+    -h, --help               Print this help and quit
+    -i &lthci>                 HCI device
+    --local                  Target a local BR/EDR device instead of a remote one
+    --inquiry                Discover other nearby BR/EDR controllers
+    --inquiry-len=&ltn>        Maximum amount of time (added to --ext-inquiry-len=<n>) 
+                             specified before the Inquiry is halted.
+                                 Time = n * 1.28 s
+                                 Time range: 1.28 to 61.44 s
+                                 Range of n: 0x01 to 0x30 [default: 8]
+    --ext-inquiry-len=&ltn>    Extended_Inquiry_Length measured in number of Baseband 
+                             slots.
+                                 Interval Length = n * 0.625 ms (1 Baseband slot)
+                                 Time Range: 0 to 40.9 s
+                                 Range of n: 0x0000 to 0xFFFF [default: 0]
+    --sdp                    Retrieve information from the SDP database of a remote BR/EDR device
+    --lmp-features           Read LMP features of a remote BR/EDR device
+    --stack                  Determine the Bluetooth stack type of a remote BR/EDR device
+    --mon-incoming-conn      Print incoming connection from other nearby BR/EDR devices
+    --inquiry-scan           Enable the Inquiry Scan
+</pre>
 
-Detecting the LMP features of classic Bluetooth devices allows us to judge the underlying security features of them:
+#### `--inquiry`: Discover other nearby BR/EDR controllers
 
-![BR LMP feature scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-br-lmp-feature-scan.png)
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Discovering other nearby BR/EDR Controllers on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10.24</span> sec
 
-### Scan LE LL features `-m le --ll-feature`
+BD_ADDR: <span style="font-weight: bold; color: #7da9c7">B0:C9:52:45:33:13</span> (<span style="font-weight: bold; color: #7da9c7">GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD</span>)
+Page scan repetition mode: 1 (R1)
+Reserved: 0x02
+CoD: 0x5a020c
+    Service Class: 0b1011010000
+        Telephony
+        Object Transfer
+        Capturing
+        Networking
+    Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
+Clock offset: 0x50D5
+RSSI: -61
+Extended inquiry response: 
+    Complete Local Name: <span style="font-weight: bold; color: #7da9c7">old man phone</span>
+    Complete List of 16-bit Service Class UUIDs
+        0x1105 <span style="font-weight: bold; color: #7da9c7">OBEXObjectPush</span>
+        0x110a <span style="font-weight: bold; color: #7da9c7">AudioSource</span>
+        0x110c <span style="font-weight: bold; color: #7da9c7">A/V_RemoteControlTarget</span>
+        0x110e <span style="font-weight: bold; color: #7da9c7">A/V_RemoteControl</span>
+        0x1112 <span style="font-weight: bold; color: #7da9c7">Headset - Audio Gateway (AG)</span>
+        0x1115 <span style="font-weight: bold; color: #7da9c7">PANU</span>
+        0x1116 <span style="font-weight: bold; color: #7da9c7">NAP</span>
+        0x111f <span style="font-weight: bold; color: #7da9c7">HandsfreeAudioGateway</span>
+        0x112d <span style="font-weight: bold; color: #7da9c7">SIM_Access</span>
+        0x112f <span style="font-weight: bold; color: #7da9c7">Phonebook Access - PSE</span>
+        0x1200 <span style="font-weight: bold; color: #7da9c7">PnPInformation</span>
+        0x1132 <span style="font-weight: bold; color: #7da9c7">Message Access Server</span>
+    Complete List of 32-bit Service Class UUIDs
+        <span style="font-weight: bold; color: #c35956">None</span>
+    Complete List of 128-bit Service Class UUIDs
+        <span style="font-weight: bold; color: #7da9c7">A49EAA15-CB06-495C-9F4F-BB80A90CDF00</span>
+        <span style="font-weight: bold; color: #7da9c7">00000000-0000-0000-0000-000000000000</span>
+... ...
 
-Detecting the LL (Link Layer) features fo the LE devices:
 
-![LE LL feature scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-le-ll-feature-scan.png)
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting the names of all discovered devices...
+B0:C9:52:45:33:13 : <span style="font-weight: bold; color: #7da9c7">old man phone</span>
+... ...
+</pre>
 
-### Detect SMP Pairing features `-m le --smp-feature`
+#### `--sdp`: Retrieve information from the SDP database of a remote BR/EDR device
 
-Detecting the SMP Pairing features of the remote LE device:
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --sdp 34:13:46:23:6A:4D
+Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠋</span>
+Number of service records: 18 
 
-![SMP feature scan](https://raw.githubusercontent.com/fO-000/bluescan/master/res/smp-feature-scan.png)
+<span style="font-weight: bold; color: #7da9c7">Service Record</span>
+0x0000: ServiceRecordHandle (uint32)
+	0x0001000d
+0x0001: ServiceClassIDList (sequence)
+	0x1105: <span style="font-weight: bold; color: #9fab76">OBEXObjectPush</span>
+0x0004: ProtocolDescriptorList (sequence)
+	0x0100: L2CAP
+	0x0003: RFCOMM
+		channel: 0x0c
+	0x0008: OBEX
+0x0005: BrowseGroupList (sequence)
+	0x1002: <span style="font-weight: bold; color: #9fab76">PublicBrowseRoot</span>
+0x0009: BluetoothProfileDescriptorList (sequence)
+	0x1105: <span style="font-weight: bold; color: #9fab76">OBEXObjectPush</span> <span style="font-weight: bold; color: #9fab76">v1.2</span>
+0x0100: ServiceName (guess) (text)
+	OBEX Object Push 
+0x0200: GoepL2CapPsm (guess) (uint16)
+<span style="font-weight: bold; color: #9fab76">	0x1023</span>
+0x0303: SupportedFormatsList (guess) (sequence)
+	0x01: <span style="font-weight: bold; color: #9fab76">vCard 2.1</span>
+	0x02: <span style="font-weight: bold; color: #9fab76">vCard 3.0</span>
+	0x03: <span style="font-weight: bold; color: #9fab76">vCal 1.0</span>
+	0x04: <span style="font-weight: bold; color: #9fab76">iCal 2.0</span>
+	0xff: <span style="font-weight: bold; color: #9fab76">Any type of object</span>
+... ...
+</pre>
 
-### Sniffing advertising physical channel PDU `-m le --adv`
+#### `--lmp-features`: Read LMP features of a remote BR/EDR device
 
-Compared with scanning adove the HCI, using micro:bit to sniff the advertising physical channel PDU at the link layer, you can get richer LE device activity information:
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --lmp-features 6A:8D:99:33:56:AE
+<span style="font-weight: bold; color: #7da9c7">Version</span>
+    Version:
+        Bluetooth Core Specification 5.2 (LMP)
+        Bluetooth Core Specification 5.2 (LL)
+    Manufacturer name: <span style="font-weight: bold; color: #9fab76">HiSilicon Technologies CO., LIMITED</span>
+    Subversion: 33561 
 
-![LE adv sniff](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-le-adv-sniff.png)
+<span style="font-weight: bold; color: #7da9c7">LMP features</span>
+    3 slot packets: <span style="font-weight: bold; color: #9fab76">True</span>
+    5 slot packets: <span style="font-weight: bold; color: #9fab76">True</span>
+    Encryption: <span style="font-weight: bold; color: #9fab76">True</span>
+    Slot offset: <span style="font-weight: bold; color: #9fab76">True</span>
+    Timing accuracy: <span style="font-weight: bold; color: #9fab76">True</span>
+    Role switch: <span style="font-weight: bold; color: #9fab76">True</span>
+    Hold mode: <span style="font-weight: bold; color: #c35956">False</span>
+    Sniff mode: <span style="font-weight: bold; color: #9fab76">True</span>
+    Previously used: <span style="font-weight: bold; color: #c35956">False</span>
+    Power control requests: <span style="font-weight: bold; color: #9fab76">True</span>
+    Channel quality driven data rate (CQDDR): <span style="font-weight: bold; color: #9fab76">True</span>
+    ... ...
 
-:bulb: The scan mode has a hidden function.
+<span style="font-weight: bold; color: #7da9c7">Extended LMP features</span>
+Page 1
+    Secure Simple Pairing (Host Support): <span style="font-weight: bold; color: #9fab76">True</span>
+    LE Supported (Host): <span style="font-weight: bold; color: #9fab76">True</span>
+    Simultaneous LE and BR/EDR to Same Device Capable (Host): <span style="font-weight: bold; color: #9fab76">True</span>
+    Secure Connections (Host Support): <span style="font-weight: bold; color: #9fab76">True</span>
+Page 2
+    Connectionless Slave Broadcast - Master Operation: <span style="font-weight: bold; color: #c35956">False</span>
+    Connectionless Slave Broadcast - Slave Operation: <span style="font-weight: bold; color: #c35956">False</span>
+    Synchronization Train: <span style="font-weight: bold; color: #c35956">False</span>
+    Synchronization Scan: <span style="font-weight: bold; color: #c35956">False</span>
+    HCI_Inquiry_Response_Notification event:  <span style="font-weight: bold; color: #9fab76">True</span>
+    ... ...
+</pre>
 
-### Scan SDP services `-m sdp`
+#### `--mon-incoming-conn`: Print incoming connection from other nearby BR/EDR devices
 
-Classic Bluetooth devices tell the outside world about their open services through SDP. After SDP scanning, we can get service records of them:
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry-scan --mon-incoming-conn
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry_Scan_Interval: 4096, 2560.0 ms
+       Inquiry_Scan_Window:   4096, 2560.0 ms
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry Scan and Page Scan enabled
 
-![SDP scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-sdp-scan.png)
+<span style="font-weight: bold; color: #7da9c7">A0:DE:0F:99:EF:78</span> incoming
+    CoD: 0x5a020c
+        Service Class: 0b1011010000
+                Telephony
+                Object Transfer
+                Capturing
+                Networking
+        Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
+    link type: 0x01 - ACL
+... ...
+</pre>
 
-You can try to connect to these services for further hacking.
+### `le` command: Low Energy system
 
-### Scan GATT services `-m gatt`
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> le --help
 
-LE devices tell the outside world about their open services through GATT. After GATT scanning, we can get the GATT service of them. You can try to read and write these GATT data for further hacking:
+Usage:
+    bluing le [-h | --help]
+    bluing le [-i &lthci>] [--scan-type=&lttype>] [--timeout=&ltsec>] [--sort=&ltkey>] --scan
+    bluing le [-i &lthci>] --pairing-feature [--timeout=&ltsec>] [--addr-type=&lttype>] PEER_ADDR
+    bluing le [-i &lthci>] --ll-feature-set [--timeout=&ltsec>] [--addr-type=&lttype>] PEER_ADDR
+    bluing le [-i &lthci>] --gatt [--io-cap=&ltname>] [--addr-type=&lttype>] PEER_ADDR
+    bluing le [-i &lthci>] --local --gatt
+    bluing le [-i &lthci>] --mon-incoming-conn
+    bluing le [--channel=&ltnum>] --sniff-adv
 
-![GATT scan](https://raw.githubusercontent.com/fO-000/bluescan//master/res/example-gatt-scan.png)
+Arguments:
+    PEER_ADDR    LE Bluetooth device address
+
+Options:
+    -h, --help            Print this help and quit
+    -i &lthci>              HCI device
+    --scan                Discover advertising devices nearby
+    --scan-type=&lttype>    The type of scan to perform. active or passive [default: active]
+    --sort=&ltkey>          Sort the discovered devices by key, only support RSSI 
+                          now [default: rssi]
+    --ll-feature-set      Read LL FeatureSet of a remote LE device
+    --pairing-feature     Request the pairing feature of a remote LE device
+    --timeout=&ltsec>       Duration of the LE scanning, but may not be precise [default: 10]
+    --gatt                Discover GATT Profile hierarchy of a remote LE device
+    --io-cap=&ltname>       Set IO capability of the agent. Available value: 
+                              DisplayOnly, DisplayYesNo, KeyboardOnly, NoInputNoOutput, 
+                              KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
+    --addr-type=&lttype>    Type of the LE address, public or random
+    --sniff-adv           Sniff advertising physical channel PDU. Need at least 
+                          one micro:bit
+    --channel=&ltnum>       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
+</pre>
+
+#### `--scan`: Discover advertising devices nearby
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --scan
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] You might want to spoof your LE address before doing an active scan
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] LE <span style="font-weight: bold; color: #7da9c7">active</span> scanning on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10</span> sec
+Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠴</span>
+
+<span style="font-weight: bold; color: #7da9c7">----------------LE Devices Scan Result----------------</span>
+Addr:        <span style="font-weight: bold; color: #7da9c7">74:A3:4A:D4:78:55</span> (<span style="font-weight: bold; color: #7da9c7">ZIMI CORPORATION</span>)
+Addr type:   <span style="font-weight: bold; color: #7da9c7">public</span>
+Connectable: <span style="font-weight: bold; color: #9fab76">True</span>
+RSSI:        -68 dBm
+General Access Profile:
+    Flags: 
+        LE General Discoverable Mode
+        BR/EDR Not Supported
+    Service Data - 16-bit UUID: 
+        UUID: 0x95FE
+        Data: 9055990701b743e34aa3740e00
+    Appearance: 0000
+    Tx Power Level: 0 dBm (pathloss 68 dBm)
+    Complete Local Name: Mesh Mi Switch
+... ...
+</pre>
+
+#### `--ll-feature-set`: Read LL FeatureSet of a remote LE device
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --ll-feature-set --addr-type=public 18:D9:8F:77:24:F1
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Reading LL FeatureSet of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+Reading <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠼</span>
+<span style="font-weight: bold; color: #7da9c7">LE LL Features:</span>
+    LE Encryption: <span style="font-weight: bold; color: #9fab76">True</span>
+    Connection Parameters Request Procedure: <span style="font-weight: bold; color: #c35956">False</span>
+    Extended Reject Indication: <span style="font-weight: bold; color: #c35956">False</span>
+    Slave-initiated Features Exchange: <span style="font-weight: bold; color: #c35956">False</span>
+    LE Ping:  <span style="font-weight: bold; color: #c35956">False</span>
+    LE Data Packet Length Extension: <span style="font-weight: bold; color: #9fab76">True</span>
+    LL Privacy: <span style="font-weight: bold; color: #c35956">False</span>
+    Extended Scanner Filter Policies: <span style="font-weight: bold; color: #c35956">False</span>
+    LE 2M PHY: <span style="font-weight: bold; color: #c35956">False</span>
+    Stable Modulation Index - Transmitter: <span style="font-weight: bold; color: #c35956">False</span>
+    Stable Modulation Index - Receiver: <span style="font-weight: bold; color: #c35956">False</span>
+    ... ...
+</pre>
+
+#### `--pairing-feature`: Request the pairing feature of a remote LE device
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --pairing-feature --addr-type=public 18:D9:8F:77:24:F1
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting pairing feature of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+Requesting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠧</span>
+<span style="font-weight: bold; color: #7da9c7">Pairing Response</span>
+    IO Capability: 0x03 - <span style="font-weight: bold; color: #9fab76">NoInputNoOutput</span>
+    OOB data flag: 0x00 - Not Present
+    AuthReq: 0x01
+    Maximum Encryption Key Size: 16
+Initiator Key Distribution: 0x00
+        EncKey:  <span style="font-weight: bold; color: #c35956">False</span>
+        IdKey:   <span style="font-weight: bold; color: #c35956">False</span>
+        SignKey: <span style="font-weight: bold; color: #c35956">False</span>
+        LinkKey: <span style="font-weight: bold; color: #c35956">False</span>
+        RFU:     0b0000
+Responder Key Distribution: 0x01
+        EncKey:  <span style="font-weight: bold; color: #9fab76">True</span>
+        IdKey:   <span style="font-weight: bold; color: #c35956">False</span>
+        SignKey: <span style="font-weight: bold; color: #c35956">False</span>
+        LinkKey: <span style="font-weight: bold; color: #c35956">False</span>
+        RFU:     0b0000
+</pre>
+
+#### `--gatt`: Discover GATT Profile hierarchy of a remote LE device
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --gatt --addr-type=public 18:D9:8F:77:24:F1
+Connecting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠋</span>
+Discovering all primary services <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠏</span>
+Discovering all characteristics of service 0x0001 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠹</span>
+... ...
+Discovering all descriptors of characteristic 0x0002 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠼</span>
+... ...
+Reading value of the descriptor 0x0013 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">⠴</span>
+... ... 
+
+<span style="font-weight: bold; color: #7da9c7">----------------GATT Scan Result----------------</span>
+Number of services: 6
+
+<span style="font-weight: bold; color: #7da9c7">Service</span> (0x0100 - 0x0112, 7 characteristics)
+    <span style="font-weight: bold; color: #7da9c7">Declaration</span>
+    Handle: 0x0100
+    Type:   2800 (Primary Service declaration)
+    Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
+    Permissions: Read (no authen/author)
+
+    <span style="font-weight: bold; color: #ecc179">Characteristic</span> (2 descriptors)
+        <span style="font-weight: bold; color: #ecc179">Declaration</span>
+        Handle: 0x010d
+        Type:   2803 (Characteristic declaration)
+        Value:
+            Properties: <span style="font-weight: bold; color: #9fab76"></span>
+            Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
+            UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
+        Permissions: Read (no authen/author)
+
+        <span style="font-weight: bold; color: #ecc179">Descriptor</span>
+        Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
+        Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic Configuration declaration</span>)
+        Value:  <span style="font-weight: bold; color: #9fab76">b'\x00\x00'</span>
+        Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
+... ...
+</pre>
+
+#### `--sniff-adv`: Sniff advertising physical channel PDU
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --sniff-adv
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM2 on channel 37
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM1 on channel 38
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM0 on channel 39
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 38 < Ready -> Start
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 37 < Ready -> Start
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 39 < Ready -> Start
+[38] [<span style="font-weight: bold; color: #c35956">ADV_NONCONN_IND</span>]
+random AdvA: 28:7A:88:B2:35:0B
+[39] [<span style="font-weight: bold; color: #7da9c7">ADV_IND</span>]
+public AdvA: A4:E4:72:B1:CB:8D
+[37] [<span style="font-weight: bold; color: #7da9c7">SCAN_REQ</span>]
+random ScanA: 6A:90:0C:07:3E:14
+random AdvA: 7D:9B:A8:5A:F2:81
+... ...
+</pre>
+
+### `plugin` command: Manage plugins
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help
+
+Usage:
+    bluing plugin [-h | --help]
+    bluing plugin &ltcommand> [&ltargs>...]
+
+Options:
+    -h, --help    Display this help and quit
+
+Commands:
+    list         List installed plugins
+    install      Install a plugin
+    uninstall    Uninstall a plugin
+    run          Run a plugin
+</pre>
 
 ## FAQ
 
-* Exception: "Can't find the ID of hci0 in rfkill"
+### `rfkill` cannot find hci0
 
-  Some old versions of rfkill do not support `-r` and `-n` options, like:
+The following is the exception message:
+
+```txt
+Exception: Can't find the ID of hci0 in rfkill
+```
+
+This exception may be caused by the lack of support for `-r` and `-n` option in the old version of rfkill, for example:
   
-  ```sh
-  # Ubuntu 16.04.1
-  rfkill --version
-  # rfkill 0.5-1ubuntu3 (Ubuntu)"
-  ```
-  
-  Please upgrade rfkill or OS to solve this problem.
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">cat</span> /etc/os-release | <span style="font-weight: bold; color: #9fab76">head</span> -n 2
+NAME="Ubuntu"
+VERSION="16.10 (Yakkety Yak)"
 
-  PS: My system is Kali, and the version of rfkill is:
-  
-  ```sh
-  # Kali
-  rfkill --version
-  # rfkill from util-linux 2.37.2
-  ```
+$ <span style="font-weight: bold; color: #9fab76">rfkill</span> --version
+rfkill 0.5-1ubuntu3 (Ubuntu)
+</pre>
 
-If you encounter the following error, restart bluetooth service to recover (`sudo systemctl restart bluetooth.service`):
+At this time, upgrading rfkill to a newer version can solve the problem, such as:
 
-* `[ERROR] Failed to execute management command 'scanend' (code: 11, error: Rejected)`
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">cat</span> /etc/os-release | <span style="font-weight: bold; color: #9fab76">head</span> -n 2
+PRETTY_NAME="Kali GNU/Linux Rolling"
+NAME="Kali GNU/Linux"
+
+$ <span style="font-weight: bold; color: #9fab76">rfkill</span> --version
+rfkill from util-linux 2.38.1
+</pre>
+
+### Management command `scanend` failed to execute
+
+The following is an error message:
+
+```txt
+ERROR: Failed to execute management command 'scanend' (code: 11, error: Rejected)
+```
+
+Try restarting the Bluetooth service to solve the problem:
+
+<pre>
+<span style="font-weight: bold; color: #9fab76">sudo systemctl</span> restart bluetooth.service
+</pre>

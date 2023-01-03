@@ -1,1 +1,1 @@
-recursive-include src/bluescan/res *.txt *.csv
+recursive-include src/bluing/res *.txt *.csv *.hex

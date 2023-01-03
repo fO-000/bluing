@@ -1,5 +1,5 @@
 {
-    "name": "bluescan-advsniff",
+    "name": "bluing-advsniff",
     "version": "0.0.1",
     "description": "Sniff BLE advertising physical channel PDU",
     "license": "GPL",
