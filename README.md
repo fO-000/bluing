@@ -1,7 +1,7 @@
 # Bluing: An intelligence gathering tool for hacking Bluetooth
 
 <p align="center">
-    <a href="https://fo-000.github.io/bluing/index.html">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
+    <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
 </p>
 
 <p align="center">
@@ -55,7 +55,7 @@ The future features of bluing may require [Ubertooth One](https://greatscottgadg
 
 ## Usage
 
-> And God said, "Let there be **colorful**", and there was [**colorful**](https://fo-000.github.io/bluing/index.html#usage).
+> And God said, "Let there be **colorful**", and there was [**colorful**](https://fo-000.github.io/bluing/#usage).
 
 <pre>
 $ <span style="font-weight: bold; color: #9fab76">bluing</span> --help

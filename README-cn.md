@@ -1,7 +1,7 @@
 # Bluing：一个为 hack 蓝牙而生的情报收集工具
 
 <p align="center">
-    <a href="https://fo-000.github.io/bluing/index.html">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
+    <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
 </p>
 
 <p align="center">
