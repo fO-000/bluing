@@ -352,7 +352,7 @@ Reading <span style="font-weight: bold"></span><span style="font-weight: bold; c
     Connection Parameters Request Procedure: <span style="font-weight: bold; color: #c35956">False</span>
     Extended Reject Indication: <span style="font-weight: bold; color: #c35956">False</span>
     Slave-initiated Features Exchange: <span style="font-weight: bold; color: #c35956">False</span>
-    LE Ping:  <span style="font-weight: bold; color: #c35956">False</span>
+    LE Ping: <span style="font-weight: bold; color: #c35956">False</span>
     LE Data Packet Length Extension: <span style="font-weight: bold; color: #9fab76">True</span>
     LL Privacy: <span style="font-weight: bold; color: #c35956">False</span>
     Extended Scanner Filter Policies: <span style="font-weight: bold; color: #c35956">False</span>

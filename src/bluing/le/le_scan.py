@@ -454,7 +454,7 @@ def pp_le_feature_set(features: bytes):
             print('    Connection Parameters Request Procedure:', green('True') if (b >> 1) & 0x01 else red('False'))
             print('    Extended Reject Indication:', green('True') if (b >> 2) & 0x01 else red('False'))
             print('    Slave-initiated Features Exchange:', green('True') if (b >> 3) & 0x01 else red('False'))
-            print('    LE Ping: ', green('True') if (b >> 4) & 0x01 else red('False'))
+            print('    LE Ping:', green('True') if (b >> 4) & 0x01 else red('False'))
             print('    LE Data Packet Length Extension:', green('True') if (b >> 5) & 0x01 else red('False'))
             print('    LL Privacy:', green('True') if (b >> 6) & 0x01 else red('False'))
             print('    Extended Scanner Filter Policies:', green('True') if (b >> 7) & 0x01 else red('False'))
