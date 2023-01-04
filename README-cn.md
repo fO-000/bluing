@@ -23,17 +23,17 @@ Bluing（前身为 [bluescan](https://pypi.org/project/bluescan/)）是一个主
 
 Bluing 部分依赖 Linux 官方的 [BlueZ](http://www.bluez.org/) 蓝牙协议栈，因此它仅支持在 Linux 上运行。执行如下命令可安装依赖包：
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">sudo apt</span> install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+```sh
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
                  rfkill meson patchelf bluez
-</pre>
+```
 
 目前 bluing 的分发途径是 [PyPI](https://pypi.org/project/bluing/)，且仅支持 Python 3.10。安装命令如下：
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">sudo pip3.10</span> install bluing
-</pre>
+```sh
+sudo pip3.10 install bluing
+```
 
 ## 硬件要求
 
@@ -45,9 +45,9 @@ Bluing 部分依赖 Linux 官方的 [BlueZ](http://www.bluez.org/) 蓝牙协议�
 
 Bluing 在嗅探 advertising physical channel PDU 时 (`le --sniff-adv`)，至少需要 1 块 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit)，且推荐同时使用 3 块。这些 micro:bit 需要运行 bluing 提供的专用固件。将 micro:bit 接入 Linux 后，执行如下命令便可刷写预先构建好的固件：
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
-</pre>
+```sh
+bluing --flash-micro-bit
+```
 
 ### Ubertooth One
 

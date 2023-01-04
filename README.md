@@ -23,17 +23,17 @@ Bluing (formerly [bluescan](https://pypi.org/project/bluescan/)) is a **Blu**eto
 
 Bluing partially depend on [BlueZ](http://www.bluez.org/), the official Linux Bluetooth protocol stack. So it only supports running on Linux. The following command is used to install dependencies:
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">sudo apt</span> install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+```sh
+sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
                  rfkill meson patchelf bluez
-</pre>
+```
 
 Currently, bluing is distributed via [PyPI](https://pypi.org/project/bluing/) and **only supports Python 3.10**. The following is an installation command:
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">sudo pip3.10</span> install bluing
-</pre>
+```sh
+sudo pip3.10 install bluing
+```
 
 ## Hardware Requirements
 
@@ -45,9 +45,9 @@ Many features of bluing require access to at least 1 Bluetooth adapter. Although
 
 Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit) when sniffing advertising physical channel PDUs (`le --sniff-adv`), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:
 
-<pre>
-<span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
-</pre>
+```sh
+bluing --flash-micro-bit
+```
 
 ### Ubertooth One
 

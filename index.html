@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-  <html>
-    <head>
+<!DOCTYPE html><html><head>
       <title>README</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -684,8 +682,8 @@
 
       </style>
     </head>
-    <body for="html-export" >
-      <div class="mume markdown-preview  "  >
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
       <h1 class="mume-header" id="bluing-an-intelligence-gathering-tool-for-hacking-bluetooth">Bluing: An intelligence gathering tool for hacking Bluetooth</h1>
 
 <p align="center">
@@ -705,14 +703,12 @@
 <h2 class="mume-header" id="install">Install</h2>
 
 <p>Bluing partially depend on <a href="http://www.bluez.org/">BlueZ</a>, the official Linux Bluetooth protocol stack. So it only supports running on Linux. The following command is used to install dependencies:</p>
-<pre><span style="font-weight: bold; color: #9fab76">sudo apt</span> install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
-                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
+<pre data-role="codeBlock" data-info="sh" class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> python3-pip python3-dev libcairo2-dev libgirepository1.0-dev <span class="token punctuation">\</span>
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev <span class="token punctuation">\</span>
                  rfkill meson patchelf bluez
-</pre>
-<p>Currently, bluing is distributed via <a href="https://pypi.org/project/bluing/">PyPI</a> and <strong>only supports Python 3.10</strong>. The following is an installation command:</p>
-<pre><span style="font-weight: bold; color: #9fab76">sudo pip3.10</span> install bluing
-</pre>
-<h2 class="mume-header" id="hardware-requirements">Hardware Requirements</h2>
+</pre><p>Currently, bluing is distributed via <a href="https://pypi.org/project/bluing/">PyPI</a> and <strong>only supports Python 3.10</strong>. The following is an installation command:</p>
+<pre data-role="codeBlock" data-info="sh" class="language-bash"><span class="token function">sudo</span> pip3.10 <span class="token function">install</span> bluing
+</pre><h2 class="mume-header" id="hardware-requirements">Hardware Requirements</h2>
 
 <h3 class="mume-header" id="bluetooth-adapter">Bluetooth adapter</h3>
 
@@ -720,9 +716,8 @@
 <h3 class="mume-header" id="original-microbit">Original micro:bit</h3>
 
 <p>Bluing requires at least 1 <a href="https://microbit.org/get-started/user-guide/overview/#original-micro:bit">original micro:bit</a> when sniffing advertising physical channel PDUs (<code>le --sniff-adv</code>), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:</p>
-<pre><span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
-</pre>
-<h3 class="mume-header" id="ubertooth-one">Ubertooth One</h3>
+<pre data-role="codeBlock" data-info="sh" class="language-bash">bluing --flash-micro-bit
+</pre><h3 class="mume-header" id="ubertooth-one">Ubertooth One</h3>
 
 <p>The future features of bluing may require <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>.</p>
 <h2 class="mume-header" id="usage">Usage</h2>
@@ -1152,11 +1147,7 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#install"
-            class="md-toc-link"
-            style="padding-left: 8px;;"
-          >
+          <a href="#install" class="md-toc-link" style="padding-left: 8px;;">
             <p>Install</p>
 
           </a></div><details style="padding:0.25rem 0;;padding-left: 8px;" open>
@@ -1166,27 +1157,15 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#bluetooth-adapter"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#bluetooth-adapter" class="md-toc-link" style="padding-left: 16px;;">
             <p>Bluetooth adapter</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#original-microbit"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#original-microbit" class="md-toc-link" style="padding-left: 16px;;">
             <p>Original micro:bit</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#ubertooth-one"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#ubertooth-one" class="md-toc-link" style="padding-left: 16px;;">
             <p>Ubertooth One</p>
 
           </a></div>
@@ -1199,11 +1178,7 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-spoof-bd-addr-spoof-the-bd_addr-of-a-local-controller"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#-spoof-bd-addr-spoof-the-bd_addr-of-a-local-controller" class="md-toc-link" style="padding-left: 16px;;">
             <p><code>--spoof-bd-addr</code>: Spoof the BD_ADDR of a local controller</p>
 
           </a></div><details style="padding:0.25rem 0;;padding-left: 16px;" open>
@@ -1213,35 +1188,19 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-inquiry-discover-other-nearby-bredr-controllers"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-inquiry-discover-other-nearby-bredr-controllers" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--inquiry</code>: Discover other nearby BR/EDR controllers</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-sdp-retrieve-information-from-the-sdp-database-of-a-remote-bredr-device"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-sdp-retrieve-information-from-the-sdp-database-of-a-remote-bredr-device" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--sdp</code>: Retrieve information from the SDP database of a remote BR/EDR device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-lmp-features-read-lmp-features-of-a-remote-bredr-device"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-lmp-features-read-lmp-features-of-a-remote-bredr-device" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--lmp-features</code>: Read LMP features of a remote BR/EDR device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-mon-incoming-conn-print-incoming-connection-from-other-nearby-bredr-devices"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-mon-incoming-conn-print-incoming-connection-from-other-nearby-bredr-devices" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--mon-incoming-conn</code>: Print incoming connection from other nearby BR/EDR devices</p>
 
           </a></div>
@@ -1254,54 +1213,30 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-scan-discover-advertising-devices-nearby"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-scan-discover-advertising-devices-nearby" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--scan</code>: Discover advertising devices nearby</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-ll-feature-set-read-ll-featureset-of-a-remote-le-device"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-ll-feature-set-read-ll-featureset-of-a-remote-le-device" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--ll-feature-set</code>: Read LL FeatureSet of a remote LE device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-pairing-feature-request-the-pairing-feature-of-a-remote-le-device"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-pairing-feature-request-the-pairing-feature-of-a-remote-le-device" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--pairing-feature</code>: Request the pairing feature of a remote LE device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-gatt-discover-gatt-profile-hierarchy-of-a-remote-le-device"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-gatt-discover-gatt-profile-hierarchy-of-a-remote-le-device" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--gatt</code>: Discover GATT Profile hierarchy of a remote LE device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#-sniff-adv-sniff-advertising-physical-channel-pdu"
-            class="md-toc-link"
-            style="padding-left: 24px;;"
-          >
+          <a href="#-sniff-adv-sniff-advertising-physical-channel-pdu" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--sniff-adv</code>: Sniff advertising physical channel PDU</p>
 
           </a></div>
         </div>
       </details>
     <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#plugin-command-manage-plugins"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#plugin-command-manage-plugins" class="md-toc-link" style="padding-left: 16px;;">
             <p><code>plugin</code> command: Manage plugins</p>
 
           </a></div>
@@ -1314,19 +1249,11 @@ rfkill from util-linux 2.38.1
           </summary>
         <div>
           <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#rfkill-cannot-find-hci0"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#rfkill-cannot-find-hci0" class="md-toc-link" style="padding-left: 16px;;">
             <p><code>rfkill</code> cannot find hci0</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
-          <a
-            href="#management-command-scanend-failed-to-execute"
-            class="md-toc-link"
-            style="padding-left: 16px;;"
-          >
+          <a href="#management-command-scanend-failed-to-execute" class="md-toc-link" style="padding-left: 16px;;">
             <p>Management command <code>scanend</code> failed to execute</p>
 
           </a></div>
@@ -1338,8 +1265,8 @@ rfkill from util-linux 2.38.1
     
 </div>
 </div>
-      <a id="sidebar-toc-btn">≡</a>
-    </body>
+      <a id="sidebar-toc-btn">&#x2261;</a>
+    
     
     
     
@@ -1360,4 +1287,5 @@ sidebarTOCBtn.addEventListener('click', function(event) {
 })
 </script>
       
-  </html>
+  
+    </body></html>
