@@ -1,7 +1,7 @@
 # Bluing：一个为 hack 蓝牙而生的情报收集工具
 
 <p align="center">
-    <a href="https://github.com/fO-000/bluing/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluing/blob/master/README-cn.md">简体中文</a>
+    <a href="https://fo-000.github.io/bluing/index.html">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 Bluing（前身为 [bluescan](https://pypi.org/project/bluescan/)）是一个主要基于 Python 实现的蓝牙情报收集工具。它可以帮助我们窥探蓝牙这种复杂协议的内部结构或是 hack 蓝牙设备。其主要特性如下：
 
-![](https://raw.githubusercontent.com/fO-000/bluescan/master/assets/bluing-features-mermaid-mindmap-cn.svg)
+![](https://raw.githubusercontent.com/fO-000/bluing/master/assets/bluing-features-mermaid-mindmap-cn.svg)
 
 ## 安装
 
@@ -54,6 +54,8 @@ Bluing 在嗅探 advertising physical channel PDU 时 (`le --sniff-adv`)，至�
 Bluing 后续计划的功能可能会用到 [Ubertooth One](https://greatscottgadgets.com/ubertoothone/)。
 
 ## 使用
+
+> 神说：“要有**彩色**。”就有了[**彩色**](https://fo-000.github.io/bluing/index-cn.html#使用)。
 
 <pre>
 $ <span style="font-weight: bold; color: #9fab76">bluing</span> --help

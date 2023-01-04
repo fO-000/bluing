@@ -1,7 +1,7 @@
 # Bluing: An intelligence gathering tool for hacking Bluetooth
 
 <p align="center">
-    <a href="https://github.com/fO-000/bluing/blob/master/README.md">English</a> · <a href="https://github.com/fO-000/bluing/blob/master/README-cn.md">简体中文</a>
+    <a href="https://fo-000.github.io/bluing/index.html">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 Bluing (formerly [bluescan](https://pypi.org/project/bluescan/)) is a **Blu**etooth **In**telligence **G**athering tool written primarily in Python. It can help us snoop on the internal structure of Bluetooth which is a complex protocol, or hack Bluetooth devices. Here are the main features of the tool:
 
-![](https://raw.githubusercontent.com/fO-000/bluescan/master/assets/bluing-features-mermaid-mindmap.svg)
+![](https://raw.githubusercontent.com/fO-000/bluing/master/assets/bluing-features-mermaid-mindmap.svg)
 
 ## Install
 
@@ -54,6 +54,8 @@ Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started
 The future features of bluing may require [Ubertooth One](https://greatscottgadgets.com/ubertoothone/).
 
 ## Usage
+
+> And God said, "Let there be **colorful**", and there was [**colorful**](https://fo-000.github.io/bluing/index.html#usage).
 
 <pre>
 $ <span style="font-weight: bold; color: #9fab76">bluing</span> --help

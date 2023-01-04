@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>README-cn</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////home/x/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.6.6/node_modules/@shd101wyy/mume/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      pre{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;padding:1em;margin:.5em 0;overflow:auto;line-height:1.5;tab-size:4;hyphens:none;color:#c5c8c6;background-color:#27292c !important;border:#43484c;border-radius:3px}pre[class*="language-"]{padding:1em}code[class*="language-"] .token.comment,pre[class*="language-"] .token.comment,code[class*="language-"] .token.prolog,pre[class*="language-"] .token.prolog,code[class*="language-"] .token.doctype,pre[class*="language-"] .token.doctype,code[class*="language-"] .token.cdata,pre[class*="language-"] .token.cdata{color:#7C7C7C}code[class*="language-"] .token.punctuation,pre[class*="language-"] .token.punctuation{color:#96CBFE}code[class*="language-"] .namespace,pre[class*="language-"] .namespace{opacity:.7}code[class*="language-"] .token.constant,pre[class*="language-"] .token.constant{color:#99CC99}code[class*="language-"] .token.boolean,pre[class*="language-"] .token.boolean,code[class*="language-"] .token.number,pre[class*="language-"] .token.number,code[class*="language-"] .token.function-name,pre[class*="language-"] .token.function-name{color:#FF73FD}code[class*="language-"] .token.tag,pre[class*="language-"] .token.tag{color:#96CBFE}code[class*="language-"] .token.selector,pre[class*="language-"] .token.selector{color:#96CBFE}code[class*="language-"] .token.attr-name,pre[class*="language-"] .token.attr-name{color:#C6C5FE}code[class*="language-"] .token.string,pre[class*="language-"] .token.string{color:#A8FF60}code[class*="language-"] .token.char,pre[class*="language-"] .token.char{color:#FF8000}code[class*="language-"] .token.entity,pre[class*="language-"] .token.entity{color:#FFD2A7}code[class*="language-"] .token.url,pre[class*="language-"] .token.url{color:#7C7C7C}code[class*="language-"] .token.operator,pre[class*="language-"] .token.operator{color:#EDEDED}code[class*="language-"] .token.atrule,pre[class*="language-"] .token.atrule,code[class*="language-"] .token.attr-value,pre[class*="language-"] .token.attr-value,code[class*="language-"] .token.keyword,pre[class*="language-"] .token.keyword{color:#CFCB90}code[class*="language-"] .token.function,pre[class*="language-"] .token.function{color:#FFD2A7}code[class*="language-"] .token.class-name,pre[class*="language-"] .token.class-name{color:#FFD2A7}code[class*="language-"] .token.variable,pre[class*="language-"] .token.variable{color:#C6C5FE}code[class*="language-"] .token.regex,pre[class*="language-"] .token.regex,code[class*="language-"] .token.important,pre[class*="language-"] .token.important{color:#E9C062}code[class*="language-"] .token.important,pre[class*="language-"] .token.important,code[class*="language-"] .token.bold,pre[class*="language-"] .token.bold{font-weight:bold}code[class*="language-"] .token.italic,pre[class*="language-"] .token.italic{font-style:italic}code[class*="language-"] .token.entity,pre[class*="language-"] .token.entity{cursor:help}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:rgba(153,122,102,0.08);background:linear-gradient(to right, rgba(153,122,102,0.1) 70%, rgba(153,122,102,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:rgba(153,122,102,0.4);color:#f5f2f0;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px white}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#ccc;background-color:#141414;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#fff}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#a3a3a3}html body strong{color:#fff}html body del{color:#a3a3a3}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#a3a3a3;background-color:#282828;border-left:4px solid #3d3d3d}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#3d3d3d;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#fff}html body table td,html body table th{border:1px solid #3d3d3d;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#fff;background-color:#282828;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#3d3d3d;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#fff;border:1px solid #3d3d3d;border-bottom:2px solid #2e2e2e;padding:2px 4px;background-color:#282828;border-radius:3px}@media print{html body{background-color:#141414}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#fff;page-break-after:avoid}html body blockquote{color:#a3a3a3}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p,html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div{display:inline}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  300px/2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+.markdown-preview.markdown-preview {
+  background-color: #22272e;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: 16px;
+  color: #adbac7;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.markdown-preview.markdown-preview .octicon {
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
+}
+.markdown-preview.markdown-preview .anchor {
+  float: left;
+  line-height: 1;
+  margin-left: -20px;
+  padding-right: 4px;
+}
+.markdown-preview.markdown-preview .anchor:focus {
+  outline: none;
+}
+.markdown-preview.markdown-preview h1 .octicon-link,
+.markdown-preview.markdown-preview h2 .octicon-link,
+.markdown-preview.markdown-preview h3 .octicon-link,
+.markdown-preview.markdown-preview h4 .octicon-link,
+.markdown-preview.markdown-preview h5 .octicon-link,
+.markdown-preview.markdown-preview h6 .octicon-link {
+  color: #1b1f23;
+  vertical-align: middle;
+  visibility: hidden;
+}
+.markdown-preview.markdown-preview h1:hover .anchor,
+.markdown-preview.markdown-preview h2:hover .anchor,
+.markdown-preview.markdown-preview h3:hover .anchor,
+.markdown-preview.markdown-preview h4:hover .anchor,
+.markdown-preview.markdown-preview h5:hover .anchor,
+.markdown-preview.markdown-preview h6:hover .anchor {
+  text-decoration: none;
+}
+.markdown-preview.markdown-preview h1:hover .anchor .octicon-link,
+.markdown-preview.markdown-preview h2:hover .anchor .octicon-link,
+.markdown-preview.markdown-preview h3:hover .anchor .octicon-link,
+.markdown-preview.markdown-preview h4:hover .anchor .octicon-link,
+.markdown-preview.markdown-preview h5:hover .anchor .octicon-link,
+.markdown-preview.markdown-preview h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+.markdown-preview.markdown-preview h1:hover .anchor .octicon-link:before,
+.markdown-preview.markdown-preview h2:hover .anchor .octicon-link:before,
+.markdown-preview.markdown-preview h3:hover .anchor .octicon-link:before,
+.markdown-preview.markdown-preview h4:hover .anchor .octicon-link:before,
+.markdown-preview.markdown-preview h5:hover .anchor .octicon-link:before,
+.markdown-preview.markdown-preview h6:hover .anchor .octicon-link:before {
+  width: 16px;
+  height: 16px;
+  content: ' ';
+  display: inline-block;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
+}
+.markdown-preview.markdown-preview details {
+  display: block;
+}
+.markdown-preview.markdown-preview summary {
+  display: list-item;
+}
+.markdown-preview.markdown-preview a {
+  background-color: initial;
+}
+.markdown-preview.markdown-preview a:active,
+.markdown-preview.markdown-preview a:hover {
+  outline-width: 0;
+}
+.markdown-preview.markdown-preview strong {
+  font-weight: inherit;
+  font-weight: bolder;
+}
+.markdown-preview.markdown-preview h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+.markdown-preview.markdown-preview img {
+  border-style: none;
+}
+.markdown-preview.markdown-preview code,
+.markdown-preview.markdown-preview kbd,
+.markdown-preview.markdown-preview pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+.markdown-preview.markdown-preview hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  box-sizing: initial;
+}
+.markdown-preview.markdown-preview input {
+  font: inherit;
+  margin: 0;
+}
+.markdown-preview.markdown-preview input {
+  overflow: visible;
+}
+.markdown-preview.markdown-preview [type=checkbox] {
+  box-sizing: border-box;
+  padding: 0;
+}
+.markdown-preview.markdown-preview * {
+  box-sizing: border-box;
+}
+.markdown-preview.markdown-preview input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+.markdown-preview.markdown-preview a {
+  color: #539bf5;
+  text-decoration: none;
+}
+.markdown-preview.markdown-preview a:hover {
+  text-decoration: underline;
+}
+.markdown-preview.markdown-preview hr:after,
+.markdown-preview.markdown-preview hr:before {
+  display: table;
+  content: "";
+}
+.markdown-preview.markdown-preview hr:after {
+  clear: both;
+}
+.markdown-preview.markdown-preview table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.markdown-preview.markdown-preview td,
+.markdown-preview.markdown-preview th {
+  padding: 0;
+}
+.markdown-preview.markdown-preview details summary {
+  cursor: pointer;
+}
+.markdown-preview.markdown-preview kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  line-height: 10px;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+.markdown-preview.markdown-preview h1,
+.markdown-preview.markdown-preview h2,
+.markdown-preview.markdown-preview h3,
+.markdown-preview.markdown-preview h4,
+.markdown-preview.markdown-preview h5,
+.markdown-preview.markdown-preview h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview h1,
+.markdown-preview.markdown-preview h2 {
+  font-weight: 600;
+}
+.markdown-preview.markdown-preview h2 {
+  font-size: 24px;
+}
+.markdown-preview.markdown-preview h3 {
+  font-size: 20px;
+}
+.markdown-preview.markdown-preview h3,
+.markdown-preview.markdown-preview h4 {
+  font-weight: 600;
+}
+.markdown-preview.markdown-preview h4 {
+  font-size: 16px;
+}
+.markdown-preview.markdown-preview h5 {
+  font-size: 14px;
+}
+.markdown-preview.markdown-preview h5,
+.markdown-preview.markdown-preview h6 {
+  font-weight: 600;
+}
+.markdown-preview.markdown-preview h6 {
+  font-size: 12px;
+}
+.markdown-preview.markdown-preview p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.markdown-preview.markdown-preview blockquote {
+  color: #768390;
+  background-color: #22272e;
+  margin: 0;
+  padding: 0 1em;
+}
+.markdown-preview.markdown-preview ol,
+.markdown-preview.markdown-preview ul {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview ol ol,
+.markdown-preview.markdown-preview ul ol {
+  list-style-type: lower-roman;
+}
+.markdown-preview.markdown-preview ol ol ol,
+.markdown-preview.markdown-preview ol ul ol,
+.markdown-preview.markdown-preview ul ol ol,
+.markdown-preview.markdown-preview ul ul ol {
+  list-style-type: lower-alpha;
+}
+.markdown-preview.markdown-preview dd {
+  margin-left: 0;
+}
+.markdown-preview.markdown-preview code,
+.markdown-preview.markdown-preview pre {
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 12px;
+}
+.markdown-preview.markdown-preview pre {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview input::-webkit-inner-spin-button,
+.markdown-preview.markdown-preview input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.markdown-preview.markdown-preview :checked + .radio-label {
+  position: relative;
+  z-index: 1;
+}
+.markdown-preview.markdown-preview .border-0 {
+  border: 0 !important;
+}
+.markdown-preview.markdown-preview .rounded-1 {
+  border-radius: 3px !important;
+}
+.markdown-preview.markdown-preview .mb-0 {
+  margin-bottom: 0 !important;
+}
+.markdown-preview.markdown-preview .my-2 {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+.markdown-preview.markdown-preview .pl-0 {
+  padding-left: 0 !important;
+}
+.markdown-preview.markdown-preview .py-0 {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.markdown-preview.markdown-preview .pl-1 {
+  padding-left: 4px !important;
+}
+.markdown-preview.markdown-preview .pl-2 {
+  padding-left: 8px !important;
+}
+.markdown-preview.markdown-preview .py-2 {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+.markdown-preview.markdown-preview .pl-3,
+.markdown-preview.markdown-preview .px-3 {
+  padding-left: 16px !important;
+}
+.markdown-preview.markdown-preview .px-3 {
+  padding-right: 16px !important;
+}
+.markdown-preview.markdown-preview .pl-4 {
+  padding-left: 24px !important;
+}
+.markdown-preview.markdown-preview .pl-5 {
+  padding-left: 32px !important;
+}
+.markdown-preview.markdown-preview .pl-6 {
+  padding-left: 40px !important;
+}
+.markdown-preview.markdown-preview .f6 {
+  font-size: 12px !important;
+}
+.markdown-preview.markdown-preview .lh-condensed {
+  line-height: 1.25 !important;
+}
+.markdown-preview.markdown-preview .text-bold {
+  font-weight: 600 !important;
+}
+.markdown-preview.markdown-preview b,
+.markdown-preview.markdown-preview strong {
+  color: #adbac7;
+}
+.markdown-preview.markdown-preview .pl-c2:before {
+  content: "^M";
+}
+.markdown-preview.markdown-preview .pl-sr .pl-cce {
+  font-weight: 700;
+}
+.markdown-preview.markdown-preview .pl-mh,
+.markdown-preview.markdown-preview .pl-mh .pl-en,
+.markdown-preview.markdown-preview .pl-ms {
+  font-weight: 700;
+}
+.markdown-preview.markdown-preview .pl-mi {
+  font-style: italic;
+}
+.markdown-preview.markdown-preview .pl-mb {
+  font-weight: 700;
+}
+.markdown-preview.markdown-preview .pl-mdr {
+  font-weight: 700;
+}
+.markdown-preview.markdown-preview .pl-corl {
+  text-decoration: underline;
+}
+.markdown-preview.markdown-preview .mb-0 {
+  margin-bottom: 0 !important;
+}
+.markdown-preview.markdown-preview .my-2 {
+  margin-bottom: 8px !important;
+}
+.markdown-preview.markdown-preview .my-2 {
+  margin-top: 8px !important;
+}
+.markdown-preview.markdown-preview .pl-0 {
+  padding-left: 0 !important;
+}
+.markdown-preview.markdown-preview .py-0 {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.markdown-preview.markdown-preview .pl-1 {
+  padding-left: 4px !important;
+}
+.markdown-preview.markdown-preview .pl-2 {
+  padding-left: 8px !important;
+}
+.markdown-preview.markdown-preview .py-2 {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+.markdown-preview.markdown-preview .pl-3 {
+  padding-left: 16px !important;
+}
+.markdown-preview.markdown-preview .pl-4 {
+  padding-left: 24px !important;
+}
+.markdown-preview.markdown-preview .pl-5 {
+  padding-left: 32px !important;
+}
+.markdown-preview.markdown-preview .pl-6 {
+  padding-left: 40px !important;
+}
+.markdown-preview.markdown-preview .pl-7 {
+  padding-left: 48px !important;
+}
+.markdown-preview.markdown-preview .pl-8 {
+  padding-left: 64px !important;
+}
+.markdown-preview.markdown-preview .pl-9 {
+  padding-left: 80px !important;
+}
+.markdown-preview.markdown-preview .pl-10 {
+  padding-left: 96px !important;
+}
+.markdown-preview.markdown-preview .pl-11 {
+  padding-left: 112px !important;
+}
+.markdown-preview.markdown-preview .pl-12 {
+  padding-left: 128px !important;
+}
+.markdown-preview.markdown-preview .markdown-body:after,
+.markdown-preview.markdown-preview .markdown-body:before {
+  display: table;
+  content: "";
+}
+.markdown-preview.markdown-preview .markdown-body:after {
+  clear: both;
+}
+.markdown-preview.markdown-preview .markdown-body > :first-child {
+  margin-top: 0 !important;
+}
+.markdown-preview.markdown-preview .markdown-body > :last-child {
+  margin-bottom: 0 !important;
+}
+.markdown-preview.markdown-preview a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+.markdown-preview.markdown-preview blockquote,
+.markdown-preview.markdown-preview details,
+.markdown-preview.markdown-preview dl,
+.markdown-preview.markdown-preview ol,
+.markdown-preview.markdown-preview p,
+.markdown-preview.markdown-preview pre,
+.markdown-preview.markdown-preview table,
+.markdown-preview.markdown-preview ul {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+.markdown-preview.markdown-preview blockquote > :first-child {
+  margin-top: 0;
+}
+.markdown-preview.markdown-preview blockquote > :last-child {
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview h1,
+.markdown-preview.markdown-preview h2,
+.markdown-preview.markdown-preview h3,
+.markdown-preview.markdown-preview h4,
+.markdown-preview.markdown-preview h5,
+.markdown-preview.markdown-preview h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.markdown-preview.markdown-preview h1,
+.markdown-preview.markdown-preview h2 {
+  color: #adbac7;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #373e47;
+}
+.markdown-preview.markdown-preview h2 {
+  font-size: 1.5em;
+}
+.markdown-preview.markdown-preview h3 {
+  font-size: 1.25em;
+  color: #adbac7;
+}
+.markdown-preview.markdown-preview h4 {
+  font-size: 1em;
+  color: #adbac7;
+}
+.markdown-preview.markdown-preview h5 {
+  font-size: 0.875em;
+}
+.markdown-preview.markdown-preview h6 {
+  font-size: 0.85em;
+}
+.markdown-preview.markdown-preview ol,
+.markdown-preview.markdown-preview ul {
+  padding-left: 2em;
+}
+.markdown-preview.markdown-preview ol ol,
+.markdown-preview.markdown-preview ol ul,
+.markdown-preview.markdown-preview ul ol,
+.markdown-preview.markdown-preview ul ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview li {
+  word-wrap: break-all;
+}
+.markdown-preview.markdown-preview li > p {
+  margin-top: 16px;
+}
+.markdown-preview.markdown-preview li + li {
+  margin-top: 0.25em;
+}
+.markdown-preview.markdown-preview dl {
+  padding: 0;
+}
+.markdown-preview.markdown-preview dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+.markdown-preview.markdown-preview dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+.markdown-preview.markdown-preview table th {
+  color: #adbac7;
+  font-weight: 600;
+}
+.markdown-preview.markdown-preview table td,
+.markdown-preview.markdown-preview table th {
+  padding: 6px 13px;
+  border: 1px solid #444c56;
+}
+.markdown-preview.markdown-preview table tr {
+  background-color: #22272e;
+}
+.markdown-preview.markdown-preview table tr:nth-child(2n) {
+  background-color: #2d333b;
+}
+.markdown-preview.markdown-preview img {
+  max-width: 100%;
+  box-sizing: initial;
+}
+.markdown-preview.markdown-preview img[align=right] {
+  padding-left: 20px;
+}
+.markdown-preview.markdown-preview img[align=left] {
+  padding-right: 20px;
+}
+.markdown-preview.markdown-preview code {
+  color: #adbac7;
+  padding: 0.2em 0.1em 0.1em 0.1em;
+  margin: 0;
+  font-size: 85%;
+  background-color: #3c434d;
+  border-radius: 4px;
+}
+.markdown-preview.markdown-preview pre {
+  word-wrap: normal;
+}
+.markdown-preview.markdown-preview pre > code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+.markdown-preview.markdown-preview .highlight {
+  margin-bottom: 16px;
+}
+.markdown-preview.markdown-preview .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+.markdown-preview.markdown-preview .highlight pre,
+.markdown-preview.markdown-preview pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  border-radius: 3px;
+}
+.markdown-preview.markdown-preview pre code {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: initial;
+  border: 0;
+}
+.markdown-preview.markdown-preview .commit-tease-sha {
+  display: inline-block;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 90%;
+}
+.markdown-preview.markdown-preview .blob-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.markdown-preview.markdown-preview .blob-wrapper-embedded {
+  max-height: 240px;
+  overflow-y: auto;
+}
+.markdown-preview.markdown-preview .blob-num {
+  width: 1%;
+  min-width: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: right;
+  white-space: nowrap;
+  vertical-align: top;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.markdown-preview.markdown-preview .blob-num:before {
+  content: attr(data-line-number);
+}
+.markdown-preview.markdown-preview .blob-code {
+  position: relative;
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 20px;
+  vertical-align: top;
+}
+.markdown-preview.markdown-preview .blob-code-inner {
+  overflow: visible;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 12px;
+  word-wrap: normal;
+  white-space: pre;
+}
+.markdown-preview.markdown-preview .pl-token.active,
+.markdown-preview.markdown-preview .pl-token:hover {
+  cursor: pointer;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="1"] {
+  -moz-tab-size: 1;
+  tab-size: 1;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="2"] {
+  -moz-tab-size: 2;
+  tab-size: 2;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="3"] {
+  -moz-tab-size: 3;
+  tab-size: 3;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="4"] {
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="5"] {
+  -moz-tab-size: 5;
+  tab-size: 5;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="6"] {
+  -moz-tab-size: 6;
+  tab-size: 6;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="7"] {
+  -moz-tab-size: 7;
+  tab-size: 7;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="8"] {
+  -moz-tab-size: 8;
+  tab-size: 8;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="9"] {
+  -moz-tab-size: 9;
+  tab-size: 9;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="10"] {
+  -moz-tab-size: 10;
+  tab-size: 10;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="11"] {
+  -moz-tab-size: 11;
+  tab-size: 11;
+}
+.markdown-preview.markdown-preview .tab-size[data-tab-size="12"] {
+  -moz-tab-size: 12;
+  tab-size: 12;
+}
+.markdown-preview.markdown-preview .task-list-item {
+  list-style-type: none;
+}
+.markdown-preview.markdown-preview .task-list-item + .task-list-item {
+  margin-top: 3px;
+}
+.markdown-preview.markdown-preview .task-list-item input {
+  margin: 0 0.2em 0.25em -1.6em;
+  vertical-align: middle;
+}
+
+      </style>
+    </head>
+    <body for="html-export" >
+      <div class="mume markdown-preview  "  >
+      <h1 class="mume-header" id="bluing%E4%B8%80%E4%B8%AA%E4%B8%BA-hack-%E8%93%9D%E7%89%99%E8%80%8C%E7%94%9F%E7%9A%84%E6%83%85%E6%8A%A5%E6%94%B6%E9%9B%86%E5%B7%A5%E5%85%B7">Bluing&#xFF1A;&#x4E00;&#x4E2A;&#x4E3A; hack &#x84DD;&#x7259;&#x800C;&#x751F;&#x7684;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;</h1>
+
+<p align="center">
+    <a href="https://fo-000.github.io/bluing/index.html">English</a> &#xB7; <a href="https://fo-000.github.io/bluing/index-cn.html">&#x7B80;&#x4F53;&#x4E2D;&#x6587;</a>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/badge/python-3.10-blue">
+    <a href="https://pypi.org/project/bluing/"><img src="https://img.shields.io/pypi/v/bluing?color=blue"></a>
+    <a href="https://pepy.tech/badge/bluing"><img src="https://pepy.tech/badge/bluing"></a>
+    <a href="https://pepy.tech/badge/bluescan"><img src="https://static.pepy.tech/personalized-badge/bluescan?period=total&amp;units=international_system&amp;left_color=grey&amp;right_color=blue&amp;left_text=predecessor%20downloads"></a>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
+</p>
+<p>Bluing&#xFF08;&#x524D;&#x8EAB;&#x4E3A; <a href="https://pypi.org/project/bluescan/">bluescan</a>&#xFF09;&#x662F;&#x4E00;&#x4E2A;&#x4E3B;&#x8981;&#x57FA;&#x4E8E; Python &#x5B9E;&#x73B0;&#x7684;&#x84DD;&#x7259;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x7AA5;&#x63A2;&#x84DD;&#x7259;&#x8FD9;&#x79CD;&#x590D;&#x6742;&#x534F;&#x8BAE;&#x7684;&#x5185;&#x90E8;&#x7ED3;&#x6784;&#x6216;&#x662F; hack &#x84DD;&#x7259;&#x8BBE;&#x5907;&#x3002;&#x5176;&#x4E3B;&#x8981;&#x7279;&#x6027;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="https://raw.githubusercontent.com/fO-000/bluing/master/assets/bluing-features-mermaid-mindmap-cn.svg" alt></p>
+<h2 class="mume-header" id="%E5%AE%89%E8%A3%85">&#x5B89;&#x88C5;</h2>
+
+<p>Bluing &#x90E8;&#x5206;&#x4F9D;&#x8D56; Linux &#x5B98;&#x65B9;&#x7684; <a href="http://www.bluez.org/">BlueZ</a> &#x84DD;&#x7259;&#x534F;&#x8BAE;&#x6808;&#xFF0C;&#x56E0;&#x6B64;&#x5B83;&#x4EC5;&#x652F;&#x6301;&#x5728; Linux &#x4E0A;&#x8FD0;&#x884C;&#x3002;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#x53EF;&#x5B89;&#x88C5;&#x4F9D;&#x8D56;&#x5305;&#xFF1A;</p>
+<pre><span style="font-weight: bold; color: #9fab76">sudo apt</span> install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
+                 libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
+                 rfkill meson patchelf bluez
+</pre>
+<p>&#x76EE;&#x524D; bluing &#x7684;&#x5206;&#x53D1;&#x9014;&#x5F84;&#x662F; <a href="https://pypi.org/project/bluing/">PyPI</a>&#xFF0C;&#x4E14;&#x4EC5;&#x652F;&#x6301; Python 3.10&#x3002;&#x5B89;&#x88C5;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><span style="font-weight: bold; color: #9fab76">sudo pip3.10</span> install bluing
+</pre>
+<h2 class="mume-header" id="%E7%A1%AC%E4%BB%B6%E8%A6%81%E6%B1%82">&#x786C;&#x4EF6;&#x8981;&#x6C42;</h2>
+
+<h3 class="mume-header" id="%E8%93%9D%E7%89%99%E9%80%82%E9%85%8D%E5%99%A8">&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;</h3>
+
+<p>&#x5F88;&#x591A; bluing &#x529F;&#x80FD;&#x90FD;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#x3002;&#x867D;&#x7136;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Linux &#x7269;&#x7406;&#x673A;&#x81EA;&#x5E26;&#x7684;&#x9002;&#x914D;&#x5668;&#x6216;&#x8BA9; Linux &#x865A;&#x62DF;&#x673A;<strong>&#x72EC;&#x5360;</strong>&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x4F46;&#x662F;&#x4E3A;&#x4E86;&#x66F4;&#x7A33;&#x5B9A;&#x5730;&#x8FD0;&#x884C; bluing&#xFF0C;&#x4ECD;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x5916;&#x63A5;&#x7684; USB &#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x6BD4;&#x5982; <a href="http://www.senanetworks.com/ud100-g03.html">Parani UD100-G03</a>&#x3002;</p>
+<h3 class="mume-header" id="original-microbit">Original micro:bit</h3>
+
+<p>Bluing &#x5728;&#x55C5;&#x63A2; advertising physical channel PDU &#x65F6; (<code>le --sniff-adv</code>)&#xFF0C;&#x81F3;&#x5C11;&#x9700;&#x8981; 1 &#x5757; <a href="https://microbit.org/get-started/user-guide/overview/#original-micro:bit">original micro:bit</a>&#xFF0C;&#x4E14;&#x63A8;&#x8350;&#x540C;&#x65F6;&#x4F7F;&#x7528; 3 &#x5757;&#x3002;&#x8FD9;&#x4E9B; micro:bit &#x9700;&#x8981;&#x8FD0;&#x884C; bluing &#x63D0;&#x4F9B;&#x7684;&#x4E13;&#x7528;&#x56FA;&#x4EF6;&#x3002;&#x5C06; micro:bit &#x63A5;&#x5165; Linux &#x540E;&#xFF0C;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#x4FBF;&#x53EF;&#x5237;&#x5199;&#x9884;&#x5148;&#x6784;&#x5EFA;&#x597D;&#x7684;&#x56FA;&#x4EF6;&#xFF1A;</p>
+<pre><span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
+</pre>
+<h3 class="mume-header" id="ubertooth-one">Ubertooth One</h3>
+
+<p>Bluing &#x540E;&#x7EED;&#x8BA1;&#x5212;&#x7684;&#x529F;&#x80FD;&#x53EF;&#x80FD;&#x4F1A;&#x7528;&#x5230; <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>&#x3002;</p>
+<h2 class="mume-header" id="%E4%BD%BF%E7%94%A8">&#x4F7F;&#x7528;</h2>
+
+<blockquote>
+<p>&#x795E;&#x8BF4;&#xFF1A;&#x201C;&#x8981;&#x6709;<strong>&#x5F69;&#x8272;</strong>&#x3002;&#x201D;&#x5C31;&#x6709;&#x4E86;<a href="https://fo-000.github.io/bluing/index-cn.html#%E4%BD%BF%E7%94%A8"><strong>&#x5F69;&#x8272;</strong></a>&#x3002;</p>
+</blockquote>
+<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help
+An intelligence gathering tool for hacking Bluetooth
+
+Usage:
+    bluing [-h | --help]
+    bluing (-v | --version)
+    bluing [-i &lt;hci&gt;] --clean BD_ADDR
+    bluing [-i &lt;hci&gt;] --spoof-bd-addr BD_ADDR
+    bluing --flash-micro-bit
+    bluing &lt;command&gt; [&lt;args&gt;...]
+
+Arguments:
+    BD_ADDR    Bluetooth device address
+
+Options:
+    -h, --help           Print this help and quit
+    -v, --version        Print version information and quit
+    -i &lt;hci&gt;             HCI device
+    --clean              Clean cached data of a remote device
+    --spoof-bd-addr      Spoof the BD_ADDR of a local controller
+    --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
+
+Commands:
+    br        Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
+    le        Low Energy system
+    plugin    Manage plugins
+
+Run `bluing &lt;command&gt; --help` for more information on a command.
+</pre>
+<h3 class="mume-header" id="-spoof-bd-addr%E6%9C%AC%E5%9C%B0%E6%8E%A7%E5%88%B6%E5%99%A8-bd_addr-%E4%BC%AA%E8%A3%85"><code>--spoof-bd-addr</code>&#xFF1A;&#x672C;&#x5730;&#x63A7;&#x5236;&#x5668; BD_ADDR &#x4F2A;&#x88C5;</h3>
+
+<pre>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
+</pre>
+<h3 class="mume-header" id="br-%E5%91%BD%E4%BB%A4basic-rate-system"><code>br</code> &#x547D;&#x4EE4;&#xFF1A;Basic Rate system</h3>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --help
+
+Usage:
+    bluing br [-h | --help]
+    bluing br [-i &lt;hci&gt;] [--inquiry-len=&lt;n&gt;] --inquiry
+    bluing br [-i &lt;hci&gt;] --sdp BD_ADDR
+    bluing br [-i &lt;hci&gt;] --local --sdp
+    bluing br [-i &lt;hci&gt;] --lmp-features BD_ADDR
+    bluing br [-i &lt;hci&gt;] --local --lmp-features
+    bluing br [-i &lt;hci&gt;] --stack BD_ADDR
+    bluing br [-i &lt;hci&gt;] --local --stack
+    bluing br [-i &lt;hci&gt;] [--inquiry-scan] --mon-incoming-conn
+
+Arguments:
+    BD_ADDR    BR/EDR Bluetooth device address
+
+Options:
+    -h, --help               Print this help and quit
+    -i &lt;hci&gt;                 HCI device
+    --local                  Target a local BR/EDR device instead of a remote one
+    --inquiry                Discover other nearby BR/EDR controllers
+    --inquiry-len=&lt;n&gt;        Maximum amount of time (added to --ext-inquiry-len=<n>) 
+                             specified before the Inquiry is halted.
+                                 Time = n * 1.28 s
+                                 Time range: 1.28 to 61.44 s
+                                 Range of n: 0x01 to 0x30 [default: 8]
+    --ext-inquiry-len=&lt;n&gt;    Extended_Inquiry_Length measured in number of Baseband 
+                             slots.
+                                 Interval Length = n * 0.625 ms (1 Baseband slot)
+                                 Time Range: 0 to 40.9 s
+                                 Range of n: 0x0000 to 0xFFFF [default: 0]
+    --sdp                    Retrieve information from the SDP database of a remote BR/EDR device
+    --lmp-features           Read LMP features of a remote BR/EDR device
+    --stack                  Determine the Bluetooth stack type of a remote BR/EDR device
+    --mon-incoming-conn      Print incoming connection from other nearby BR/EDR devices
+    --inquiry-scan           Enable the Inquiry Scan
+</n></pre>
+<h4 class="mume-header" id="-inquiry%E5%8F%91%E7%8E%B0%E9%99%84%E8%BF%91%E5%85%B6%E4%BB%96%E7%9A%84-bredr-%E6%8E%A7%E5%88%B6%E5%99%A8"><code>--inquiry</code>&#xFF1A;&#x53D1;&#x73B0;&#x9644;&#x8FD1;&#x5176;&#x4ED6;&#x7684; BR/EDR &#x63A7;&#x5236;&#x5668;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Discovering other nearby BR/EDR Controllers on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10.24</span> sec
+
+BD_ADDR: <span style="font-weight: bold; color: #7da9c7">B0:C9:52:45:33:13</span> (<span style="font-weight: bold; color: #7da9c7">GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD</span>)
+Page scan repetition mode: 1 (R1)
+Reserved: 0x02
+CoD: 0x5a020c
+    Service Class: 0b1011010000
+        Telephony
+        Object Transfer
+        Capturing
+        Networking
+    Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
+Clock offset: 0x50D5
+RSSI: -61
+Extended inquiry response: 
+    Complete Local Name: <span style="font-weight: bold; color: #7da9c7">old man phone</span>
+    Complete List of 16-bit Service Class UUIDs
+        0x1105 <span style="font-weight: bold; color: #7da9c7">OBEXObjectPush</span>
+        0x110a <span style="font-weight: bold; color: #7da9c7">AudioSource</span>
+        0x110c <span style="font-weight: bold; color: #7da9c7">A/V_RemoteControlTarget</span>
+        0x110e <span style="font-weight: bold; color: #7da9c7">A/V_RemoteControl</span>
+        0x1112 <span style="font-weight: bold; color: #7da9c7">Headset - Audio Gateway (AG)</span>
+        0x1115 <span style="font-weight: bold; color: #7da9c7">PANU</span>
+        0x1116 <span style="font-weight: bold; color: #7da9c7">NAP</span>
+        0x111f <span style="font-weight: bold; color: #7da9c7">HandsfreeAudioGateway</span>
+        0x112d <span style="font-weight: bold; color: #7da9c7">SIM_Access</span>
+        0x112f <span style="font-weight: bold; color: #7da9c7">Phonebook Access - PSE</span>
+        0x1200 <span style="font-weight: bold; color: #7da9c7">PnPInformation</span>
+        0x1132 <span style="font-weight: bold; color: #7da9c7">Message Access Server</span>
+    Complete List of 32-bit Service Class UUIDs
+        <span style="font-weight: bold; color: #c35956">None</span>
+    Complete List of 128-bit Service Class UUIDs
+        <span style="font-weight: bold; color: #7da9c7">A49EAA15-CB06-495C-9F4F-BB80A90CDF00</span>
+        <span style="font-weight: bold; color: #7da9c7">00000000-0000-0000-0000-000000000000</span>
+... ...
+
+
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting the names of all discovered devices...
+B0:C9:52:45:33:13 : <span style="font-weight: bold; color: #7da9c7">old man phone</span>
+... ...
+</pre>
+<h4 class="mume-header" id="-sdp%E6%A3%80%E7%B4%A2%E8%BF%9C%E7%AB%AF-bdedr-%E8%AE%BE%E5%A4%87%E7%9A%84-sdp-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BF%A1%E6%81%AF"><code>--sdp</code>&#xFF1A;&#x68C0;&#x7D22;&#x8FDC;&#x7AEF; BD/EDR &#x8BBE;&#x5907;&#x7684; SDP &#x6570;&#x636E;&#x5E93;&#x4FE1;&#x606F;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --sdp 34:13:46:23:6A:4D
+Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
+Number of service records: 18 
+
+<span style="font-weight: bold; color: #7da9c7">Service Record</span>
+0x0000: ServiceRecordHandle (uint32)
+	0x0001000d
+0x0001: ServiceClassIDList (sequence)
+	0x1105: <span style="font-weight: bold; color: #9fab76">OBEXObjectPush</span>
+0x0004: ProtocolDescriptorList (sequence)
+	0x0100: L2CAP
+	0x0003: RFCOMM
+		channel: 0x0c
+	0x0008: OBEX
+0x0005: BrowseGroupList (sequence)
+	0x1002: <span style="font-weight: bold; color: #9fab76">PublicBrowseRoot</span>
+0x0009: BluetoothProfileDescriptorList (sequence)
+	0x1105: <span style="font-weight: bold; color: #9fab76">OBEXObjectPush</span> <span style="font-weight: bold; color: #9fab76">v1.2</span>
+0x0100: ServiceName (guess) (text)
+	OBEX Object Push 
+0x0200: GoepL2CapPsm (guess) (uint16)
+<span style="font-weight: bold; color: #9fab76">	0x1023</span>
+0x0303: SupportedFormatsList (guess) (sequence)
+	0x01: <span style="font-weight: bold; color: #9fab76">vCard 2.1</span>
+	0x02: <span style="font-weight: bold; color: #9fab76">vCard 3.0</span>
+	0x03: <span style="font-weight: bold; color: #9fab76">vCal 1.0</span>
+	0x04: <span style="font-weight: bold; color: #9fab76">iCal 2.0</span>
+	0xff: <span style="font-weight: bold; color: #9fab76">Any type of object</span>
+... ...
+</pre>
+<h4 class="mume-header" id="-lmp-features%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%AB%AF-bredr-%E8%AE%BE%E5%A4%87%E7%9A%84-lmp-%E7%89%B9%E6%80%A7"><code>--lmp-features</code>&#xFF1A;&#x8BFB;&#x53D6;&#x8FDC;&#x7AEF; BR/EDR &#x8BBE;&#x5907;&#x7684; LMP &#x7279;&#x6027;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --lmp-features 6A:8D:99:33:56:AE
+<span style="font-weight: bold; color: #7da9c7">Version</span>
+    Version:
+        Bluetooth Core Specification 5.2 (LMP)
+        Bluetooth Core Specification 5.2 (LL)
+    Manufacturer name: <span style="font-weight: bold; color: #9fab76">HiSilicon Technologies CO., LIMITED</span>
+    Subversion: 33561 
+
+<span style="font-weight: bold; color: #7da9c7">LMP features</span>
+    3 slot packets: <span style="font-weight: bold; color: #9fab76">True</span>
+    5 slot packets: <span style="font-weight: bold; color: #9fab76">True</span>
+    Encryption: <span style="font-weight: bold; color: #9fab76">True</span>
+    Slot offset: <span style="font-weight: bold; color: #9fab76">True</span>
+    Timing accuracy: <span style="font-weight: bold; color: #9fab76">True</span>
+    Role switch: <span style="font-weight: bold; color: #9fab76">True</span>
+    Hold mode: <span style="font-weight: bold; color: #c35956">False</span>
+    Sniff mode: <span style="font-weight: bold; color: #9fab76">True</span>
+    Previously used: <span style="font-weight: bold; color: #c35956">False</span>
+    Power control requests: <span style="font-weight: bold; color: #9fab76">True</span>
+    Channel quality driven data rate (CQDDR): <span style="font-weight: bold; color: #9fab76">True</span>
+    ... ...
+
+<span style="font-weight: bold; color: #7da9c7">Extended LMP features</span>
+Page 1
+    Secure Simple Pairing (Host Support): <span style="font-weight: bold; color: #9fab76">True</span>
+    LE Supported (Host): <span style="font-weight: bold; color: #9fab76">True</span>
+    Simultaneous LE and BR/EDR to Same Device Capable (Host): <span style="font-weight: bold; color: #9fab76">True</span>
+    Secure Connections (Host Support): <span style="font-weight: bold; color: #9fab76">True</span>
+Page 2
+    Connectionless Slave Broadcast - Master Operation: <span style="font-weight: bold; color: #c35956">False</span>
+    Connectionless Slave Broadcast - Slave Operation: <span style="font-weight: bold; color: #c35956">False</span>
+    Synchronization Train: <span style="font-weight: bold; color: #c35956">False</span>
+    Synchronization Scan: <span style="font-weight: bold; color: #c35956">False</span>
+    HCI_Inquiry_Response_Notification event:  <span style="font-weight: bold; color: #9fab76">True</span>
+    ... ...
+</pre>
+<h4 class="mume-header" id="-mon-incoming-conn%E6%89%93%E5%8D%B0%E9%99%84%E8%BF%91%E5%85%B6%E4%BB%96-bredr-%E8%AE%BE%E5%A4%87%E8%BF%9B%E6%9D%A5%E7%9A%84%E8%BF%9E%E6%8E%A5"><code>--mon-incoming-conn</code>&#xFF1A;&#x6253;&#x5370;&#x9644;&#x8FD1;&#x5176;&#x4ED6; BR/EDR &#x8BBE;&#x5907;&#x8FDB;&#x6765;&#x7684;&#x8FDE;&#x63A5;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry-scan --mon-incoming-conn
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry_Scan_Interval: 4096, 2560.0 ms
+       Inquiry_Scan_Window:   4096, 2560.0 ms
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry Scan and Page Scan enabled
+
+<span style="font-weight: bold; color: #7da9c7">A0:DE:0F:99:EF:78</span> incoming
+    CoD: 0x5a020c
+        Service Class: 0b1011010000
+                Telephony
+                Object Transfer
+                Capturing
+                Networking
+        Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
+    link type: 0x01 - ACL
+... ...
+</pre>
+<h3 class="mume-header" id="le-%E5%91%BD%E4%BB%A4low-energy-system"><code>le</code> &#x547D;&#x4EE4;&#xFF1A;Low Energy system</h3>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> le --help
+
+Usage:
+    bluing le [-h | --help]
+    bluing le [-i &lt;hci&gt;] [--scan-type=&lt;type&gt;] [--timeout=&lt;sec&gt;] [--sort=&lt;key&gt;] --scan
+    bluing le [-i &lt;hci&gt;] --pairing-feature [--timeout=&lt;sec&gt;] [--addr-type=&lt;type&gt;] PEER_ADDR
+    bluing le [-i &lt;hci&gt;] --ll-feature-set [--timeout=&lt;sec&gt;] [--addr-type=&lt;type&gt;] PEER_ADDR
+    bluing le [-i &lt;hci&gt;] --gatt [--io-cap=&lt;name&gt;] [--addr-type=&lt;type&gt;] PEER_ADDR
+    bluing le [-i &lt;hci&gt;] --local --gatt
+    bluing le [-i &lt;hci&gt;] --mon-incoming-conn
+    bluing le [--channel=&lt;num&gt;] --sniff-adv
+
+Arguments:
+    PEER_ADDR    LE Bluetooth device address
+
+Options:
+    -h, --help            Print this help and quit
+    -i &lt;hci&gt;              HCI device
+    --scan                Discover advertising devices nearby
+    --scan-type=&lt;type&gt;    The type of scan to perform. active or passive [default: active]
+    --sort=&lt;key&gt;          Sort the discovered devices by key, only support RSSI 
+                          now [default: rssi]
+    --ll-feature-set      Read LL FeatureSet of a remote LE device
+    --pairing-feature     Request the pairing feature of a remote LE device
+    --timeout=&lt;sec&gt;       Duration of the LE scanning, but may not be precise [default: 10]
+    --gatt                Discover GATT Profile hierarchy of a remote LE device
+    --io-cap=&lt;name&gt;       Set IO capability of the agent. Available value: 
+                              DisplayOnly, DisplayYesNo, KeyboardOnly, NoInputNoOutput, 
+                              KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
+    --addr-type=&lt;type&gt;    Type of the LE address, public or random
+    --sniff-adv           Sniff advertising physical channel PDU. Need at least 
+                          one micro:bit
+    --channel=&lt;num&gt;       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
+</pre>
+<h4 class="mume-header" id="-scan%E5%8F%91%E7%8E%B0%E9%99%84%E8%BF%91%E6%AD%A3%E5%9C%A8-advertising-%E7%9A%84%E8%AE%BE%E5%A4%87"><code>--scan</code>&#xFF1A;&#x53D1;&#x73B0;&#x9644;&#x8FD1;&#x6B63;&#x5728; advertising &#x7684;&#x8BBE;&#x5907;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --scan
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] You might want to spoof your LE address before doing an active scan
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] LE <span style="font-weight: bold; color: #7da9c7">active</span> scanning on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10</span> sec
+Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2834;</span>
+
+<span style="font-weight: bold; color: #7da9c7">----------------LE Devices Scan Result----------------</span>
+Addr:        <span style="font-weight: bold; color: #7da9c7">74:A3:4A:D4:78:55</span> (<span style="font-weight: bold; color: #7da9c7">ZIMI CORPORATION</span>)
+Addr type:   <span style="font-weight: bold; color: #7da9c7">public</span>
+Connectable: <span style="font-weight: bold; color: #9fab76">True</span>
+RSSI:        -68 dBm
+General Access Profile:
+    Flags: 
+        LE General Discoverable Mode
+        BR/EDR Not Supported
+    Service Data - 16-bit UUID: 
+        UUID: 0x95FE
+        Data: 9055990701b743e34aa3740e00
+    Appearance: 0000
+    Tx Power Level: 0 dBm (pathloss 68 dBm)
+    Complete Local Name: Mesh Mi Switch
+... ...
+</pre>
+<h4 class="mume-header" id="-ll-feature-set%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87%E7%9A%84-ll-featureset"><code>--ll-feature-set</code>&#xFF1A;&#x8BFB;&#x53D6;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907;&#x7684; LL FeatureSet</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --ll-feature-set --addr-type=public 18:D9:8F:77:24:F1
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Reading LL FeatureSet of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+Reading <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x283C;</span>
+<span style="font-weight: bold; color: #7da9c7">LE LL Features:</span>
+    LE Encryption: <span style="font-weight: bold; color: #9fab76">True</span>
+    Connection Parameters Request Procedure: <span style="font-weight: bold; color: #c35956">False</span>
+    Extended Reject Indication: <span style="font-weight: bold; color: #c35956">False</span>
+    Slave-initiated Features Exchange: <span style="font-weight: bold; color: #c35956">False</span>
+    LE Ping:  <span style="font-weight: bold; color: #c35956">False</span>
+    LE Data Packet Length Extension: <span style="font-weight: bold; color: #9fab76">True</span>
+    LL Privacy: <span style="font-weight: bold; color: #c35956">False</span>
+    Extended Scanner Filter Policies: <span style="font-weight: bold; color: #c35956">False</span>
+    LE 2M PHY: <span style="font-weight: bold; color: #c35956">False</span>
+    Stable Modulation Index - Transmitter: <span style="font-weight: bold; color: #c35956">False</span>
+    Stable Modulation Index - Receiver: <span style="font-weight: bold; color: #c35956">False</span>
+    ... ...
+</pre>
+<h4 class="mume-header" id="-pairing-feature%E8%AF%B7%E6%B1%82%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87%E7%9A%84-pairing-feature"><code>--pairing-feature</code>&#xFF1A;&#x8BF7;&#x6C42;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907;&#x7684; pairing feature</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --pairing-feature --addr-type=public 18:D9:8F:77:24:F1
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting pairing feature of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+Requesting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2827;</span>
+<span style="font-weight: bold; color: #7da9c7">Pairing Response</span>
+    IO Capability: 0x03 - <span style="font-weight: bold; color: #9fab76">NoInputNoOutput</span>
+    OOB data flag: 0x00 - Not Present
+    AuthReq: 0x01
+    Maximum Encryption Key Size: 16
+Initiator Key Distribution: 0x00
+        EncKey:  <span style="font-weight: bold; color: #c35956">False</span>
+        IdKey:   <span style="font-weight: bold; color: #c35956">False</span>
+        SignKey: <span style="font-weight: bold; color: #c35956">False</span>
+        LinkKey: <span style="font-weight: bold; color: #c35956">False</span>
+        RFU:     0b0000
+Responder Key Distribution: 0x01
+        EncKey:  <span style="font-weight: bold; color: #9fab76">True</span>
+        IdKey:   <span style="font-weight: bold; color: #c35956">False</span>
+        SignKey: <span style="font-weight: bold; color: #c35956">False</span>
+        LinkKey: <span style="font-weight: bold; color: #c35956">False</span>
+        RFU:     0b0000
+</pre>
+<h4 class="mume-header" id="-gatt%E5%8F%91%E7%8E%B0%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87-gatt-profile-%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><code>--gatt</code>&#xFF1A;&#x53D1;&#x73B0;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907; GATT Profile &#x7684;&#x5C42;&#x6B21;&#x7ED3;&#x6784;</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --gatt --addr-type=public 18:D9:8F:77:24:F1
+Connecting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
+Discovering all primary services <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280F;</span>
+Discovering all characteristics of service 0x0001 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2839;</span>
+... ...
+Discovering all descriptors of characteristic 0x0002 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x283C;</span>
+... ...
+Reading value of the descriptor 0x0013 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2834;</span>
+... ... 
+
+<span style="font-weight: bold; color: #7da9c7">----------------GATT Scan Result----------------</span>
+Number of services: 6
+
+<span style="font-weight: bold; color: #7da9c7">Service</span> (0x0100 - 0x0112, 7 characteristics)
+    <span style="font-weight: bold; color: #7da9c7">Declaration</span>
+    Handle: 0x0100
+    Type:   2800 (Primary Service declaration)
+    Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
+    Permissions: Read (no authen/author)
+
+    <span style="font-weight: bold; color: #ecc179">Characteristic</span> (2 descriptors)
+        <span style="font-weight: bold; color: #ecc179">Declaration</span>
+        Handle: 0x010d
+        Type:   2803 (Characteristic declaration)
+        Value:
+            Properties: <span style="font-weight: bold; color: #9fab76"></span>
+            Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
+            UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
+        Permissions: Read (no authen/author)
+
+        <span style="font-weight: bold; color: #ecc179">Descriptor</span>
+        Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
+        Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic Configuration declaration</span>)
+        Value:  <span style="font-weight: bold; color: #9fab76">b&apos;\x00\x00&apos;</span>
+        Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
+... ...
+</pre>
+<h4 class="mume-header" id="-sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu"><code>--sniff-adv</code>&#xFF1A;&#x55C5;&#x63A2; advertising physical channel PDU</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --sniff-adv
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM2 on channel 37
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM1 on channel 38
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM0 on channel 39
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 38 &lt; Ready -&gt; Start
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 37 &lt; Ready -&gt; Start
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 39 &lt; Ready -&gt; Start
+[38] [<span style="font-weight: bold; color: #c35956">ADV_NONCONN_IND</span>]
+random AdvA: 28:7A:88:B2:35:0B
+[39] [<span style="font-weight: bold; color: #7da9c7">ADV_IND</span>]
+public AdvA: A4:E4:72:B1:CB:8D
+[37] [<span style="font-weight: bold; color: #7da9c7">SCAN_REQ</span>]
+random ScanA: 6A:90:0C:07:3E:14
+random AdvA: 7D:9B:A8:5A:F2:81
+... ...
+</pre>
+<h3 class="mume-header" id="plugin-%E5%91%BD%E4%BB%A4%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86"><code>plugin</code> &#x547D;&#x4EE4;&#xFF1A;&#x63D2;&#x4EF6;&#x7BA1;&#x7406;</h3>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help
+
+Usage:
+    bluing plugin [-h | --help]
+    bluing plugin &lt;command&gt; [&lt;args&gt;...]
+
+Options:
+    -h, --help    Display this help and quit
+
+Commands:
+    list         List installed plugins
+    install      Install a plugin
+    uninstall    Uninstall a plugin
+    run          Run a plugin
+</pre>
+<h2 class="mume-header" id="faq">FAQ</h2>
+
+<h3 class="mume-header" id="rfkill-%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0-hci0"><code>rfkill</code> &#x65E0;&#x6CD5;&#x627E;&#x5230; hci0</h3>
+
+<p>&#x5F02;&#x5E38;&#x6D88;&#x606F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre data-role="codeBlock" data-info="txt" class="language-txt">Exception: Can&apos;t find the ID of hci0 in rfkill
+</pre><p>&#x8BE5;&#x5F02;&#x5E38;&#x53EF;&#x80FD;&#x56E0;&#x4E3A;&#x8001;&#x7248;&#x672C;&#x7684; rfkill &#x4E0D;&#x652F;&#x6301; <code>-r</code> &#x548C; <code>-n</code> &#x9009;&#x9879;&#x800C;&#x5BFC;&#x81F4;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;</p>
+<pre>$ <span style="font-weight: bold; color: #9fab76">cat</span> /etc/os-release | <span style="font-weight: bold; color: #9fab76">head</span> -n 2
+NAME=&quot;Ubuntu&quot;
+VERSION=&quot;16.10 (Yakkety Yak)&quot;
+
+$ <span style="font-weight: bold; color: #9fab76">rfkill</span> --version
+rfkill 0.5-1ubuntu3 (Ubuntu)
+</pre>
+<p>&#x6B64;&#x65F6;&#x5347;&#x7EA7; rfkill &#x5230;&#x8F83;&#x65B0;&#x7684;&#x7248;&#x672C;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x8BE5;&#x95EE;&#x9898;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;</p>
+<pre>$ <span style="font-weight: bold; color: #9fab76">cat</span> /etc/os-release | <span style="font-weight: bold; color: #9fab76">head</span> -n 2
+PRETTY_NAME=&quot;Kali GNU/Linux Rolling&quot;
+NAME=&quot;Kali GNU/Linux&quot;
+
+$ <span style="font-weight: bold; color: #9fab76">rfkill</span> --version
+rfkill from util-linux 2.38.1
+</pre>
+<h3 class="mume-header" id="%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4-scanend-%E6%89%A7%E8%A1%8C%E5%A4%B1%E8%B4%A5%E4%BA%86">&#x7BA1;&#x7406;&#x547D;&#x4EE4; <code>scanend</code> &#x6267;&#x884C;&#x5931;&#x8D25;&#x4E86;</h3>
+
+<p>&#x9519;&#x8BEF;&#x6D88;&#x606F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre data-role="codeBlock" data-info="txt" class="language-txt">ERROR: Failed to execute management command &apos;scanend&apos; (code: 11, error: Rejected)
+</pre><p>&#x53EF;&#x901A;&#x8FC7;&#x91CD;&#x542F; Bluetooth &#x670D;&#x52A1;&#x5C1D;&#x8BD5;&#x89E3;&#x51B3;&#x8BE5;&#x95EE;&#x9898;&#x3002;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><span style="font-weight: bold; color: #9fab76">sudo systemctl</span> restart bluetooth.service
+</pre>
+
+      </div>
+      <div class="md-sidebar-toc">
+<div class="md-toc">
+<details style="padding:0.25rem 0;;padding-left: 0px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#bluing一个为-hack-蓝牙而生的情报收集工具" class="md-toc-link"><p>Bluing：一个为 hack 蓝牙而生的情报收集工具</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#安装"
+            class="md-toc-link"
+            style="padding-left: 8px;;"
+          >
+            <p>安装</p>
+
+          </a></div><details style="padding:0.25rem 0;;padding-left: 8px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#硬件要求" class="md-toc-link"><p>硬件要求</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#蓝牙适配器"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p>蓝牙适配器</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#original-microbit"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p>Original micro:bit</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#ubertooth-one"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p>Ubertooth One</p>
+
+          </a></div>
+        </div>
+      </details>
+    <details style="padding:0.25rem 0;;padding-left: 8px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#使用" class="md-toc-link"><p>使用</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-spoof-bd-addr本地控制器-bd_addr-伪装"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p><code>--spoof-bd-addr</code>：本地控制器 BD_ADDR 伪装</p>
+
+          </a></div><details style="padding:0.25rem 0;;padding-left: 16px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#br-命令basic-rate-system" class="md-toc-link"><p><code>br</code> 命令：Basic Rate system</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-inquiry发现附近其他的-bredr-控制器"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--inquiry</code>：发现附近其他的 BR/EDR 控制器</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-sdp检索远端-bdedr-设备的-sdp-数据库信息"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--sdp</code>：检索远端 BD/EDR 设备的 SDP 数据库信息</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-lmp-features读取远端-bredr-设备的-lmp-特性"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--lmp-features</code>：读取远端 BR/EDR 设备的 LMP 特性</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-mon-incoming-conn打印附近其他-bredr-设备进来的连接"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--mon-incoming-conn</code>：打印附近其他 BR/EDR 设备进来的连接</p>
+
+          </a></div>
+        </div>
+      </details>
+    <details style="padding:0.25rem 0;;padding-left: 16px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#le-命令low-energy-system" class="md-toc-link"><p><code>le</code> 命令：Low Energy system</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-scan发现附近正在-advertising-的设备"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--scan</code>：发现附近正在 advertising 的设备</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-ll-feature-set读取远端-le-设备的-ll-featureset"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--ll-feature-set</code>：读取远端 LE 设备的 LL FeatureSet</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-pairing-feature请求远端-le-设备的-pairing-feature"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--pairing-feature</code>：请求远端 LE 设备的 pairing feature</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-gatt发现远端-le-设备-gatt-profile-的层次结构"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--gatt</code>：发现远端 LE 设备 GATT Profile 的层次结构</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#-sniff-adv嗅探-advertising-physical-channel-pdu"
+            class="md-toc-link"
+            style="padding-left: 24px;;"
+          >
+            <p><code>--sniff-adv</code>：嗅探 advertising physical channel PDU</p>
+
+          </a></div>
+        </div>
+      </details>
+    <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#plugin-命令插件管理"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p><code>plugin</code> 命令：插件管理</p>
+
+          </a></div>
+        </div>
+      </details>
+    <details style="padding:0.25rem 0;;padding-left: 8px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#faq" class="md-toc-link"><p>FAQ</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#rfkill-无法找到-hci0"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p><code>rfkill</code> 无法找到 hci0</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a
+            href="#管理命令-scanend-执行失败了"
+            class="md-toc-link"
+            style="padding-left: 16px;;"
+          >
+            <p>管理命令 <code>scanend</code> 执行失败了</p>
+
+          </a></div>
+        </div>
+      </details>
+    
+        </div>
+      </details>
+    
+</div>
+</div>
+      <a id="sidebar-toc-btn">≡</a>
+    </body>
+    
+    
+    
+    
+    
+    
+    
+<script>
+
+var sidebarTOCBtn = document.getElementById('sidebar-toc-btn')
+sidebarTOCBtn.addEventListener('click', function(event) {
+  event.stopPropagation()
+  if (document.body.hasAttribute('html-show-sidebar-toc')) {
+    document.body.removeAttribute('html-show-sidebar-toc')
+  } else {
+    document.body.setAttribute('html-show-sidebar-toc', true)
+  }
+})
+</script>
+      
+  </html>
