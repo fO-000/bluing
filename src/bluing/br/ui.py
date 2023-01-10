@@ -41,7 +41,7 @@ Options:
                                  address based on the organization name. Need at 
                                  least one Ubertooth device
     --org=<name>                 An organization name in the OUI.txt
-    --timeout=<sec>              Timeout in second(s)
+    --timeout=<sec>              Timeout in second(s) [default: 60]
 """
 
 
