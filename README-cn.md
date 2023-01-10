@@ -18,6 +18,7 @@
 Bluing（前身为 [bluescan](https://pypi.org/project/bluescan/)）是一个主要基于 Python 实现的蓝牙情报收集工具。它可以帮助我们窥探蓝牙这种复杂协议的内部结构或是 hack 蓝牙设备。其主要特性如下：
 
 ![](https://raw.githubusercontent.com/fO-000/bluing/master/assets/bluing-features-mermaid-mindmap-cn.svg)
+<!-- ![](./assets/bluing-features-mermaid-mindmap-cn.svg) -->
 
 ## 安装
 
@@ -26,7 +27,7 @@ Bluing 部分依赖 Linux 官方的 [BlueZ](http://www.bluez.org/) 蓝牙协议�
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez
+                 rfkill meson patchelf bluez ubertooth
 ```
 
 目前 bluing 的分发途径是 [PyPI](https://pypi.org/project/bluing/)，且仅支持 Python 3.10。安装命令如下：
@@ -51,7 +52,7 @@ bluing --flash-micro-bit
 
 ### Ubertooth One
 
-Bluing 后续计划的功能可能会用到 [Ubertooth One](https://greatscottgadgets.com/ubertoothone/)。
+当嗅探并推测附近的 BD_ADDR 时 (`br --sniff-and-guess-bd-addr`)，bluing 需要用到一块 [Ubertooth One](https://greatscottgadgets.com/ubertoothone/)。
 
 ## 使用
 
@@ -111,30 +112,37 @@ Usage:
     bluing br [-i &lthci>] --stack BD_ADDR
     bluing br [-i &lthci>] --local --stack
     bluing br [-i &lthci>] [--inquiry-scan] --mon-incoming-conn
+    bluing br --org=&ltname> --timeout=&ltsec> --sniff-and-guess-bd-addr
 
 Arguments:
     BD_ADDR    BR/EDR Bluetooth device address
 
 Options:
-    -h, --help               Print this help and quit
-    -i &lthci>                 HCI device
-    --local                  Target a local BR/EDR device instead of a remote one
-    --inquiry                Discover other nearby BR/EDR controllers
-    --inquiry-len=&ltn>        Maximum amount of time (added to --ext-inquiry-len=<n>) 
-                             specified before the Inquiry is halted.
-                                 Time = n * 1.28 s
-                                 Time range: 1.28 to 61.44 s
-                                 Range of n: 0x01 to 0x30 [default: 8]
-    --ext-inquiry-len=&ltn>    Extended_Inquiry_Length measured in number of Baseband 
-                             slots.
-                                 Interval Length = n * 0.625 ms (1 Baseband slot)
-                                 Time Range: 0 to 40.9 s
-                                 Range of n: 0x0000 to 0xFFFF [default: 0]
-    --sdp                    Retrieve information from the SDP database of a remote BR/EDR device
-    --lmp-features           Read LMP features of a remote BR/EDR device
-    --stack                  Determine the Bluetooth stack type of a remote BR/EDR device
-    --mon-incoming-conn      Print incoming connection from other nearby BR/EDR devices
-    --inquiry-scan           Enable the Inquiry Scan
+    -h, --help                   Print this help and quit
+    -i &lthci>                     HCI device
+    --local                      Target a local BR/EDR device instead of a remote one
+    --inquiry                    Discover other nearby BR/EDR controllers
+    --inquiry-len=&ltn>            Maximum amount of time (added to --ext-inquiry-len=&ltn>) 
+                                 specified before the Inquiry is halted.
+                                     Time = n * 1.28 s
+                                     Time range: 1.28 to 61.44 s
+                                     Range of n: 0x01 to 0x30 [default: 8]
+    --ext-inquiry-len=&ltn>        Extended_Inquiry_Length measured in number of 
+                                 Baseband slots.
+                                     Interval Length = n * 0.625 ms (1 Baseband slot)
+                                     Time Range: 0 to 40.9 s
+                                     Range of n: 0x0000 to 0xFFFF [default: 0]
+    --sdp                        Retrieve information from the SDP database of a 
+                                 remote BR/EDR device
+    --lmp-features               Read LMP features of a remote BR/EDR device
+    --stack                      Determine the Bluetooth stack type of a remote BR/EDR device
+    --mon-incoming-conn          Print incoming connection from other nearby BR/EDR devices
+    --inquiry-scan               Enable the Inquiry Scan
+    --sniff-and-guess-bd-addr    Sniff SAPs of BD_ADDRs over the air, then guess the 
+                                 address based on the organization name. Need at 
+                                 least one Ubertooth device
+    --org=&ltname>                 An organization name in the OUI.txt
+    --timeout=&ltsec>              Timeout in second(s)
 </pre>
 
 #### `--inquiry`：发现附近其他的 BR/EDR 控制器
@@ -274,6 +282,24 @@ $ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquir
                 Networking
         Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
     link type: 0x01 - ACL
+... ...
+</pre>
+
+#### `--sniff-and-guess-bd-addr`：嗅探并推测附近的 BD_ADDR
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --org=<span style="font-weight: bold; color: #eac179">'Huawei Device Co., Ltd.'</span> --timeout=600 --sniff-and-guess-bd-addr
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:99:4C:45:C3
+       24:A7:99:4C:45:C3
+
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:E4:2D:69:EE
+       BC:1A:E4:2D:69:EE
+       D0:05:E4:2D:69:EE
+       30:AA:E4:2D:69:EE
+
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:15:60:81:7F
+       64:23:15:60:81:7F
+       D4:74:15:60:81:7F
 ... ...
 </pre>
 

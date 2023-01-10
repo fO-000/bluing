@@ -11,30 +11,37 @@ Usage:
     bluing br [-i <hci>] --stack BD_ADDR
     bluing br [-i <hci>] --local --stack
     bluing br [-i <hci>] [--inquiry-scan] --mon-incoming-conn
+    bluing br --org=<name> --timeout=<sec> --sniff-and-guess-bd-addr
 
 Arguments:
     BD_ADDR    BR/EDR Bluetooth device address
 
 Options:
-    -h, --help               Print this help and quit
-    -i <hci>                 HCI device
-    --local                  Target a local BR/EDR device instead of a remote one
-    --inquiry                Discover other nearby BR/EDR controllers
-    --inquiry-len=<n>        Maximum amount of time (added to --ext-inquiry-len=<n>) 
-                             specified before the Inquiry is halted.
-                                 Time = n * 1.28 s
-                                 Time range: 1.28 to 61.44 s
-                                 Range of n: 0x01 to 0x30 [default: 8]
-    --ext-inquiry-len=<n>    Extended_Inquiry_Length measured in number of Baseband 
-                             slots.
-                                 Interval Length = n * 0.625 ms (1 Baseband slot)
-                                 Time Range: 0 to 40.9 s
-                                 Range of n: 0x0000 to 0xFFFF [default: 0]
-    --sdp                    Retrieve information from the SDP database of a remote BR/EDR device
-    --lmp-features           Read LMP features of a remote BR/EDR device
-    --stack                  Determine the Bluetooth stack type of a remote BR/EDR device
-    --mon-incoming-conn      Print incoming connection from other nearby BR/EDR devices
-    --inquiry-scan           Enable the Inquiry Scan
+    -h, --help                   Print this help and quit
+    -i <hci>                     HCI device
+    --local                      Target a local BR/EDR device instead of a remote one
+    --inquiry                    Discover other nearby BR/EDR controllers
+    --inquiry-len=<n>            Maximum amount of time (added to --ext-inquiry-len=<n>) 
+                                 specified before the Inquiry is halted.
+                                     Time = n * 1.28 s
+                                     Time range: 1.28 to 61.44 s
+                                     Range of n: 0x01 to 0x30 [default: 8]
+    --ext-inquiry-len=<n>        Extended_Inquiry_Length measured in number of 
+                                 Baseband slots.
+                                     Interval Length = n * 0.625 ms (1 Baseband slot)
+                                     Time Range: 0 to 40.9 s
+                                     Range of n: 0x0000 to 0xFFFF [default: 0]
+    --sdp                        Retrieve information from the SDP database of a 
+                                 remote BR/EDR device
+    --lmp-features               Read LMP features of a remote BR/EDR device
+    --stack                      Determine the Bluetooth stack type of a remote BR/EDR device
+    --mon-incoming-conn          Print incoming connection from other nearby BR/EDR devices
+    --inquiry-scan               Enable the Inquiry Scan
+    --sniff-and-guess-bd-addr    Sniff SAPs of BD_ADDRs over the air, then guess the 
+                                 address based on the organization name. Need at 
+                                 least one Ubertooth device
+    --org=<name>                 An organization name in the OUI.txt
+    --timeout=<sec>              Timeout in second(s)
 """
 
 
@@ -92,6 +99,15 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
                 args['--inquiry-len'] = int(args['--inquiry-len'], base=16)
             except ValueError as e:
                 e.args = ("Invalid --inquiry-len: " + red(args['--inquiry-len']),)
+                raise e
+
+        try:
+            args['--timeout'] = int(args['--timeout'])
+        except ValueError:
+            try:
+                args['--timeout'] = int(args['--timeout'], base=16)
+            except ValueError as e:
+                e.args = ("Invalid --timeout: " + red(args['--timeout']),)
                 raise e
 
         if args['BD_ADDR']:

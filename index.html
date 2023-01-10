@@ -26,6 +26,7 @@
   color: #adbac7;
   line-height: 1.5;
   word-wrap: break-word;
+  /* a 的配置会被所有 a:... 继承，除非 a:... 覆盖它 */
 }
 .markdown-preview.markdown-preview .octicon {
   display: inline-block;
@@ -85,13 +86,6 @@
 .markdown-preview.markdown-preview summary {
   display: list-item;
 }
-.markdown-preview.markdown-preview a {
-  background-color: initial;
-}
-.markdown-preview.markdown-preview a:active,
-.markdown-preview.markdown-preview a:hover {
-  outline-width: 0;
-}
 .markdown-preview.markdown-preview strong {
   font-weight: inherit;
   font-weight: bolder;
@@ -138,11 +132,38 @@
   line-height: inherit;
 }
 .markdown-preview.markdown-preview a {
-  color: #539bf5;
+  color: #589cf1;
   text-decoration: none;
+  background-color: initial;
 }
 .markdown-preview.markdown-preview a:hover {
   text-decoration: underline;
+  outline-width: 0;
+}
+.markdown-preview.markdown-preview a:active {
+  outline-width: 0;
+}
+.markdown-preview.markdown-preview a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+.markdown-preview.markdown-preview code {
+  color: #adbac7;
+  padding: 0.2em 0.1em 0.1em 0.1em;
+  margin: 0;
+  font-size: 85%;
+  background-color: #3c434d;
+  border-radius: 4px;
+}
+.markdown-preview.markdown-preview blockquote {
+  color: #768390;
+  background-color: #22272e;
+  margin: 0;
+  padding: 0 1em;
+}
+.markdown-preview.markdown-preview b,
+.markdown-preview.markdown-preview strong {
+  color: inherit;
 }
 .markdown-preview.markdown-preview hr:after,
 .markdown-preview.markdown-preview hr:before {
@@ -213,12 +234,6 @@
 .markdown-preview.markdown-preview p {
   margin-top: 0;
   margin-bottom: 10px;
-}
-.markdown-preview.markdown-preview blockquote {
-  color: #768390;
-  background-color: #22272e;
-  margin: 0;
-  padding: 0 1em;
 }
 .markdown-preview.markdown-preview ol,
 .markdown-preview.markdown-preview ul {
@@ -313,10 +328,6 @@
 .markdown-preview.markdown-preview .text-bold {
   font-weight: 600 !important;
 }
-.markdown-preview.markdown-preview b,
-.markdown-preview.markdown-preview strong {
-  color: #adbac7;
-}
 .markdown-preview.markdown-preview .pl-c2:before {
   content: "^M";
 }
@@ -409,10 +420,6 @@
 }
 .markdown-preview.markdown-preview .markdown-body > :last-child {
   margin-bottom: 0 !important;
-}
-.markdown-preview.markdown-preview a:not([href]) {
-  color: inherit;
-  text-decoration: none;
 }
 .markdown-preview.markdown-preview blockquote,
 .markdown-preview.markdown-preview details,
@@ -524,16 +531,9 @@
 .markdown-preview.markdown-preview img[align=left] {
   padding-right: 20px;
 }
-.markdown-preview.markdown-preview code {
-  color: #adbac7;
-  padding: 0.2em 0.1em 0.1em 0.1em;
-  margin: 0;
-  font-size: 85%;
-  background-color: #3c434d;
-  border-radius: 4px;
-}
 .markdown-preview.markdown-preview pre {
   word-wrap: normal;
+  background-color: #2d333b;
 }
 .markdown-preview.markdown-preview pre > code {
   padding: 0;
@@ -705,7 +705,7 @@
 <p>Bluing partially depend on <a href="http://www.bluez.org/">BlueZ</a>, the official Linux Bluetooth protocol stack. So it only supports running on Linux. The following command is used to install dependencies:</p>
 <pre data-role="codeBlock" data-info="sh" class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> python3-pip python3-dev libcairo2-dev libgirepository1.0-dev <span class="token punctuation">\</span>
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev <span class="token punctuation">\</span>
-                 rfkill meson patchelf bluez
+                 rfkill meson patchelf bluez ubertooth
 </pre><p>Currently, bluing is distributed via <a href="https://pypi.org/project/bluing/">PyPI</a> and <strong>only supports Python 3.10</strong>. The following is an installation command:</p>
 <pre data-role="codeBlock" data-info="sh" class="language-bash"><span class="token function">sudo</span> pip3.10 <span class="token function">install</span> bluing
 </pre><h2 class="mume-header" id="hardware-requirements">Hardware Requirements</h2>
@@ -719,7 +719,7 @@
 <pre data-role="codeBlock" data-info="sh" class="language-bash">bluing --flash-micro-bit
 </pre><h3 class="mume-header" id="ubertooth-one">Ubertooth One</h3>
 
-<p>The future features of bluing may require <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>.</p>
+<p>When sniffing and guessing nearby BD_ADDRs (<code>br --sniff-and-guess-bd-addr</code>), bluing requires an <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>.</p>
 <h2 class="mume-header" id="usage">Usage</h2>
 
 <blockquote>
@@ -774,31 +774,38 @@ Usage:
     bluing br [-i &lt;hci&gt;] --stack BD_ADDR
     bluing br [-i &lt;hci&gt;] --local --stack
     bluing br [-i &lt;hci&gt;] [--inquiry-scan] --mon-incoming-conn
+    bluing br --org=&lt;name&gt; --timeout=&lt;sec&gt; --sniff-and-guess-bd-addr
 
 Arguments:
     BD_ADDR    BR/EDR Bluetooth device address
 
 Options:
-    -h, --help               Print this help and quit
-    -i &lt;hci&gt;                 HCI device
-    --local                  Target a local BR/EDR device instead of a remote one
-    --inquiry                Discover other nearby BR/EDR controllers
-    --inquiry-len=&lt;n&gt;        Maximum amount of time (added to --ext-inquiry-len=<n>) 
-                             specified before the Inquiry is halted.
-                                 Time = n * 1.28 s
-                                 Time range: 1.28 to 61.44 s
-                                 Range of n: 0x01 to 0x30 [default: 8]
-    --ext-inquiry-len=&lt;n&gt;    Extended_Inquiry_Length measured in number of Baseband 
-                             slots.
-                                 Interval Length = n * 0.625 ms (1 Baseband slot)
-                                 Time Range: 0 to 40.9 s
-                                 Range of n: 0x0000 to 0xFFFF [default: 0]
-    --sdp                    Retrieve information from the SDP database of a remote BR/EDR device
-    --lmp-features           Read LMP features of a remote BR/EDR device
-    --stack                  Determine the Bluetooth stack type of a remote BR/EDR device
-    --mon-incoming-conn      Print incoming connection from other nearby BR/EDR devices
-    --inquiry-scan           Enable the Inquiry Scan
-</n></pre>
+    -h, --help                   Print this help and quit
+    -i &lt;hci&gt;                     HCI device
+    --local                      Target a local BR/EDR device instead of a remote one
+    --inquiry                    Discover other nearby BR/EDR controllers
+    --inquiry-len=&lt;n&gt;            Maximum amount of time (added to --ext-inquiry-len=&lt;n&gt;) 
+                                 specified before the Inquiry is halted.
+                                     Time = n * 1.28 s
+                                     Time range: 1.28 to 61.44 s
+                                     Range of n: 0x01 to 0x30 [default: 8]
+    --ext-inquiry-len=&lt;n&gt;        Extended_Inquiry_Length measured in number of 
+                                 Baseband slots.
+                                     Interval Length = n * 0.625 ms (1 Baseband slot)
+                                     Time Range: 0 to 40.9 s
+                                     Range of n: 0x0000 to 0xFFFF [default: 0]
+    --sdp                        Retrieve information from the SDP database of a 
+                                 remote BR/EDR device
+    --lmp-features               Read LMP features of a remote BR/EDR device
+    --stack                      Determine the Bluetooth stack type of a remote BR/EDR device
+    --mon-incoming-conn          Print incoming connection from other nearby BR/EDR devices
+    --inquiry-scan               Enable the Inquiry Scan
+    --sniff-and-guess-bd-addr    Sniff SAPs of BD_ADDRs over the air, then guess the 
+                                 address based on the organization name. Need at 
+                                 least one Ubertooth device
+    --org=&lt;name&gt;                 An organization name in the OUI.txt
+    --timeout=&lt;sec&gt;              Timeout in second(s)
+</pre>
 <h4 class="mume-header" id="-inquiry-discover-other-nearby-bredr-controllers"><code>--inquiry</code>: Discover other nearby BR/EDR controllers</h4>
 
 <pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry
@@ -929,6 +936,22 @@ Page 2
                 Networking
         Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
     link type: 0x01 - ACL
+... ...
+</pre>
+<h4 class="mume-header" id="-sniff-and-guess-bd-addr-sniff-and-guess-nearby-bd_addrs-over-the-air"><code>--sniff-and-guess-bd-addr</code>: Sniff and guess nearby BD_ADDRs over the air</h4>
+
+<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --org=<span style="font-weight: bold; color: #eac179">&apos;Huawei Device Co., Ltd.&apos;</span> --timeout=600 --sniff-and-guess-bd-addr
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR for ??:??:99:4C:45:C3
+       24:A7:99:4C:45:C3
+
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR for ??:??:E4:2D:69:EE
+       BC:1A:E4:2D:69:EE
+       D0:05:E4:2D:69:EE
+       30:AA:E4:2D:69:EE
+
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR for ??:??:15:60:81:7F
+       64:23:15:60:81:7F
+       D4:74:15:60:81:7F
 ... ...
 </pre>
 <h3 class="mume-header" id="le-command-low-energy-system"><code>le</code> command: Low Energy system</h3>
@@ -1202,6 +1225,10 @@ rfkill from util-linux 2.38.1
           </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
           <a href="#-mon-incoming-conn-print-incoming-connection-from-other-nearby-bredr-devices" class="md-toc-link" style="padding-left: 24px;;">
             <p><code>--mon-incoming-conn</code>: Print incoming connection from other nearby BR/EDR devices</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0.25rem 0;">
+          <a href="#-sniff-and-guess-bd-addr-sniff-and-guess-nearby-bd_addrs-over-the-air" class="md-toc-link" style="padding-left: 24px;;">
+            <p><code>--sniff-and-guess-bd-addr</code>: Sniff and guess nearby BD_ADDRs over the air</p>
 
           </a></div>
         </div>

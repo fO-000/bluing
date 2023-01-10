@@ -6,6 +6,7 @@ from traceback import format_exception
 
 from xpycommon.log import Logger
 from xpycommon.ui import blue
+from xpycommon.bluetooth import sniff_and_guess_bd_addr
 
 from bthci import HCI, ControllerErrorCodes, ScanEnableValues
 from bthci.commands import HCI_Write_Inquiry_Scan_Activity
@@ -96,6 +97,8 @@ def main(argv: list[str] = sys.argv):
                     print()
             except KeyboardInterrupt:
                 sys.exit()
+        elif args['--sniff-and-guess-bd-addr']:
+            sniff_and_guess_bd_addr(args['--org'], args['--timeout'])
         else:
             raise ValueError("Invalid option(s)")
     except TimeoutError as e:
