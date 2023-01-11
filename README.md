@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20NetHunter%202022.4%20(aarch64)-brightgreen">
 </p>
 
 Bluing (formerly [bluescan](https://pypi.org/project/bluescan/)) is a **Blu**etooth **In**telligence **G**athering tool written primarily in Python. It can help us snoop on the internal structure of Bluetooth which is a complex protocol, or hack Bluetooth devices. Here are the main features of the tool:

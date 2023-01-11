@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20on%20Raspberry%20Pi%204%202022.3%20(aarch64)-brightgreen">
+    <img src="https://img.shields.io/badge/Tested%20on-Ubuntu%2022.04%20(x64)%20%7C%20Kali%202022.4%20(x64)%20%7C%20Kali%20NetHunter%202022.4%20(aarch64)-brightgreen">
 </p>
 
 Bluing（前身为 [bluescan](https://pypi.org/project/bluescan/)）是一个主要基于 Python 实现的蓝牙情报收集工具。它可以帮助我们窥探蓝牙这种复杂协议的内部结构或是 hack 蓝牙设备。其主要特性如下：
