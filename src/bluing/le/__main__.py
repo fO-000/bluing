@@ -40,7 +40,10 @@ def main(argv: list[str] = sys.argv):
             scan_result = GattScanner(args['-i'], args['--io-cap']).scan(
                 args['PEER_ADDR'], args['--addr-type']) 
         elif args['--sniff-adv']:
-            dev_paths = get_microbit_devpaths()
+            if not args['--device']:
+                dev_paths = get_microbit_devpaths()
+            else:
+                dev_paths = args['--device']
             if len(dev_paths) == 0:
                 raise RuntimeError("Micro:bit not found")
             LeScanner(microbit_devpaths=dev_paths).sniff_adv(args['--channel'])
