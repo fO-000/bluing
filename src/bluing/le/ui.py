@@ -9,7 +9,7 @@ Usage:
     bluing le [-i <hci>] --gatt [--io-cap=<name>] [--addr-type=<type>] PEER_ADDR
     bluing le [-i <hci>] --local --gatt
     bluing le [-i <hci>] --mon-incoming-conn
-    bluing le [--channel=<num>] --sniff-adv
+    bluing le [--device=</dev/tty>] [--channel=<num>] --sniff-adv
 
 Arguments:
     PEER_ADDR    LE Bluetooth device address
@@ -30,8 +30,10 @@ Options:
                               KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
     --addr-type=<type>    Type of the LE address, public or random
     --sniff-adv           Sniff advertising physical channel PDU. Need at least 
-                          one micro:bit
+                          one micro:bit (or other supported NRF51 device specified with --device)
     --channel=<num>       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
+    --device=</dev/tty>   Device to use, comma separated (e.g., /dev/ttyUSB0,/dev/ttyUSB1,/dev/ttyUSB2)
+                              Only needed if using NRF51 devices other than micro:bit (e.g., Bluefruit)
 """
 
 
@@ -139,6 +141,8 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
         except Exception as e:
             e.args = ("Invalid --channel: " + red(args['--channel']),)
             raise e
+        
+        args['--device'] = set([args['--device'].split(',')])
 
         if args['--mon-incoming-conn']:
             raise NotImplementedError("The `--mon-incoming-conn` option is not"
