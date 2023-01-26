@@ -142,7 +142,8 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
             e.args = ("Invalid --channel: " + red(args['--channel']),)
             raise e
         
-        args['--device'] = set([args['--device'].split(',')])
+        if args['--device']:
+            args['--device'] = set([n for n in args['--device'].split(',')])
 
         if args['--mon-incoming-conn']:
             raise NotImplementedError("The `--mon-incoming-conn` option is not"
