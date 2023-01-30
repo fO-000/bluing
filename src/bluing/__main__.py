@@ -17,13 +17,15 @@ from .ui import parse_cmdline
 from .br import main as br_main
 from .le import main as le_main
 from .plugin import main as plugin_main
+from .android import main as android_main
 
 
 logger = Logger(__name__, LOG_LEVEL)
 cmd_to_main = {
     'br': br_main,
     'le': le_main,
-    'plugin': plugin_main
+    'plugin': plugin_main,
+    'android': android_main
 }
 
 
@@ -103,9 +105,9 @@ def main(argv: list[str] = sys.argv):
             try:
                 cmd_to_main[cmd](argv)
             except KeyError as e:
-                raise ValueError("Invalid command:", red(args['<command>']))
+                raise ValueError("Invalid command: " + red(args['<command>']))
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
 
 

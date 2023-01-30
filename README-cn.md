@@ -27,7 +27,7 @@ Bluing 部分依赖 Linux 官方的 [BlueZ](http://www.bluez.org/) 蓝牙协议�
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez ubertooth
+                 rfkill meson patchelf bluez ubertooth adb
 ```
 
 目前 bluing 的分发途径是 [PyPI](https://pypi.org/project/bluing/)，且仅支持 Python 3.10。安装命令如下：
@@ -44,7 +44,7 @@ sudo pip3.10 install bluing
 
 ### Original micro:bit
 
-Bluing 在嗅探 advertising physical channel PDU 时 (`le --sniff-adv`)，至少需要 1 块 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit)，且推荐同时使用 3 块。这些 micro:bit 需要运行 bluing 提供的专用固件。将 micro:bit 接入 Linux 后，执行如下命令便可刷写预先构建好的固件：
+Bluing 在嗅探 advertising physical channel PDU 时 ([`le --sniff-adv`](https://fo-000.github.io/bluing/index-cn.html#-sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu))，至少需要 1 块 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit)，且推荐同时使用 3 块。这些 micro:bit 需要运行 bluing 提供的专用固件。将 micro:bit 接入 Linux 后，执行如下命令便可刷写预先构建好的固件：
 
 ```sh
 bluing --flash-micro-bit
@@ -52,7 +52,7 @@ bluing --flash-micro-bit
 
 ### Ubertooth One
 
-当嗅探并推测附近的 BD_ADDR 时 (`br --sniff-and-guess-bd-addr`)，bluing 需要用到一块 [Ubertooth One](https://greatscottgadgets.com/ubertoothone/)。
+当嗅探并推测附近的 BD_ADDR 时 ([`br --sniff-and-guess-bd-addr`](https://fo-000.github.io/bluing/index-cn.html#-sniff-and-guess-bd-addr%E5%97%85%E6%8E%A2%E5%B9%B6%E6%8E%A8%E6%B5%8B%E9%99%84%E8%BF%91%E7%9A%84-bd_addr))，bluing 需要用到一块 [Ubertooth One](https://greatscottgadgets.com/ubertoothone/)。
 
 ## 使用
 
@@ -472,6 +472,32 @@ public AdvA: A4:E4:72:B1:CB:8D
 random ScanA: 6A:90:0C:07:3E:14
 random AdvA: 7D:9B:A8:5A:F2:81
 ... ...
+</pre>
+
+### `android` 命令: Android 蓝牙协议栈
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> android --help
+
+Usage:
+    bluing android [-h | --help]
+    bluing android [-t &ltid>] --collect-btsnoop-log [-o &ltfile>]
+
+Options:
+    -h, --help               Display this help and quit
+    -t &ltid>                  Use android device with given transport id. This option 
+                             will be ignored when only one device is available
+    --collect-btsnoop-log    Collect the btsnoop log being generated to a local file, 
+                             default ./btsnoop_hci.log
+    -o &ltfile>                Place the output into <file> [default: ./btsnoop_hci.log]
+</pre>
+
+#### `--collect-btsnoop-log`: 收集正在产生的 btsnoop log
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log
+$ <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log
+btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 
 ### `plugin` 命令：插件管理

@@ -27,7 +27,7 @@ Bluing partially depend on [BlueZ](http://www.bluez.org/), the official Linux Bl
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez ubertooth
+                 rfkill meson patchelf bluez ubertooth adb
 ```
 
 Currently, bluing is distributed via [PyPI](https://pypi.org/project/bluing/) and **only supports Python 3.10**. The following is an installation command:
@@ -44,7 +44,7 @@ Many features of bluing require access to at least 1 Bluetooth adapter. Although
 
 ### Original micro:bit
 
-Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit) when sniffing advertising physical channel PDUs (`le --sniff-adv`), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:
+Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit) when sniffing advertising physical channel PDUs ([`le --sniff-adv`](https://fo-000.github.io/bluing/#-sniff-adv-sniff-advertising-physical-channel-pdu)), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:
 
 ```sh
 bluing --flash-micro-bit
@@ -52,7 +52,7 @@ bluing --flash-micro-bit
 
 ### Ubertooth One
 
-When sniffing and guessing nearby BD_ADDRs (`br --sniff-and-guess-bd-addr`), bluing requires an [Ubertooth One](https://greatscottgadgets.com/ubertoothone/).
+When sniffing and guessing nearby BD_ADDRs ([`br --sniff-and-guess-bd-addr`](https://fo-000.github.io/bluing/#-sniff-and-guess-bd-addr-sniff-and-guess-nearby-bd_addrs-over-the-air)), bluing requires an [Ubertooth One](https://greatscottgadgets.com/ubertoothone/).
 
 ## Usage
 
@@ -472,6 +472,32 @@ public AdvA: A4:E4:72:B1:CB:8D
 random ScanA: 6A:90:0C:07:3E:14
 random AdvA: 7D:9B:A8:5A:F2:81
 ... ...
+</pre>
+
+### `android` command: Android Bluetooth stack
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> android --help
+
+Usage:
+    bluing android [-h | --help]
+    bluing android [-t &ltid>] --collect-btsnoop-log [-o &ltfile>]
+
+Options:
+    -h, --help               Display this help and quit
+    -t &ltid>                  Use android device with given transport id. This option 
+                             will be ignored when only one device is available
+    --collect-btsnoop-log    Collect the btsnoop log being generated to a local file, 
+                             default ./btsnoop_hci.log
+    -o &ltfile>                Place the output into <file> [default: ./btsnoop_hci.log]
+</pre>
+
+#### `--collect-btsnoop-log`: Collect the btsnoop log being generated
+
+<pre>
+$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log
+$ <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log
+btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 
 ### `plugin` command: Manage plugins

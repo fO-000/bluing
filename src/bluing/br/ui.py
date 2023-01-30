@@ -121,7 +121,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
         if args['--local']:
             raise NotImplementedError("The `--local` option is not yet implemented")
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
     else:
         return args

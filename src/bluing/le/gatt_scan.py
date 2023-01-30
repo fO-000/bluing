@@ -82,7 +82,7 @@ def full_uuid_str_to_16_int(uuid: str):
     return uuid
 
 
-class BluescanAgent(Agent):
+class BluingAgent(Agent):
     def __init__(self, bus: SystemBus, idx: int, ioc: str = 'NoInputNoOutput') -> None:
         super().__init__(bus, idx)
         self.io_capability = ioc
@@ -315,7 +315,7 @@ class GattScanner(BlueScanner):
                          "{}\n".format(error) + 
                          "IO capability: {}".format(self.bluing_agent.io_capability))
             self.agent_registered = False
-        self.bluing_agent = BluescanAgent(sys_bus, 0, ioc)
+        self.bluing_agent = BluingAgent(sys_bus, 0, ioc)
         self.agent_mgr_1_iface = dbus.Interface(
             sys_bus.get_object(BLUEZ_NAME, '/org/bluez'), IFACE_AGENT_MGR_1)
         self.agent_mgr_1_iface.RegisterAgent(

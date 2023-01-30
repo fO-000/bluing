@@ -25,9 +25,9 @@ Options:
     --pairing-feature     Request the pairing feature of a remote LE device
     --timeout=<sec>       Duration of the LE scanning, but may not be precise [default: 10]
     --gatt                Discover GATT Profile hierarchy of a remote LE device
-    --io-cap=<name>       Set IO capability of the agent. Available value: 
+    --io-cap=<name>       Set an IO Capability of the agent. Available value: 
                               DisplayOnly, DisplayYesNo, KeyboardOnly, NoInputNoOutput, 
-                              KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
+                              KeyboardDisplay [default: NoInputNoOutput]
     --addr-type=<type>    Type of the LE address, public or random
     --sniff-adv           Sniff advertising physical channel PDU. Need at least 
                           one micro:bit
@@ -101,7 +101,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
                 raise e
 
         if args['--io-cap'] not in ['DisplayOnly', 'DisplayYesNo', 'KeyboardOnly', 
-                                    'NoInputNoOutput', 'KeyboardDisplay', 'KeyboardOnly']:
+                                    'NoInputNoOutput', 'KeyboardDisplay']:
             raise ValueError("Invalid --io-cap: " + red(args['--io-cap']))
 
         if args['PEER_ADDR'] is not None:
@@ -147,7 +147,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
         if args['--local']:
             raise NotImplementedError("The `--local` option is not yet implemented")
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
     else:
         return args

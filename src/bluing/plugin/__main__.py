@@ -39,5 +39,5 @@ def main(argv: list[str] = sys.argv):
             except KeyError as e:
                 raise ValueError("Invalid {} command: {}".format(PKG_NAME, red(args['<command>'])))
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)

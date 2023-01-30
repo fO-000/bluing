@@ -5,9 +5,9 @@ PKG_NAME = 'br'
 
 from xpycommon.log import INFO, DEBUG
 
-from .. import LOG_LEVEL as BLUING_LOG_LEVEL
+from .. import LOG_LEVEL as PARENT_LOG_LEVEL
 
-LOG_LEVEL = BLUING_LOG_LEVEL
+LOG_LEVEL = PARENT_LOG_LEVEL
 # LOG_LEVEL = DEBUG
 
 

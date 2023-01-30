@@ -20,6 +20,10 @@ build:
 	$(call python-build)
 
 
+.PHONY: update-oui
+	wget https://standards-oui.ieee.org/oui/oui.txt -O src/bluing/res/oui.txt
+
+
 .PHONY: install
 install:
 	$(call python-install)

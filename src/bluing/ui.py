@@ -25,6 +25,7 @@ Options:
 Commands:
     br        Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
     le        Low Energy system
+    android   Android Bluetooth stack
     plugin    Manage plugins
 
 Run `bluing <command> --help` for more information on a command.
@@ -77,7 +78,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
                 raise ValueError("Invalid BD_ADDR: " + red(args['BD_ADDR']))
             args['BD_ADDR'] = args['BD_ADDR'].upper()
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
     else:
         return args

@@ -5,9 +5,9 @@ PKG_NAME = 'run'
 
 from xpycommon.log import INFO, DEBUG
 
-from .. import LOG_LEVEL as BLUING_PLUGIN_LOG_LEVEL
+from .. import LOG_LEVEL as PARENT_LOG_LEVEL
 
-LOG_LEVEL = BLUING_PLUGIN_LOG_LEVEL
+LOG_LEVEL = PARENT_LOG_LEVEL
 # LOG_LEVEL = DEBUG
 
 

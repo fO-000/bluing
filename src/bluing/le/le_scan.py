@@ -333,7 +333,7 @@ class LeScanner:
                              "    status: 0x{:02x} - {}".format(le_conn_complete.status, ControllerErrorCodes[le_conn_complete.status]))
         except Exception as e:
             spinner.fail()
-            logger.error("{}: {}".format(e.__class__.__name__, e))
+            logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
             sys.exit(1)
 
         le_read_remote_features_complete = hci.le_read_remote_features(le_conn_complete.conn_handle)
@@ -369,7 +369,7 @@ class LeScanner:
             self.sm.connect(paddr, patype)
         except TimeoutError as e :
             spinner.fail()
-            logger.error("{}: {}".format(e.__class__.__name__, e))
+            logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
             sys.exit(1)
         
         auth_req = AuthReq(BondingFlags.NO_BONDING, False, True, False, False)
@@ -383,7 +383,7 @@ class LeScanner:
             print('\r' + pairing_response.to_human_readable_str(title=blue("Pairing Response")))
         except Exception as e:
             spinner.fail()
-            logger.error("{}: {}".format(e.__class__.__name__, e))
+            logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
 
         spinner.stop()
         self.sm.disconnect()

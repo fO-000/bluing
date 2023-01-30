@@ -86,10 +86,10 @@ def main(argv: list[str] = sys.argv):
         print()
         logger.info("Canceled\n")
     except RuntimeError as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
     except Exception as e:
         e_info = ''.join(format_exception(*sys.exc_info()))
         logger.debug("e_info: {}".format(e_info))
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)

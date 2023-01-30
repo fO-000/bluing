@@ -44,7 +44,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
         if args['PATH'] is not None and not BluingPluginManager.is_plugin(args['PATH']):
             raise ValueError("\"{}\" is not a valid plugin".format(args['PATH']))
     except Exception as e:
-        logger.error("{}: {}".format(e.__class__.__name__, e))
+        logger.error("{}: \"{}\"".format(e.__class__.__name__, e))
         sys.exit(1)
     else:
         return args

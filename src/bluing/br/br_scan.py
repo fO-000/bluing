@@ -72,7 +72,7 @@ class BrScanner(BlueScanner):
                     except TimeoutError as e:
                         name = ''
                     except HciRuntimeError as e:
-                        logger.error("{}: {}".format(e.__class__, e))
+                        logger.error("{}: \"{}\"".format(e.__class__, e))
                         name = ''
 
                     print("{} : {}".format(bd_addr, blue(name)))
