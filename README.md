@@ -50,6 +50,8 @@ Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started
 bluing --flash-micro-bit
 ```
 
+While less convenient to use than the micro:bit, but more accessible to purchase, more generic NRF51 adapters can be supported as well.  Support has been added for the Adafruit Bluefruit LE Friend and the BLE400 boards.  To use these, they will need to be flashed using SWD.  This tool does not support flashing these devices.  Additionally, the tool cannot automatically identify these devices.  Instead the `--devices` option needs to identify the ports connected to computer.
+
 ### Ubertooth One
 
 When sniffing and guessing nearby BD_ADDRs ([`br --sniff-and-guess-bd-addr`](https://fo-000.github.io/bluing/#-sniff-and-guess-bd-addr-sniff-and-guess-nearby-bd_addrs-over-the-air)), bluing requires an [Ubertooth One](https://greatscottgadgets.com/ubertoothone/).
@@ -316,7 +318,7 @@ Usage:
     bluing le [-i &lthci>] --gatt [--io-cap=&ltname>] [--addr-type=&lttype>] PEER_ADDR
     bluing le [-i &lthci>] --local --gatt
     bluing le [-i &lthci>] --mon-incoming-conn
-    bluing le [--channel=&ltnum>] --sniff-adv
+    bluing le [--device=&lt/dev/tty>] [--channel=&ltnum>] --sniff-adv
 
 Arguments:
     PEER_ADDR    LE Bluetooth device address
@@ -337,8 +339,10 @@ Options:
                               KeyboardDisplay (KeyboardOnly) [default: NoInputNoOutput]
     --addr-type=&lttype>    Type of the LE address, public or random
     --sniff-adv           Sniff advertising physical channel PDU. Need at least 
-                          one micro:bit
+                          one micro:bit (or other supported NRF51 device specified with --device)
     --channel=&ltnum>       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
+    --device=&lt/dev/tty>   Device to use, comma separated (e.g., /dev/ttyUSB0,/dev/ttyUSB1,/dev/ttyUSB2)
+                              Only needed if using NRF51 devices other than micro:bit (e.g., Bluefruit)
 </pre>
 
 #### `--scan`: Discover advertising devices nearby

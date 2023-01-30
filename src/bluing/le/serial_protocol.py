@@ -55,6 +55,10 @@ class SerialEventHandler(threading.Thread):
     def run(self):
         while True:
             header = self.dev.read(3)
+            # This is a hack to eat up 0x00 bytes that seem to get transmitted by Bluefruit
+            # before and after reset.  As 0x00 evt_code should only anve 0 length, this seems to work.
+            while ((header[0] == 0) and (header[1:] != b'\x00\x00')):
+                header = header[1:0] + self.dev.read(1)
             evt_code, length = struct.unpack(">BH", header)
             payload = self.dev.read(length)
             

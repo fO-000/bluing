@@ -13,6 +13,7 @@ $(info )
 PKG_NAME := $(PY_PKG_NAME)
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
+BLE400_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-combined.hex
 
 
 .PHONY: build
@@ -45,6 +46,10 @@ flash:
 		cp $(MICROBIT_BIN) $(MICROBIT_PATH)2; \
 	fi
 
+.PHONY: build_ble400
+build_ble400:
+	@yotta build bluing-advsniff --config=./config/ble400.json
+	
 
 .PHONY: clean
 clean:
