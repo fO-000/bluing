@@ -27,7 +27,7 @@ Bluing 部分依赖 Linux 官方的 [BlueZ](http://www.bluez.org/) 蓝牙协议�
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez ubertooth adb
+                 rfkill meson patchelf bluez ubertooth adb python-is-python3
 ```
 
 目前 bluing 的分发途径是 [PyPI](https://pypi.org/project/bluing/)，且仅支持 Python 3.10。安装命令如下：
