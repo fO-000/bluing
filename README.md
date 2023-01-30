@@ -27,7 +27,7 @@ Bluing partially depend on [BlueZ](http://www.bluez.org/), the official Linux Bl
 ```sh
 sudo apt install python3-pip python3-dev libcairo2-dev libgirepository1.0-dev \
                  libbluetooth-dev libdbus-1-dev bluez-tools python3-cairo-dev \
-                 rfkill meson patchelf bluez ubertooth adb
+                 rfkill meson patchelf bluez ubertooth adb python-is-python3
 ```
 
 Currently, bluing is distributed via [PyPI](https://pypi.org/project/bluing/) and **only supports Python 3.10**. The following is an installation command:
