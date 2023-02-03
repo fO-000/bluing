@@ -2,7 +2,7 @@
 
 PKG_NAME = 'bluing'
 APP_NAME = PKG_NAME
-VERSION = '0.11.0'
+VERSION = '0.11.1'
 DEBUG_VERSION = ''
 
 

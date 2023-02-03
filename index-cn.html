@@ -929,10 +929,10 @@ Page 2
 <span style="font-weight: bold; color: #7da9c7">A0:DE:0F:99:EF:78</span> incoming
     CoD: 0x5a020c
         Service Class: 0b1011010000
-                Telephony
-                Object Transfer
-                Capturing
-                Networking
+            Telephony
+            Object Transfer
+            Capturing
+            Networking
         Major Device Class: 0b00010, <span style="font-weight: bold; color: #7da9c7">Phone</span>
     link type: 0x01 - ACL
 ... ...
@@ -1079,26 +1079,32 @@ Number of services: 6
 
 <span style="font-weight: bold; color: #7da9c7">Service</span> (0x0100 - 0x0112, 7 characteristics)
     <span style="font-weight: bold; color: #7da9c7">Declaration</span>
-    Handle: 0x0100
-    Type:   2800 (Primary Service declaration)
-    Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
-    Permissions: Read (no authen/author)
+        Handle: 0x0100
+        Type:   2800 (Primary Service declaration)
+        Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
+        Permissions: Read (no authen/author)
 
     <span style="font-weight: bold; color: #ecc179">Characteristic</span> (2 descriptors)
         <span style="font-weight: bold; color: #ecc179">Declaration</span>
-        Handle: 0x010d
-        Type:   2803 (Characteristic declaration)
-        Value:
-            Properties: <span style="font-weight: bold; color: #9fab76"></span>
-            Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
-            UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
-        Permissions: Read (no authen/author)
+            Handle: 0x010d
+            Type:   2803 (Characteristic declaration)
+            Value:
+                Properties: <span style="font-weight: bold; color: #9fab76">Read, Write Without Response, Write, Notify</span>
+                Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
+                UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
+            Permissions: Read (no authen/author)
+
+        <span style="font-weight: bold; color: #ecc179">Value</span>
+            Handle: 0x0302
+            Type:   4A02 (Unknown)
+            Value:  <span style="font-weight: bold; color: #c35956">Read Not Permitted</span>
+            Permissions: Higher layer specific
 
         <span style="font-weight: bold; color: #ecc179">Descriptor</span>
-        Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
-        Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic Configuration declaration</span>)
-        Value:  <span style="font-weight: bold; color: #9fab76">b&apos;\x00\x00&apos;</span>
-        Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
+            Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
+            Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic    Configuration declaration</span>)
+            Value:  <span style="font-weight: bold; color: #9fab76">b&apos;\x00\x00&apos;</span>
+            Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
 ... ...
 </pre>
 </details>
@@ -1139,10 +1145,8 @@ Options:
 </details>
 <h4 class="mume-header" id="--collect-btsnoop-log-%E6%94%B6%E9%9B%86%E6%AD%A3%E5%9C%A8%E4%BA%A7%E7%94%9F%E7%9A%84-btsnoop-log"><code>--collect-btsnoop-log</code>: &#x6536;&#x96C6;&#x6B63;&#x5728;&#x4EA7;&#x751F;&#x7684; btsnoop log</h4>
 
-<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log</code></summary>
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log
-$ <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log
-btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log; <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log</code></summary>
+<pre>btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 </details>
 <h3 class="mume-header" id="-plugin-%E5%91%BD%E4%BB%A4%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86"><code>plugin</code> &#x547D;&#x4EE4;&#xFF1A;&#x63D2;&#x4EF6;&#x7BA1;&#x7406;</h3>

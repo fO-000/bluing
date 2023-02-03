@@ -8,7 +8,6 @@ from uuid import UUID
 
 from xpycommon.ui import green, blue, yellow, red, INDENT
 from xpycommon.log import Logger
-from xpycommon.dbus import mainloop, mainloop_thread
 
 import pkg_resources
 from halo import Halo
@@ -18,7 +17,7 @@ from btgatt import Service, CharactValueDeclar, ServiceUuids, GattAttrTypes, bt_
 
 from .. import BlueScanner, ScanResult
 from .ui import LOG_LEVEL
-from .agent import BluingBtAgent
+from .gatt_scan_bt_agent import GattScanBtAgent
 
 
 logger = Logger(__name__, LOG_LEVEL)
@@ -185,10 +184,10 @@ class GattScanResult(ScanResult):
             print(blue("Service"), "(0x{:04x} - 0x{:04x}, {} characteristics)".format(
                 service.start_handle, service.end_handle, len(service.get_characts())))
             print(INDENT + blue("Declaration"))
-            print(INDENT + "Handle: 0x{:04x}".format(service.start_handle))
-            print(INDENT + "Type:   {:04X} ({})".format(service.declar.type.int16, service.declar.type.name))
-            print(INDENT + "Value:  {} ({})".format(green(uuid_str_for_show), service_name))
-            print(INDENT + "Permissions:", service.declar.permissions_desc)
+            print(INDENT*2 + "Handle: 0x{:04x}".format(service.start_handle))
+            print(INDENT*2 + "Type:   {:04X} ({})".format(service.declar.type.int16, service.declar.type.name))
+            print(INDENT*2 + "Value:  {} ({})".format(green(uuid_str_for_show), service_name))
+            print(INDENT*2 + "Permissions:", service.declar.permissions_desc)
             print() # An empty line before Characteristic Group
             
             # Prints each Gharacteristic group
@@ -214,13 +213,13 @@ class GattScanResult(ScanResult):
                     
                 print(INDENT + yellow("Characteristic"), '({} descriptors)'.format(len(charact.descriptors)))
                 print(INDENT*2 + yellow("Declaration"))
-                print(INDENT*2 + "Handle: 0x{:04x}".format(charact.declar.handle))
-                print(INDENT*2 + "Type:   {:04X} ({})".format(charact.declar.type.int16, charact.declar.type.name))
-                print(INDENT*2 + "Value:")
-                print(INDENT*3 + "Properties: {}".format(green(', '.join(charact.declar.get_property_names()))))
-                print(INDENT*3 + "Handle:    ", green("0x{:04x}".format(charact.declar.value.handle)))
-                print(INDENT*3 + "UUID:       {} ({})".format(green(uuid_str_for_show), charact_name))
-                print(INDENT*2 + "Permissions: {}\n".format(charact.declar.permissions_desc))
+                print(INDENT*3 + "Handle: 0x{:04x}".format(charact.declar.handle))
+                print(INDENT*3 + "Type:   {:04X} ({})".format(charact.declar.type.int16, charact.declar.type.name))
+                print(INDENT*3 + "Value:")
+                print(INDENT*4 + "Properties: {}".format(green(', '.join(charact.declar.get_property_names()))))
+                print(INDENT*4 + "Handle:    ", green("0x{:04x}".format(charact.declar.value.handle)))
+                print(INDENT*4 + "UUID:       {} ({})".format(green(uuid_str_for_show), charact_name))
+                print(INDENT*3 + "Permissions: {}\n".format(charact.declar.permissions_desc))
 
                 if charact.value_declar is not None:
                     try:
@@ -238,11 +237,11 @@ class GattScanResult(ScanResult):
                     else:
                         value_print = green(str(charact.value_declar.value))
                     
-                    print(INDENT*2 + yellow("Value declaration"))
-                    print(INDENT*2 + "Handle: 0x{:04x}".format(charact.value_declar.handle))
-                    print(INDENT*2 + "Type:   {} ({})".format(type_str_for_show, value_declar_name))
-                    print(INDENT*2 + "Value:  {}".format(value_print))
-                    print(INDENT*2 + "Permissions: {}\n".format(charact.value_declar.permissions_desc))
+                    print(INDENT*2 + yellow("Value"))
+                    print(INDENT*3 + "Handle: 0x{:04x}".format(charact.value_declar.handle))
+                    print(INDENT*3 + "Type:   {} ({})".format(type_str_for_show, value_declar_name))
+                    print(INDENT*3 + "Value:  {}".format(value_print))
+                    print(INDENT*3 + "Permissions: {}\n".format(charact.value_declar.permissions_desc))
                 
                 # Prints each Characteristic Descriptor
                 for descriptor in charact.get_descriptors():
@@ -260,11 +259,11 @@ class GattScanResult(ScanResult):
                             value_print = green(str(descriptor.value))
                               
                     print(INDENT*2 + yellow("Descriptor"))
-                    print(INDENT*2 + "Handle: {}".format(green('0x{:04x}'.format(descriptor.handle))))
-                    print(INDENT*2 + "Type:   {} ({})".format(green("{:04X}".format(descriptor.type.int16)), yellow(descriptor.type.name)))
-                    print(INDENT*2 + "Value: ", value_print)
-                    print(INDENT*2 + "Permissions: {}\n".format(descriptor.permissions_desc))
-                    
+                    print(INDENT*3 + "Handle: {}".format(green('0x{:04x}'.format(descriptor.handle))))
+                    print(INDENT*3 + "Type:   {} ({})".format(green("{:04X}".format(descriptor.type.int16)), yellow(descriptor.type.name)))
+                    print(INDENT*3 + "Value: ", value_print)
+                    print(INDENT*3 + "Permissions: {}\n".format(descriptor.permissions_desc))
+
     def to_dict(self) -> dict:
         j = {
             "Addr": self.addr,
@@ -286,15 +285,13 @@ class GattScanner(BlueScanner):
         self.result = GattScanResult()
         self.gatt_client = None
         self.spinner = Halo(placement='right')
-        self.bt_agent = BluingBtAgent(io_cap)
+        self.bt_agent = GattScanBtAgent(io_cap)
         self.bt_agent.register()
 
     def scan(self, addr: str, addr_type: int = ADDR_TYPE_PUBLIC) -> GattScanResult:
         logger.debug("Entered scan()")
 
         try:
-            mainloop_thread.start()
-            
             self.result.addr = addr.upper()
             self.result.addr_type = addr_type
                     
@@ -340,11 +337,16 @@ class GattScanner(BlueScanner):
                     logger.debug("characts: {}".format(characts))
                 
                     for charact in characts:
-                        logger.debug("Characteristics\n" +
-                                    "Handle:       0x{:04x}\n".format(charact.declar.handle) +
-                                    "Properties:   0x{:02X}\n".format(charact.declar.value.properties) +
-                                    "Value handle: 0x{:04x}\n".format(charact.declar.value.handle) +
-                                    "UUID:         {}".format(charact.declar.value.uuid))
+                        logger.debug("Found characteristic declaration\n"
+                                     "    Handle: 0x{:04x}\n"
+                                     "    Type:   {}\n"
+                                     "    Value:\n"
+                                     "        Properties: 0x{:02X} - {}\n"
+                                     "        Handle:     0x{:04x}\n"
+                                     "        UUID:       {}".format(
+                                         charact.declar.handle, charact.declar.type, 
+                                         charact.declar.value.properties, charact.declar.get_property_names(), 
+                                         charact.declar.value.handle, charact.declar.value.uuid))
                         service.add_charact(charact)
                 except TimeoutError as e:
                     # When discovering all characteristics fo a service encounters a timeout,
@@ -499,7 +501,6 @@ class GattScanner(BlueScanner):
             
             if self.bt_agent.registered:
                 self.bt_agent.unregister()
-                mainloop.quit()
             try:
                 # Reset and clean bluetooth service
                 output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', addr]), 

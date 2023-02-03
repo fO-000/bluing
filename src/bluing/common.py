@@ -4,15 +4,12 @@ import io
 import pkg_resources
 
 from dbus.exceptions import DBusException
-from gi.repository import GObject
 
 from xpycommon.log import Logger
 from xpycommon.ui import blue, red
 
 from . import LOG_LEVEL
 
-
-mainloop = GObject.MainLoop()
 
 logger = Logger(__name__, LOG_LEVEL)
 

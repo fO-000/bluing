@@ -11,7 +11,7 @@ from . import LOG_LEVEL
 logger = Logger(__name__, LOG_LEVEL)
 
 
-class BluingBtAgent(BtAgent):
+class GattScanBtAgent(BtAgent):
     def __init__(self, io_cap: str = 'NoInputNoOutput', suffix: int = 0) -> None:
         super().__init__(APP_NAME, io_cap, suffix)
     

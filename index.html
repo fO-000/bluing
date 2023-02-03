@@ -880,7 +880,7 @@ Number of service records: 18
 ... ...
 </pre>
 </details>
-<h4 class="mume-header" id="--lmp-features-read-lmp-features-of-a-remote-bredr-device"><code>--lmp-features</code> Read LMP features of a remote BR/EDR device</h4>
+<h4 class="mume-header" id="--lmp-features-read-lmp-features-of-a-remote-bredr-device"><code>--lmp-features</code>: Read LMP features of a remote BR/EDR device</h4>
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --lmp-features 6A:8D:99:33:56:AE</code></summary>
 <pre><span style="font-weight: bold; color: #7da9c7">Version</span>
@@ -955,7 +955,7 @@ Page 2
 ... ...
 </pre>
 </details>
-<h3 class="mume-header" id="-le-command-low-energy-system"><code>le</code>: command: Low Energy system</h3>
+<h3 class="mume-header" id="-le-command-low-energy-system"><code>le</code> command: Low Energy system</h3>
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> le --help</code></summary>
 <pre>Usage:
@@ -1062,7 +1062,7 @@ Responder Key Distribution: 0x01
         RFU:     0b0000
 </pre>
 </details>
-<h4 class="mume-header" id="--gatt-discover-gatt-profile-hierarchy-of-a-remote-le-device"><code>--gatt</code> Discover GATT Profile hierarchy of a remote LE device</h4>
+<h4 class="mume-header" id="--gatt-discover-gatt-profile-hierarchy-of-a-remote-le-device"><code>--gatt</code>: Discover GATT Profile hierarchy of a remote LE device</h4>
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --gatt --addr-type=public 18:D9:8F:77:24:F1</code></summary>
 <pre>Connecting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
@@ -1073,32 +1073,38 @@ Discovering all descriptors of characteristic 0x0002 <span style="font-weight: b
 ... ...
 Reading value of the descriptor 0x0013 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2834;</span>
 ... ... 
-<!-- empty line -->
+
 <span style="font-weight: bold; color: #7da9c7">----------------GATT Scan Result----------------</span>
 Number of services: 6
-<!-- empty line -->
+
 <span style="font-weight: bold; color: #7da9c7">Service</span> (0x0100 - 0x0112, 7 characteristics)
     <span style="font-weight: bold; color: #7da9c7">Declaration</span>
-    Handle: 0x0100
-    Type:   2800 (Primary Service declaration)
-    Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
-    Permissions: Read (no authen/author)
-    <!-- empty line -->
+        Handle: 0x0100
+        Type:   2800 (Primary Service declaration)
+        Value:  <span style="font-weight: bold; color: #9fab76">1812</span> (<span style="font-weight: bold; color: #9fab76">Human Interface Device</span>)
+        Permissions: Read (no authen/author)
+
     <span style="font-weight: bold; color: #ecc179">Characteristic</span> (2 descriptors)
         <span style="font-weight: bold; color: #ecc179">Declaration</span>
-        Handle: 0x010d
-        Type:   2803 (Characteristic declaration)
-        Value:
-            Properties: <span style="font-weight: bold; color: #9fab76"></span>
-            Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
-            UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
-        Permissions: Read (no authen/author)
-        <!-- empty line -->
+            Handle: 0x010d
+            Type:   2803 (Characteristic declaration)
+            Value:
+                Properties: <span style="font-weight: bold; color: #9fab76">Read, Write Without Response, Write, Notify</span>
+                Handle:     <span style="font-weight: bold; color: #9fab76">0x010e</span>
+                UUID:       <span style="font-weight: bold; color: #9fab76">2A4D</span> (<span style="font-weight: bold; color: #9fab76">Report</span>)
+            Permissions: Read (no authen/author)
+
+        <span style="font-weight: bold; color: #ecc179">Value</span>
+            Handle: 0x0302
+            Type:   4A02 (Unknown)
+            Value:  <span style="font-weight: bold; color: #c35956">Read Not Permitted</span>
+            Permissions: Higher layer specific
+
         <span style="font-weight: bold; color: #ecc179">Descriptor</span>
-        Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
-        Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic    Configuration declaration</span>)
-        Value:  <span style="font-weight: bold; color: #9fab76">b&apos;\x00\x00&apos;</span>
-        Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
+            Handle: <span style="font-weight: bold; color: #9fab76">0x010f</span>
+            Type:   <span style="font-weight: bold; color: #9fab76">2902</span> (<span style="font-weight: bold; color: #ecc179">Client Characteristic    Configuration declaration</span>)
+            Value:  <span style="font-weight: bold; color: #9fab76">b&apos;\x00\x00&apos;</span>
+            Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
 ... ...
 </pre>
 </details>
@@ -1137,11 +1143,10 @@ Options:
     -o &lt;file&gt;                Place the output into <file> [default: ./btsnoop_hci.log]
 </file></pre>
 </details>
-<h4 class="mume-header" id="--collect-btsnoop-log-collect-the-btsnoop-log-being-generated"><code>--collect-btsnoop-log</code> Collect the btsnoop log being generated</h4>
+<h4 class="mume-header" id="--collect-btsnoop-log-collect-the-btsnoop-log-being-generated"><code>--collect-btsnoop-log</code>: Collect the btsnoop log being generated</h4>
 
-<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log</code></summary>
-<pre><!-- empty -->$ <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log
-btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log; <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log</code></summary>
+<pre>btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 </details>
 <h3 class="mume-header" id="-plugin-command-manage-plugins"><code>plugin</code> command: Manage plugins</h3>
@@ -1237,7 +1242,7 @@ rfkill from util-linux 2.38.1
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
           <a href="#--lmp-features-read-lmp-features-of-a-remote-bredr-device" class="md-toc-link">
-            <p><code>--lmp-features</code> Read LMP features of a remote BR/EDR device</p>
+            <p><code>--lmp-features</code>: Read LMP features of a remote BR/EDR device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
           <a href="#--mon-incoming-conn-print-incoming-connection-from-other-nearby-bredr-devices" class="md-toc-link">
@@ -1252,7 +1257,7 @@ rfkill from util-linux 2.38.1
       </details>
     <details style="padding:0;;padding-left:24px;" open>
         <summary class="md-toc-link-wrapper">
-          <a href="#-le-command-low-energy-system" class="md-toc-link"><p><code>le</code>: command: Low Energy system</p>
+          <a href="#-le-command-low-energy-system" class="md-toc-link"><p><code>le</code> command: Low Energy system</p>
 </a>
           </summary>
         <div>
@@ -1270,7 +1275,7 @@ rfkill from util-linux 2.38.1
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
           <a href="#--gatt-discover-gatt-profile-hierarchy-of-a-remote-le-device" class="md-toc-link">
-            <p><code>--gatt</code> Discover GATT Profile hierarchy of a remote LE device</p>
+            <p><code>--gatt</code>: Discover GATT Profile hierarchy of a remote LE device</p>
 
           </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
           <a href="#--sniff-adv-sniff-advertising-physical-channel-pdu" class="md-toc-link">
@@ -1287,7 +1292,7 @@ rfkill from util-linux 2.38.1
         <div>
           <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
           <a href="#--collect-btsnoop-log-collect-the-btsnoop-log-being-generated" class="md-toc-link">
-            <p><code>--collect-btsnoop-log</code> Collect the btsnoop log being generated</p>
+            <p><code>--collect-btsnoop-log</code>: Collect the btsnoop log being generated</p>
 
           </a></div>
         </div>
