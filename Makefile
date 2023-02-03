@@ -13,7 +13,6 @@ $(info )
 PKG_NAME := $(PY_PKG_NAME)
 MICROBIT_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-combined.hex
 MICROBIT_PATH = /media/${USER}/MICROBIT
-BLE400_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-combined.hex
 
 
 .PHONY: build
@@ -46,10 +45,17 @@ flash:
 		cp $(MICROBIT_BIN) $(MICROBIT_PATH)2; \
 	fi
 
-.PHONY: build_ble400
-build_ble400:
-	@yotta build bluing-advsniff --config=./config/ble400.json
-	
+
+BLE400_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-core51822-ble400-combined.hex
+.PHONY: core51822-ble400-firmware
+core51822-ble400-firmware:
+	@yotta build bluing-advsniff-core51822-ble400 --config=./config/core51822-ble400.json
+
+
+BLE400_BIN = ./build/bbc-microbit-classic-gcc/src/firmware/bluing-advsniff-bluefruit-le-friend-combined.hex
+.PHONY: bluefruit-le-friend-firmware
+	@yotta build bluing-advsniff-bluefruit-le-friend --config=./config/bluefruit-le-friend.json
+
 
 .PHONY: clean
 clean:
@@ -66,6 +72,7 @@ microbit-purge:
 
 .PHONY: release
 release:
+	echo "Remember to update the html used by the GitHub Page"
 	$(call twine-release)
 
 

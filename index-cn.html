@@ -682,8 +682,9 @@
     </head>
     <body for="html-export">
       <div class="mume markdown-preview  ">
-      <h1 class="mume-header" id="-bluing%E4%B8%80%E4%B8%AA%E4%B8%BA-hack-%E8%93%9D%E7%89%99%E8%80%8C%E7%94%9F%E7%9A%84%E6%83%85%E6%8A%A5%E6%94%B6%E9%9B%86%E5%B7%A5%E5%85%B7">Bluing&#xFF1A;&#x4E00;&#x4E2A;&#x4E3A; hack &#x84DD;&#x7259;&#x800C;&#x751F;&#x7684;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;</h1>
-
+      <h1 align="center">
+Bluing&#xFF1A;&#x4E3A; hack &#x84DD;&#x7259;&#x800C;&#x751F;&#x7684;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;
+</h1>
 <p align="center">
     <a href="https://fo-000.github.io/bluing/">English</a> &#xB7; <a href="https://fo-000.github.io/bluing/index-cn.html">&#x7B80;&#x4F53;&#x4E2D;&#x6587;</a>
 </p>
@@ -706,25 +707,13 @@
                  rfkill meson patchelf bluez ubertooth adb python-is-python3
 </pre><p>&#x76EE;&#x524D; bluing &#x7684;&#x5206;&#x53D1;&#x9014;&#x5F84;&#x662F; <a href="https://pypi.org/project/bluing/">PyPI</a>&#xFF0C;&#x4E14;&#x4EC5;&#x652F;&#x6301; Python 3.10&#x3002;&#x5B89;&#x88C5;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
 <pre data-role="codeBlock" data-info="sh" class="language-bash"><span class="token function">sudo</span> pip3.10 <span class="token function">install</span> bluing
-</pre><h2 class="mume-header" id="-%E7%A1%AC%E4%BB%B6%E8%A6%81%E6%B1%82">&#x786C;&#x4EF6;&#x8981;&#x6C42;</h2>
-
-<h3 class="mume-header" id="-%E8%93%9D%E7%89%99%E9%80%82%E9%85%8D%E5%99%A8">&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;</h3>
-
-<p>&#x5F88;&#x591A; bluing &#x529F;&#x80FD;&#x90FD;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#x3002;&#x867D;&#x7136;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Linux &#x7269;&#x7406;&#x673A;&#x81EA;&#x5E26;&#x7684;&#x9002;&#x914D;&#x5668;&#x6216;&#x8BA9; Linux &#x865A;&#x62DF;&#x673A;<strong>&#x72EC;&#x5360;</strong>&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x4F46;&#x662F;&#x4E3A;&#x4E86;&#x66F4;&#x7A33;&#x5B9A;&#x5730;&#x8FD0;&#x884C; bluing&#xFF0C;&#x4ECD;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x5916;&#x63A5;&#x7684; USB &#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x6BD4;&#x5982; <a href="http://www.senanetworks.com/ud100-g03.html">Parani UD100-G03</a>&#x3002;</p>
-<h3 class="mume-header" id="-original-microbit">Original micro:bit</h3>
-
-<p>Bluing &#x5728;&#x55C5;&#x63A2; advertising physical channel PDU &#x65F6; (<a href="https://fo-000.github.io/bluing/index-cn.html#-sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu"><code>le --sniff-adv</code></a>)&#xFF0C;&#x81F3;&#x5C11;&#x9700;&#x8981; 1 &#x5757; <a href="https://microbit.org/get-started/user-guide/overview/#original-micro:bit">original micro:bit</a>&#xFF0C;&#x4E14;&#x63A8;&#x8350;&#x540C;&#x65F6;&#x4F7F;&#x7528; 3 &#x5757;&#x3002;&#x8FD9;&#x4E9B; micro:bit &#x9700;&#x8981;&#x8FD0;&#x884C; bluing &#x63D0;&#x4F9B;&#x7684;&#x4E13;&#x7528;&#x56FA;&#x4EF6;&#x3002;&#x5C06; micro:bit &#x63A5;&#x5165; Linux &#x540E;&#xFF0C;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#x4FBF;&#x53EF;&#x5237;&#x5199;&#x9884;&#x5148;&#x6784;&#x5EFA;&#x597D;&#x7684;&#x56FA;&#x4EF6;&#xFF1A;</p>
-<pre data-role="codeBlock" data-info="sh" class="language-bash">bluing --flash-micro-bit
-</pre><h3 class="mume-header" id="-ubertooth-one">Ubertooth One</h3>
-
-<p>&#x5F53;&#x55C5;&#x63A2;&#x5E76;&#x63A8;&#x6D4B;&#x9644;&#x8FD1;&#x7684; BD_ADDR &#x65F6; (<a href="https://fo-000.github.io/bluing/index-cn.html#-sniff-and-guess-bd-addr%E5%97%85%E6%8E%A2%E5%B9%B6%E6%8E%A8%E6%B5%8B%E9%99%84%E8%BF%91%E7%9A%84-bd_addr"><code>br --sniff-and-guess-bd-addr</code></a>)&#xFF0C;bluing &#x9700;&#x8981;&#x7528;&#x5230;&#x4E00;&#x5757; <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>&#x3002;</p>
-<h2 class="mume-header" id="-%E4%BD%BF%E7%94%A8">&#x4F7F;&#x7528;</h2>
+</pre><h2 class="mume-header" id="-%E4%BD%BF%E7%94%A8">&#x4F7F;&#x7528;</h2>
 
 <blockquote>
-<p>&#x795E;&#x8BF4;&#xFF1A;&#x201C;&#x8981;&#x6709;<strong>&#x5F69;&#x8272;</strong>&#x3002;&#x201D;&#x5C31;&#x6709;&#x4E86;<a href="https://fo-000.github.io/bluing/index-cn.html#%E4%BD%BF%E7%94%A8"><strong>&#x5F69;&#x8272;</strong></a>&#x3002;</p>
+<p>&#x53EF;&#x4EE5;&#x5148;&#x4E86;&#x89E3;&#x4E0B;<a href="https://fo-000.github.io/bluing/index-cn.html#%E7%A1%AC%E4%BB%B6%E6%8E%A8%E8%8D%90">&#x63A8;&#x8350;&#x7684;&#x786C;&#x4EF6;</a>&#x3002;&#x800C;&#x4E14;&#x795E;&#x8BF4;&#xFF1A;&#x201C;&#x8981;&#x6709;<strong>&#x5F69;&#x8272;</strong>&#x3002;&#x201D;&#x5C31;&#x6709;&#x4E86;<a href="https://fo-000.github.io/bluing/index-cn.html#%E4%BD%BF%E7%94%A8"><strong>&#x5F69;&#x8272;</strong></a>&#x3002;</p>
 </blockquote>
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help
-An intelligence gathering tool for hacking Bluetooth
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help</code></summary>
+<pre>An intelligence gathering tool for hacking Bluetooth
 
 Usage:
     bluing [-h | --help]
@@ -746,23 +735,25 @@ Options:
     --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
 
 Commands:
-    br        Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
-    le        Low Energy system
-    plugin    Manage plugins
+    br         Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
+    le         Low Energy system
+    android    Android Bluetooth stack
+    plugin     Manage plugins
 
 Run `bluing &lt;command&gt; --help` for more information on a command.
 </pre>
+</details>
 <h3 class="mume-header" id="--spoof-bd-addr%E6%9C%AC%E5%9C%B0%E6%8E%A7%E5%88%B6%E5%99%A8-bd_addr-%E4%BC%AA%E8%A3%85"><code>--spoof-bd-addr</code>&#xFF1A;&#x672C;&#x5730;&#x63A7;&#x5236;&#x5668; BD_ADDR &#x4F2A;&#x88C5;</h3>
 
-<pre>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF
-[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF</code></summary>
+<pre>[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
 </pre>
+</details>
 <h3 class="mume-header" id="-br-%E5%91%BD%E4%BB%A4basic-rate-system"><code>br</code> &#x547D;&#x4EE4;&#xFF1A;Basic Rate system</h3>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --help
-
-Usage:
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --help</code></summary>
+<pre>Usage:
     bluing br [-h | --help]
     bluing br [-i &lt;hci&gt;] [--inquiry-len=&lt;n&gt;] --inquiry
     bluing br [-i &lt;hci&gt;] --sdp BD_ADDR
@@ -804,10 +795,11 @@ Options:
     --org=&lt;name&gt;                 An organization name in the OUI.txt
     --timeout=&lt;sec&gt;              Timeout in second(s)
 </pre>
+</details>
 <h4 class="mume-header" id="--inquiry%E5%8F%91%E7%8E%B0%E9%99%84%E8%BF%91%E5%85%B6%E4%BB%96%E7%9A%84-bredr-%E6%8E%A7%E5%88%B6%E5%99%A8"><code>--inquiry</code>&#xFF1A;&#x53D1;&#x73B0;&#x9644;&#x8FD1;&#x5176;&#x4ED6;&#x7684; BR/EDR &#x63A7;&#x5236;&#x5668;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Discovering other nearby BR/EDR Controllers on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10.24</span> sec
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Discovering other nearby BR/EDR Controllers on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10.24</span> sec
 
 BD_ADDR: <span style="font-weight: bold; color: #7da9c7">B0:C9:52:45:33:13</span> (<span style="font-weight: bold; color: #7da9c7">GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD</span>)
 Page scan repetition mode: 1 (R1)
@@ -848,10 +840,11 @@ Extended inquiry response:
 B0:C9:52:45:33:13 : <span style="font-weight: bold; color: #7da9c7">old man phone</span>
 ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--sdp%E6%A3%80%E7%B4%A2%E8%BF%9C%E7%AB%AF-bdedr-%E8%AE%BE%E5%A4%87%E7%9A%84-sdp-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BF%A1%E6%81%AF"><code>--sdp</code>&#xFF1A;&#x68C0;&#x7D22;&#x8FDC;&#x7AEF; BD/EDR &#x8BBE;&#x5907;&#x7684; SDP &#x6570;&#x636E;&#x5E93;&#x4FE1;&#x606F;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --sdp 34:13:46:23:6A:4D
-Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --sdp 34:13:46:23:6A:4D</code></summary>
+<pre>Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
 Number of service records: 18 
 
 <span style="font-weight: bold; color: #7da9c7">Service Record</span>
@@ -880,10 +873,11 @@ Number of service records: 18
 	0xff: <span style="font-weight: bold; color: #9fab76">Any type of object</span>
 ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--lmp-features%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%AB%AF-bredr-%E8%AE%BE%E5%A4%87%E7%9A%84-lmp-%E7%89%B9%E6%80%A7"><code>--lmp-features</code>&#xFF1A;&#x8BFB;&#x53D6;&#x8FDC;&#x7AEF; BR/EDR &#x8BBE;&#x5907;&#x7684; LMP &#x7279;&#x6027;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --lmp-features 6A:8D:99:33:56:AE
-<span style="font-weight: bold; color: #7da9c7">Version</span>
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --lmp-features 6A:8D:99:33:56:AE</code></summary>
+<pre><span style="font-weight: bold; color: #7da9c7">Version</span>
     Version:
         Bluetooth Core Specification 5.2 (LMP)
         Bluetooth Core Specification 5.2 (LL)
@@ -918,10 +912,11 @@ Page 2
     HCI_Inquiry_Response_Notification event:  <span style="font-weight: bold; color: #9fab76">True</span>
     ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--mon-incoming-conn%E6%89%93%E5%8D%B0%E9%99%84%E8%BF%91%E5%85%B6%E4%BB%96-bredr-%E8%AE%BE%E5%A4%87%E8%BF%9B%E6%9D%A5%E7%9A%84%E8%BF%9E%E6%8E%A5"><code>--mon-incoming-conn</code>&#xFF1A;&#x6253;&#x5370;&#x9644;&#x8FD1;&#x5176;&#x4ED6; BR/EDR &#x8BBE;&#x5907;&#x8FDB;&#x6765;&#x7684;&#x8FDE;&#x63A5;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry-scan --mon-incoming-conn
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry_Scan_Interval: 4096, 2560.0 ms
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> br --inquiry-scan --mon-incoming-conn</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry_Scan_Interval: 4096, 2560.0 ms
        Inquiry_Scan_Window:   4096, 2560.0 ms
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] Inquiry Scan and Page Scan enabled
 
@@ -936,10 +931,11 @@ Page 2
     link type: 0x01 - ACL
 ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--sniff-and-guess-bd-addr%E5%97%85%E6%8E%A2%E5%B9%B6%E6%8E%A8%E6%B5%8B%E9%99%84%E8%BF%91%E7%9A%84-bd_addr"><code>--sniff-and-guess-bd-addr</code>&#xFF1A;&#x55C5;&#x63A2;&#x5E76;&#x63A8;&#x6D4B;&#x9644;&#x8FD1;&#x7684; BD_ADDR</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --org=<span style="font-weight: bold; color: #eac179">&apos;Huawei Device Co., Ltd.&apos;</span> --timeout=600 --sniff-and-guess-bd-addr
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:99:4C:45:C3
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> br --org=<span style="font-weight: bold; color: #eac179">&apos;Huawei Device Co., Ltd.&apos;</span> --timeout=600 --sniff-and-guess-bd-addr</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:99:4C:45:C3
        24:A7:99:4C:45:C3
 
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] Possible BD_ADDR(s) for ??:??:E4:2D:69:EE
@@ -952,11 +948,11 @@ Page 2
        D4:74:15:60:81:7F
 ... ...
 </pre>
+</details>
 <h3 class="mume-header" id="-le-%E5%91%BD%E4%BB%A4low-energy-system"><code>le</code> &#x547D;&#x4EE4;&#xFF1A;Low Energy system</h3>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> le --help
-
-Usage:
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> le --help</code></summary>
+<pre>Usage:
     bluing le [-h | --help]
     bluing le [-i &lt;hci&gt;] [--scan-type=&lt;type&gt;] [--timeout=&lt;sec&gt;] [--sort=&lt;key&gt;] --scan
     bluing le [-i &lt;hci&gt;] --pairing-feature [--timeout=&lt;sec&gt;] [--addr-type=&lt;type&gt;] PEER_ADDR
@@ -987,11 +983,14 @@ Options:
     --sniff-adv           Sniff advertising physical channel PDU. Need at least 
                           one micro:bit
     --channel=&lt;num&gt;       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
+    --device=&lt;/dev/tty&gt;   Device to use, comma separated (e.g., /dev/ttyUSB0,/dev/ttyUSB1,/dev/ttyUSB2)
+                          Only needed if using NRF51 devices other than micro:bit (e.g., Bluefruit)
 </pre>
+</details>
 <h4 class="mume-header" id="--scan%E5%8F%91%E7%8E%B0%E9%99%84%E8%BF%91%E6%AD%A3%E5%9C%A8-advertising-%E7%9A%84%E8%AE%BE%E5%A4%87"><code>--scan</code>&#xFF1A;&#x53D1;&#x73B0;&#x9644;&#x8FD1;&#x6B63;&#x5728; advertising &#x7684;&#x8BBE;&#x5907;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --scan
-[<span style="font-weight: bold; color: #ecc179">WARNING</span>] You might want to spoof your LE address before doing an active scan
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --scan</code></summary>
+<pre>[<span style="font-weight: bold; color: #ecc179">WARNING</span>] You might want to spoof your LE address before doing an active scan
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] LE <span style="font-weight: bold; color: #7da9c7">active</span> scanning on <span style="font-weight: bold; color: #7da9c7">hci0</span> for <span style="font-weight: bold; color: #7da9c7">10</span> sec
 Scanning <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2834;</span>
 
@@ -1012,10 +1011,11 @@ General Access Profile:
     Complete Local Name: Mesh Mi Switch
 ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--ll-feature-set%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87%E7%9A%84-ll-featureset"><code>--ll-feature-set</code>&#xFF1A;&#x8BFB;&#x53D6;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907;&#x7684; LL FeatureSet</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --ll-feature-set --addr-type=public 18:D9:8F:77:24:F1
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Reading LL FeatureSet of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --ll-feature-set --addr-type=public 18:D9:8F:77:24:F1</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Reading LL FeatureSet of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
 Reading <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x283C;</span>
 <span style="font-weight: bold; color: #7da9c7">LE LL Features:</span>
     LE Encryption: <span style="font-weight: bold; color: #9fab76">True</span>
@@ -1031,10 +1031,11 @@ Reading <span style="font-weight: bold"></span><span style="font-weight: bold; c
     Stable Modulation Index - Receiver: <span style="font-weight: bold; color: #c35956">False</span>
     ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--pairing-feature%E8%AF%B7%E6%B1%82%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87%E7%9A%84-pairing-feature"><code>--pairing-feature</code>&#xFF1A;&#x8BF7;&#x6C42;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907;&#x7684; pairing feature</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --pairing-feature --addr-type=public 18:D9:8F:77:24:F1
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting pairing feature of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --pairing-feature --addr-type=public 18:D9:8F:77:24:F1</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Requesting pairing feature of <span style="font-weight: bold; color: #7da9c7">18:D9:8F:77:24:F1</span> on <span style="font-weight: bold; color: #7da9c7">hci0</span>
 Requesting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2827;</span>
 <span style="font-weight: bold; color: #7da9c7">Pairing Response</span>
     IO Capability: 0x03 - <span style="font-weight: bold; color: #9fab76">NoInputNoOutput</span>
@@ -1054,10 +1055,11 @@ Responder Key Distribution: 0x01
         LinkKey: <span style="font-weight: bold; color: #c35956">False</span>
         RFU:     0b0000
 </pre>
+</details>
 <h4 class="mume-header" id="--gatt%E5%8F%91%E7%8E%B0%E8%BF%9C%E7%AB%AF-le-%E8%AE%BE%E5%A4%87-gatt-profile-%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><code>--gatt</code>&#xFF1A;&#x53D1;&#x73B0;&#x8FDC;&#x7AEF; LE &#x8BBE;&#x5907; GATT Profile &#x7684;&#x5C42;&#x6B21;&#x7ED3;&#x6784;</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --gatt --addr-type=public 18:D9:8F:77:24:F1
-Connecting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --gatt --addr-type=public 18:D9:8F:77:24:F1</code></summary>
+<pre>Connecting <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280B;</span>
 Discovering all primary services <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x280F;</span>
 Discovering all characteristics of service 0x0001 <span style="font-weight: bold"></span><span style="font-weight: bold; color: #00aaaa">&#x2839;</span>
 ... ...
@@ -1093,10 +1095,11 @@ Number of services: 6
         Permissions: Read (no authen/author), Write (higher layer specifies authen/author)
 ... ...
 </pre>
+</details>
 <h4 class="mume-header" id="--sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu"><code>--sniff-adv</code>&#xFF1A;&#x55C5;&#x63A2; advertising physical channel PDU</h4>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --sniff-adv
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM2 on channel 37
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">sudo bluing</span> le --sniff-adv</code></summary>
+<pre>[<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM2 on channel 37
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM1 on channel 38
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] Using micro:bit /dev/ttyACM0 on channel 39
 [<span style="font-weight: bold; color: #7da9c7">INFO</span>] micro:bit 38 &lt; Ready -&gt; Start
@@ -1111,11 +1114,11 @@ random ScanA: 6A:90:0C:07:3E:14
 random AdvA: 7D:9B:A8:5A:F2:81
 ... ...
 </pre>
+</details>
 <h3 class="mume-header" id="-android-%E5%91%BD%E4%BB%A4-android-%E8%93%9D%E7%89%99%E5%8D%8F%E8%AE%AE%E6%A0%88"><code>android</code> &#x547D;&#x4EE4;: Android &#x84DD;&#x7259;&#x534F;&#x8BAE;&#x6808;</h3>
 
-<pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android --help
-
-Usage:
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android --help</code></summary>
+<pre>Usage:
     bluing android [-h | --help]
     bluing android [-t &lt;id&gt;] --collect-btsnoop-log [-o &lt;file&gt;]
 
@@ -1127,14 +1130,18 @@ Options:
                              default ./btsnoop_hci.log
     -o &lt;file&gt;                Place the output into <file> [default: ./btsnoop_hci.log]
 </file></pre>
+</details>
 <h4 class="mume-header" id="--collect-btsnoop-log-%E6%94%B6%E9%9B%86%E6%AD%A3%E5%9C%A8%E4%BA%A7%E7%94%9F%E7%9A%84-btsnoop-log"><code>--collect-btsnoop-log</code>: &#x6536;&#x96C6;&#x6B63;&#x5728;&#x4EA7;&#x751F;&#x7684; btsnoop log</h4>
 
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log</code></summary>
 <pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> android -t 3 --collect-btsnoop-log -o btsnoop_hci.log
 $ <span style="font-weight: bold; color: #9fab76">file</span> btsnoop_hci.log
 btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
+</details>
 <h3 class="mume-header" id="-plugin-%E5%91%BD%E4%BB%A4%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86"><code>plugin</code> &#x547D;&#x4EE4;&#xFF1A;&#x63D2;&#x4EF6;&#x7BA1;&#x7406;</h3>
 
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help</code></summary>
 <pre>$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help
 
 Usage:
@@ -1150,6 +1157,20 @@ Commands:
     uninstall    Uninstall a plugin
     run          Run a plugin
 </pre>
+</details>
+<h2 class="mume-header" id="-%E7%A1%AC%E4%BB%B6%E6%8E%A8%E8%8D%90">&#x786C;&#x4EF6;&#x63A8;&#x8350;</h2>
+
+<h3 class="mume-header" id="-%E8%93%9D%E7%89%99%E9%80%82%E9%85%8D%E5%99%A8">&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;</h3>
+
+<p>&#x5F88;&#x591A; bluing &#x529F;&#x80FD;&#x90FD;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#x3002;&#x867D;&#x7136;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; Linux &#x7269;&#x7406;&#x673A;&#x81EA;&#x5E26;&#x7684;&#x9002;&#x914D;&#x5668;&#x6216;&#x8BA9; Linux &#x865A;&#x62DF;&#x673A;<strong>&#x72EC;&#x5360;</strong>&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x4F46;&#x662F;&#x4E3A;&#x4E86;&#x66F4;&#x7A33;&#x5B9A;&#x5730;&#x8FD0;&#x884C; bluing&#xFF0C;&#x4ECD;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x5916;&#x63A5;&#x7684; USB &#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;&#xFF0C;&#x6BD4;&#x5982; <a href="http://www.senanetworks.com/ud100-g03.html">Parani UD100-G03</a>&#x3002;</p>
+<h3 class="mume-header" id="-original-microbit%E5%8F%AF%E9%80%89">Original micro:bit&#xFF08;&#x53EF;&#x9009;&#xFF09;</h3>
+
+<p>Bluing &#x5728;&#x55C5;&#x63A2; advertising physical channel PDU &#x65F6; (<a href="https://fo-000.github.io/bluing/index-cn.html#--sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu"><code>le --sniff-adv</code></a>)&#xFF0C;&#x81F3;&#x5C11;&#x9700;&#x8981; 1 &#x5757; <a href="https://microbit.org/get-started/user-guide/overview/#original-micro:bit">original micro:bit</a>&#xFF0C;&#x4E14;&#x63A8;&#x8350;&#x540C;&#x65F6;&#x4F7F;&#x7528; 3 &#x5757;&#x3002;&#x8FD9;&#x4E9B; micro:bit &#x9700;&#x8981;&#x8FD0;&#x884C; bluing &#x63D0;&#x4F9B;&#x7684;&#x4E13;&#x7528;&#x56FA;&#x4EF6;&#x3002;&#x5C06; micro:bit &#x63A5;&#x5165; Linux &#x540E;&#xFF0C;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#x4FBF;&#x53EF;&#x5237;&#x5199;&#x9884;&#x5148;&#x6784;&#x5EFA;&#x597D;&#x7684;&#x56FA;&#x4EF6;&#xFF1A;</p>
+<pre data-role="codeBlock" data-info="sh" class="language-bash">bluing --flash-micro-bit
+</pre><p>&#x9664;&#x4E86; original micro:bit&#xFF0C;&#x4F7F;&#x7528; nRF51822 &#x7684;&#x5176;&#x4ED6;&#x677F;&#x5B50;&#x4E5F;&#x53EF;&#x4EE5;&#x88AB;&#x652F;&#x6301;&#xFF0C;&#x6BD4;&#x5982; Adafruit Bluefruit LE Friend &#x548C; BLE400 with Core51822&#xFF0C;&#x4F46;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x4E32;&#x53E3;&#x5F15;&#x811A;&#x7684;&#x5BF9;&#x5E94;&#x5173;&#x7CFB;&#x3002;</p>
+<h3 class="mume-header" id="-ubertooth-one%E5%8F%AF%E9%80%89">Ubertooth One&#xFF08;&#x53EF;&#x9009;&#xFF09;</h3>
+
+<p>&#x5F53;&#x55C5;&#x63A2;&#x5E76;&#x63A8;&#x6D4B;&#x9644;&#x8FD1;&#x7684; BD_ADDR &#x65F6; (<a href="https://fo-000.github.io/bluing/index-cn.html#--sniff-and-guess-bd-addr%E5%97%85%E6%8E%A2%E5%B9%B6%E6%8E%A8%E6%B5%8B%E9%99%84%E8%BF%91%E7%9A%84-bd_addr"><code>br --sniff-and-guess-bd-addr</code></a>)&#xFF0C;bluing &#x9700;&#x8981;&#x7528;&#x5230;&#x4E00;&#x5757; <a href="https://greatscottgadgets.com/ubertoothone/">Ubertooth One</a>&#x3002;</p>
 <h2 class="mume-header" id="-faq">FAQ</h2>
 
 <h3 class="mume-header" id="-rfkill-%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0-hci0"><code>rfkill</code> &#x65E0;&#x6CD5;&#x627E;&#x5230; hci0</h3>
@@ -1183,38 +1204,11 @@ rfkill from util-linux 2.38.1
       </div>
       <div class="md-sidebar-toc">
 <div class="md-toc">
-<details style="padding:0;;padding-left:0px;" open>
-        <summary class="md-toc-link-wrapper">
-          <a href="#-bluing&#x4E00;&#x4E2A;&#x4E3A;-hack-&#x84DD;&#x7259;&#x800C;&#x751F;&#x7684;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;" class="md-toc-link"><p>Bluing&#xFF1A;&#x4E00;&#x4E2A;&#x4E3A; hack &#x84DD;&#x7259;&#x800C;&#x751F;&#x7684;&#x60C5;&#x62A5;&#x6536;&#x96C6;&#x5DE5;&#x5177;</p>
-</a>
-          </summary>
-        <div>
-          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+<div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:18px">
           <a href="#-&#x5B89;&#x88C5;" class="md-toc-link">
             <p>&#x5B89;&#x88C5;</p>
 
-          </a></div><details style="padding:0;;padding-left:24px;" open>
-        <summary class="md-toc-link-wrapper">
-          <a href="#-&#x786C;&#x4EF6;&#x8981;&#x6C42;" class="md-toc-link"><p>&#x786C;&#x4EF6;&#x8981;&#x6C42;</p>
-</a>
-          </summary>
-        <div>
-          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
-          <a href="#-&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;" class="md-toc-link">
-            <p>&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;</p>
-
-          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
-          <a href="#-original-microbit" class="md-toc-link">
-            <p>Original micro:bit</p>
-
-          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
-          <a href="#-ubertooth-one" class="md-toc-link">
-            <p>Ubertooth One</p>
-
-          </a></div>
-        </div>
-      </details>
-    <details style="padding:0;;padding-left:24px;" open>
+          </a></div><details style="padding:0;;padding-left:0px;" open>
         <summary class="md-toc-link-wrapper">
           <a href="#-&#x4F7F;&#x7528;" class="md-toc-link"><p>&#x4F7F;&#x7528;</p>
 </a>
@@ -1302,7 +1296,28 @@ rfkill from util-linux 2.38.1
           </a></div>
         </div>
       </details>
-    <details style="padding:0;;padding-left:24px;" open>
+    <details style="padding:0;;padding-left:0px;" open>
+        <summary class="md-toc-link-wrapper">
+          <a href="#-&#x786C;&#x4EF6;&#x63A8;&#x8350;" class="md-toc-link"><p>&#x786C;&#x4EF6;&#x63A8;&#x8350;</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#-&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;" class="md-toc-link">
+            <p>&#x84DD;&#x7259;&#x9002;&#x914D;&#x5668;</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#-original-microbit&#x53EF;&#x9009;" class="md-toc-link">
+            <p>Original micro:bit&#xFF08;&#x53EF;&#x9009;&#xFF09;</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#-ubertooth-one&#x53EF;&#x9009;" class="md-toc-link">
+            <p>Ubertooth One&#xFF08;&#x53EF;&#x9009;&#xFF09;</p>
+
+          </a></div>
+        </div>
+      </details>
+    <details style="padding:0;;padding-left:0px;" open>
         <summary class="md-toc-link-wrapper">
           <a href="#-faq" class="md-toc-link"><p>FAQ</p>
 </a>
@@ -1317,9 +1332,6 @@ rfkill from util-linux 2.38.1
             <p>&#x7BA1;&#x7406;&#x547D;&#x4EE4; <code>scanend</code> &#x6267;&#x884C;&#x5931;&#x8D25;&#x4E86;</p>
 
           </a></div>
-        </div>
-      </details>
-    
         </div>
       </details>
     

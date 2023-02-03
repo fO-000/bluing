@@ -2,35 +2,26 @@
 
 import io
 import pickle
-import threading
 import subprocess
 from subprocess import STDOUT
 from uuid import UUID
 
-import pkg_resources
-from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM
-from xpycommon.ui import green, blue, yellow, red
+from xpycommon.ui import green, blue, yellow, red, INDENT
 from xpycommon.log import Logger
+from xpycommon.dbus import mainloop, mainloop_thread
+
+import pkg_resources
 from halo import Halo
-
-import dbus
-import dbus.service
-import dbus.mainloop.glib
-from dbus import SystemBus, ObjectPath
-
+from bthci import ADDR_TYPE_PUBLIC
 from btgatt import Service, CharactValueDeclar, ServiceUuids, GattAttrTypes, bt_base_uuid, \
     GattClient, ReadCharactValueError, ReadCharactDescriptorError, CharactProperties
 
-from ..common import BLUEZ_NAME, mainloop
-from ..ui import INDENT, LOG_LEVEL
 from .. import BlueScanner, ScanResult
-from .agent import Agent
-from . import LE_DEVS_SCAN_RESULT_CACHE
-from .le_scan import LeScanner
+from .ui import LOG_LEVEL
+from .agent import BluingBtAgent
+
 
 logger = Logger(__name__, LOG_LEVEL)
-
-IFACE_AGENT_MGR_1 = 'org.bluez.AgentManager1'
 
 service_uuid_file = pkg_resources.resource_stream(__name__, "../res/gatt-service-uuid.txt")
 service_uuid_file = io.TextIOWrapper(service_uuid_file)
@@ -75,17 +66,12 @@ for line in descriptor_uuid_file:
         'Specification': items[2]
     }
     
+
 def full_uuid_str_to_16_int(uuid: str):
     """return 16-bit int or original uuid """
     if uuid.startswith("0000") and uuid.endswith(BT_BASE_UUID_SUFFIX):
         uuid = int(uuid.removeprefix('0000').removesuffix(BT_BASE_UUID_SUFFIX), base=16)
     return uuid
-
-
-class BluingAgent(Agent):
-    def __init__(self, bus: SystemBus, idx: int, ioc: str = 'NoInputNoOutput') -> None:
-        super().__init__(bus, idx)
-        self.io_capability = ioc
 
 
 def attr_permissions2str(permissions: dict):
@@ -294,46 +280,19 @@ class GattScanResult(ScanResult):
 
 class GattScanner(BlueScanner):
     """"""
-    def __init__(self, iface: str = 'hci0', ioc: str = 'NoInputNoOutput'):
+    def __init__(self, iface: str = 'hci0', io_cap: str = 'NoInputNoOutput'):
         super().__init__(iface=iface)
         
         self.result = GattScanResult()
         self.gatt_client = None
         self.spinner = Halo(placement='right')
-        
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        sys_bus = SystemBus()
-        
-        self.agent_registered = False
-        
-        def register_agent_callback():
-            logger.debug('Agent object registered\n'
-                        "IO capability: {}".format(self.bluing_agent.io_capability))
-            self.agent_registered = True
-        def register_agent_error_callback(error):
-            logger.error("Failed to register agent object.\n" +
-                         "{}\n".format(error) + 
-                         "IO capability: {}".format(self.bluing_agent.io_capability))
-            self.agent_registered = False
-        self.bluing_agent = BluingAgent(sys_bus, 0, ioc)
-        self.agent_mgr_1_iface = dbus.Interface(
-            sys_bus.get_object(BLUEZ_NAME, '/org/bluez'), IFACE_AGENT_MGR_1)
-        self.agent_mgr_1_iface.RegisterAgent(
-            ObjectPath(self.bluing_agent.path), 
-            self.bluing_agent.io_capability,
-            reply_handler=register_agent_callback,
-            error_handler=register_agent_error_callback)
-        
+        self.bt_agent = BluingBtAgent(io_cap)
+        self.bt_agent.register()
+
     def scan(self, addr: str, addr_type: int = ADDR_TYPE_PUBLIC) -> GattScanResult:
         logger.debug("Entered scan()")
-        
+
         try:
-            def run_mainloop():
-                # logger.info('mainloop run\n'
-                            # "mainloop: {}".format(mainloop))
-                mainloop.run()
-                # logger.info('mainloop stop')
-            mainloop_thread = threading.Thread(target=run_mainloop, args=[])
             mainloop_thread.start()
             
             self.result.addr = addr.upper()
@@ -538,13 +497,9 @@ class GattScanner(BlueScanner):
             if self.gatt_client is not None:
                 self.gatt_client.close()
             
-            if self.agent_registered:
-                self.agent_mgr_1_iface.UnregisterAgent(
-                    ObjectPath(self.bluing_agent.path))
-                logger.debug("Unregistered agent object")
-                
+            if self.bt_agent.registered:
+                self.bt_agent.unregister()
                 mainloop.quit()
-                self.agent_registered = False
             try:
                 # Reset and clean bluetooth service
                 output = subprocess.check_output(' '.join(['bluetoothctl', 'untrust', addr]), 

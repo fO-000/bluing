@@ -13,10 +13,9 @@ from bthci import HCI, ControllerErrorCodes, HciRuntimeError, ADDR_TYPE_PUBLIC
 from btsm import SecurityManager
 from btsm.commands import OOBDataFlags, BondingFlags, AuthReq, KeyDist
 from xpycommon.log import Logger
-from xpycommon.ui import blue, green, red
+from xpycommon.ui import blue, green, red, INDENT
 
 from .. import ScanResult
-from ..ui import INDENT
 from ..common import bdaddr_to_company_name
 from ..gap_data import SERVICE_DATA_128_BIT_UUID, SERVICE_DATA_16_BIT_UUID, SERVICE_DATA_32_BIT_UUID, gap_type_names, company_names, \
     COMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, \

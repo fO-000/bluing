@@ -90,8 +90,8 @@ def main(argv: list[str] = sys.argv):
                 while True:
                     conn_req = hci.wait_event(HCI_Connection_Request.evt_code, timeout=None)
                     print("{} incoming\n"
-                        "    CoD: 0x{:06x}".format(blue(conn_req.bd_addr), 
-                                                                    conn_req.class_of_dev))
+                          "    CoD: 0x{:06x}".format(blue(conn_req.bd_addr), 
+                                                     conn_req.class_of_dev))
                     conn_req.class_of_dev.print_human_readable(2)
                     print("    link type: 0x{:02x} - {}".format(conn_req.link_type, conn_req.link_type.name))
                     print()

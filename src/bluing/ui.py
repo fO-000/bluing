@@ -23,10 +23,10 @@ Options:
     --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
 
 Commands:
-    br        Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
-    le        Low Energy system
-    android   Android Bluetooth stack
-    plugin    Manage plugins
+    br         Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
+    le         Low Energy system
+    android    Android Bluetooth stack
+    plugin     Manage plugins
 
 Run `bluing <command> --help` for more information on a command.
 """
@@ -45,7 +45,6 @@ from . import VERSION_STR, LOG_LEVEL
 
 
 logger = Logger(__name__, LOG_LEVEL)
-INDENT = ' ' * 4
 
 
 def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:

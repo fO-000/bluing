@@ -1,6 +1,6 @@
 {
     "build": {
-      "target": "bbc-microbit-classic-gcc,https://github.com/lancaster-university/yotta-target-bbc-microbit-classic-gcc",
-      "targetSetExplicitly": true
+        "target": "bbc-microbit-classic-gcc,https://github.com/lancaster-university/yotta-target-bbc-microbit-classic-gcc",
+        "targetSetExplicitly": true
     }
 }

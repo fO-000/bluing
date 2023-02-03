@@ -11,10 +11,6 @@ from xpycommon.ui import blue, red
 
 from . import LOG_LEVEL
 
-APP_NAME = 'bluing'
-BLUEZ_NAME = 'org.bluez' # The well-known name of bluetoothd
-
-IFACE_PROP = 'org.freedesktop.DBus.Properties'
 
 mainloop = GObject.MainLoop()
 

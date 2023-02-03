@@ -8,11 +8,10 @@ from bthci.events import HciEventCodes, HCI_Inquiry_Result, HCI_Inquiry_Result_w
                          HCI_Extended_Inquiry_Result
 from bthci.bluez_hci import HCI_CHANNEL_USER
 from xpycommon.log import Logger
-from xpycommon.ui import green, blue, red
+from xpycommon.ui import green, blue, red, INDENT
 from xpycommon.bluetooth import ClassOfDevice
 
 from .. import BlueScanner, service_cls_profile_ids
-from ..ui import INDENT
 from ..common import bdaddr_to_company_name
 from ..le.ll import ll_vers
 from ..gap_data import gap_type_names, \

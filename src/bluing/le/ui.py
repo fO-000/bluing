@@ -33,7 +33,7 @@ Options:
                           one micro:bit (or other supported NRF51 device specified with --device)
     --channel=<num>       LE advertising physical channel, 37, 38 or 39 [default: 37,38,39]
     --device=</dev/tty>   Device to use, comma separated (e.g., /dev/ttyUSB0,/dev/ttyUSB1,/dev/ttyUSB2)
-                              Only needed if using NRF51 devices other than micro:bit (e.g., Bluefruit)
+                          Only needed if using NRF51 devices other than micro:bit (e.g., Bluefruit)
 """
 
 

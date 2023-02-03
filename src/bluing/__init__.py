@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 PKG_NAME = 'bluing'
+APP_NAME = PKG_NAME
 VERSION = '0.11.0'
 DEBUG_VERSION = ''
 
