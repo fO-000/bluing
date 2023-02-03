@@ -1,6 +1,9 @@
 <h1 align="center">
-Bluing：为 hack 蓝牙而生的情报收集工具
+Bluing
 </h1>
+<h3 align="center">
+为 hack 蓝牙而生的情报收集工具
+</h3>
 
 <p align="center">
     <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
@@ -40,7 +43,8 @@ sudo pip3.10 install bluing
 
 ## 使用
 
-> 可以先了解下[推荐的硬件](https://fo-000.github.io/bluing/index-cn.html#硬件推荐)。而且神说：“要有**彩色**。”就有了[**彩色**](https://fo-000.github.io/bluing/index-cn.html#使用)。
+> * 神说：“要有**彩色**。”就有了[**彩色**](https://fo-000.github.io/bluing/index-cn.html#-使用)。
+> * 可以先了解下[推荐的硬件](https://fo-000.github.io/bluing/index-cn.html#-硬件推荐)。
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help</code></summary>
 

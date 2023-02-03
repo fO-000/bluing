@@ -1,6 +1,9 @@
 <h1 align="center">
-Bluing: An intelligence gathering tool for hacking Bluetooth
+Bluing
 </h1>
+<h3 align="center">
+An intelligence gathering tool for hacking Bluetooth
+</h3>
 
 <p align="center">
     <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
@@ -40,7 +43,8 @@ sudo pip3.10 install bluing
 
 ## Usage
 
-> Perhaps you would like a brief overview of the [recommended hardware](https://fo-000.github.io/bluing/#recommended-hardware). And God said, "Let there be **colorful**", and there was [**colorful**](https://fo-000.github.io/bluing/#usage).
+> * God said, "Let there be **colorful**", and there was [**colorful**](https://fo-000.github.io/bluing/#-usage).
+> * Perhaps you would like a brief overview of the [recommended hardware](https://fo-000.github.io/bluing/#-recommended-hardware). 
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> --help</code></summary>
 
