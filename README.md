@@ -532,7 +532,7 @@ Options:
 </pre>
 </details>
 
-#### Spoofing with a new BD_ADDR
+#### `--bd-addr=<BD_ADDR>`: Spoof with a new BD_ADDR
 
 This feature is currently based on `spooftooph`, which can be installed by runing `sudo apt install spooftooph` if you are using it on Kali Linux. However, if you are using this feature on Ubuntu, you will need to manually compile and install [`spooftooph`](https://gitlab.com/kalilinux/packages/spooftooph).
 
