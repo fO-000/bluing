@@ -19,7 +19,8 @@ import sys
 
 from docopt import docopt
 from xpycommon.log import Logger
-from xpycommon import str2int, check_malicious_char
+from xpycommon.cmdline_arg_converter import CmdlineArgConverter
+from xpycommon import check_malicious_char
 from xpycommon.ui import red
 from xpycommon.android import get_adb_transport_ids
 
@@ -46,7 +47,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
 
         if args['-t'] is not None:
             try:
-                args['-t'] = str2int(args['-t'])
+                args['-t'] = CmdlineArgConverter.str2int(args['-t'])
             except ValueError as e:
                 e.args = ("Invalid -t: " + red(args['-t']),)
                 raise e

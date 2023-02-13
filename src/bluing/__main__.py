@@ -8,7 +8,8 @@ from pathlib import Path
 
 from xpycommon.log import Logger
 from xpycommon.ui import red, blue
-from xpycommon.bluetooth import spoof_bd_addr
+from xpycommon.bluetooth.bluez import stop_bluetooth_service, \
+    restart_bluetooth_service
 
 from bthci import HCI
 
@@ -16,16 +17,18 @@ from . import LOG_LEVEL, MICRO_BIT_FIRMWARE_PATH
 from .ui import parse_cmdline
 from .br import main as br_main
 from .le import main as le_main
-from .plugin import main as plugin_main
 from .android import main as android_main
+from .spoof import main as spoof_main
+from .plugin import main as plugin_main
 
 
 logger = Logger(__name__, LOG_LEVEL)
 cmd_to_main = {
     'br': br_main,
     'le': le_main,
+    'android': android_main,
+    'spoof': spoof_main,
     'plugin': plugin_main,
-    'android': android_main
 }
 
 
@@ -36,9 +39,7 @@ def clean(iface: str, raddr: str):
     
     raddr = raddr.upper()
 
-    output = check_output(
-        ' '.join(['sudo', 'systemctl', 'stop', 'bluetooth.service']), 
-        stderr=STDOUT, timeout=60, shell=True)
+    stop_bluetooth_service()
 
     output = check_output(
         ' '.join(['sudo', 'rm', '-rf', '/var/lib/bluetooth/' + \
@@ -54,9 +55,7 @@ def clean(iface: str, raddr: str):
     if output != b'':
         logger.info(output.decode())
 
-    output = check_output(
-        ' '.join(['sudo', 'systemctl', 'start', 'bluetooth.service']), 
-        stderr=STDOUT, timeout=60, shell=True)
+    restart_bluetooth_service()
 
 
 def flash_micro_bit():
@@ -91,9 +90,11 @@ def main(argv: list[str] = sys.argv):
     try:
         if args['<command>'] is None:
             if args['--clean']:
+                # TODO
+                # * When there is no HCI device in the system, clean 
+                #   cahces based on the BD_ADDR provided by users.
+                # * Prompt the user when the directory does not exist.
                 clean(args['-i'], args['BD_ADDR'])
-            elif args['--spoof-bd-addr']:
-                spoof_bd_addr(args['BD_ADDR'], args['-i'])
             elif args['--flash-micro-bit']:
                 flash_micro_bit()
             else:

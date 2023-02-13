@@ -1,9 +1,5 @@
-<h1 align="center">
-Bluing
-</h1>
-<h3 align="center">
-An intelligence gathering tool for hacking Bluetooth
-</h3>
+<h1 align="center">Bluing</h1>
+<h3 align="center">An intelligence gathering tool for hacking Bluetooth</h3>
 
 <p align="center">
     <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
@@ -25,7 +21,7 @@ Bluing (formerly [bluescan](https://pypi.org/project/bluescan/)) is a **Blu**eto
 ![](https://raw.githubusercontent.com/fO-000/bluing/master/assets/bluing-features-mermaid-mindmap.svg)
 <!-- ![](./assets/bluing-features-mermaid-mindmap.svg) -->
 
-## Install
+## Installation
 
 Bluing partially depend on [BlueZ](http://www.bluez.org/), the official Linux Bluetooth protocol stack. So it only supports running on Linux. The following command is used to install dependencies:
 
@@ -55,7 +51,6 @@ Usage:
     bluing [-h | --help]
     bluing (-v | --version)
     bluing [-i &lthci>] --clean BD_ADDR
-    bluing [-i &lthci>] --spoof-bd-addr BD_ADDR
     bluing --flash-micro-bit
     bluing &ltcommand> [&ltargs>...]
 
@@ -67,26 +62,16 @@ Options:
     -v, --version        Print version information and quit
     -i &lthci>             HCI device
     --clean              Clean cached data of a remote device
-    --spoof-bd-addr      Spoof the BD_ADDR of a local controller
     --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
 
 Commands:
     br         Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
     le         Low Energy system
     android    Android Bluetooth stack
+    spoof      Spoof with new local device information
     plugin     Manage plugins
 
 Run `bluing &ltcommand> --help` for more information on a command.
-</pre>
-</details>
-
-### `--spoof-bd-addr`: Spoof the BD_ADDR of a local controller
-
-<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF</code></summary>
-
-<pre>
-[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
 </pre>
 </details>
 
@@ -525,6 +510,67 @@ btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 </details>
 
+### `spoof` command: Spoof with new local device information
+
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --help</code></summary>
+
+<pre>
+Usage:
+    bluing spoof [-h | --help]
+    bluing spoof [-i &lthci>] --bd-addr=&ltBD_ADDR>
+    bluing spoof [-i &lthci>] --cls-of-dev=&ltnum>
+    bluing spoof --host-name=&ltname>
+    bluing spoof [-i &lthci>] --alias=&ltalias>
+
+Options:
+    -h, --help             Print this help and quit
+    -i &lthci>               HCI device
+    --bd-addr=&ltBD_ADDR>    Spoof with a new BD_ADDR
+    --cls-of-dev=&ltnum>     Spoof with a new Class of Device
+    --host-name=&ltname>     Spoof with a new host name
+    --alias=&ltalias>        Spoof with a new alias
+</pre>
+</details>
+
+#### Spoofing with a new BD_ADDR
+
+This feature is currently based on `spooftooph`, which can be installed by runing `sudo apt install spooftooph` if you are using it on Kali Linux. However, if you are using this feature on Ubuntu, you will need to manually compile and install [`spooftooph`](https://gitlab.com/kalilinux/packages/spooftooph).
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --bd-addr=AA:BB:CC:DD:EE:FF</code></summary>
+
+<pre>
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
+</pre>
+</details>
+
+#### `--cls-of-dev=<num>`: Spoof with a new Class of Device
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --cls-of-dev=0x6c0100</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
+#### `--host-name=<name>`: Spoof with a new host name
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --host-name=Bluing</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
+#### `--alias=<alias>`: Spoof with a new controller alias
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --alias='Bluing Alias'</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
 ### `plugin` command: Manage plugins
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help</code></summary>
@@ -555,9 +601,9 @@ Many features of bluing require access to at least 1 Bluetooth adapter. Although
 
 Bluing requires at least 1 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit) when sniffing advertising physical channel PDUs ([`le --sniff-adv`](https://fo-000.github.io/bluing/#--sniff-adv-sniff-advertising-physical-channel-pdu)), and it is recommended to use 3 of them at the same time. These micro:bits need to run the dedicated firmware provided by bluing. After connecting the micro:bits to Linux, the pre-built firmware can be flashed by executing the following command:
 
-```sh
-bluing --flash-micro-bit
-```
+<pre>
+<span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
+</pre>
 
 While less convenient to use than the micro:bit, but more accessible to purchase, more generic NRF51 adapters can be supported as well. Support has been added for the Adafruit Bluefruit LE Friend and the BLE400 boards. To use these, they will need to be flashed using SWD. This tool does not support flashing these devices. Additionally, the tool cannot automatically identify these devices. Instead the `--devices` option needs to identify the ports connected to computer.
 

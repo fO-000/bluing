@@ -50,12 +50,12 @@ from collections import Counter
 
 from docopt import docopt
 from bthci import HCI
+from bthci.commands import HCI_Inquiry
 
 from xpycommon.log import Logger
-from xpycommon.ui import red
-from xpycommon.bluetooth import verify_bd_addr
+from xpycommon.ui import red, blue
+from xpycommon.bluetooth import BD_ADDR
 
-from .. import PKG_NAME as BLUING_PKG_NAME
 from . import LOG_LEVEL, PKG_NAME
 
 
@@ -64,10 +64,10 @@ logger = Logger(__name__, LOG_LEVEL)
 
 def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
     logger.debug("Entered parse_cmdline(argv={})".format(argv))
-    
+
     # In order to use `options_first=True` for strict compatibility with POSIX.
     # This replaces multi-level commands in `__doc__` with single-level commands.
-    args = docopt(__doc__.replace(' '.join([BLUING_PKG_NAME, PKG_NAME]), PKG_NAME), 
+    args = docopt(__doc__.replace(PKG_NAME.replace('.', ' '), PKG_NAME.split('.')[-1]), 
                   argv, help=False, options_first=True)
     logger.debug("docopt() returned\n"
                  "    args:", args)
@@ -101,6 +101,11 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
                 e.args = ("Invalid --inquiry-len: " + red(args['--inquiry-len']),)
                 raise e
 
+        if args['--inquiry-len'] < HCI_Inquiry.MIN_INQUIRY_LEN or args['--inquiry-len'] > HCI_Inquiry.MAX_INQUIRY_LEN:
+            raise ValueError("`--inquiry-len={}` is not between {} and {}".format(
+                red(str(args['--inquiry-len'])), blue(str(HCI_Inquiry.MIN_INQUIRY_LEN)), 
+                blue(str(HCI_Inquiry.MAX_INQUIRY_LEN))))
+
         try:
             args['--timeout'] = int(args['--timeout'])
         except ValueError:
@@ -111,7 +116,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
                 raise e
 
         if args['BD_ADDR']:
-            if not verify_bd_addr(args['BD_ADDR']):
+            if not BD_ADDR.verify(args['BD_ADDR']):
                 raise ValueError("Invalid BD_ADDR: " + red(args['BD_ADDR']))
             args['BD_ADDR'] = args['BD_ADDR'].upper()
 

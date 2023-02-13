@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-PKG_NAME = 'br'
-
-
 from xpycommon.log import INFO, DEBUG
 
-from .. import LOG_LEVEL as PARENT_LOG_LEVEL
+from .. import PKG_NAME as PARENT_PKG_NAME, LOG_LEVEL as PARENT_LOG_LEVEL
 
+
+PKG_NAME = '.'.join([PARENT_PKG_NAME, 'br']) 
 LOG_LEVEL = PARENT_LOG_LEVEL
 # LOG_LEVEL = DEBUG
 

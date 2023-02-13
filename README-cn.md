@@ -1,9 +1,5 @@
-<h1 align="center">
-Bluing
-</h1>
-<h3 align="center">
-为 hack 蓝牙而生的情报收集工具
-</h3>
+<h1 align="center">Bluing</h1>
+<h3 align="center">为 hack 蓝牙而生的情报收集工具</h3>
 
 <p align="center">
     <a href="https://fo-000.github.io/bluing/">English</a> · <a href="https://fo-000.github.io/bluing/index-cn.html">简体中文</a>
@@ -55,7 +51,6 @@ Usage:
     bluing [-h | --help]
     bluing (-v | --version)
     bluing [-i &lthci>] --clean BD_ADDR
-    bluing [-i &lthci>] --spoof-bd-addr BD_ADDR
     bluing --flash-micro-bit
     bluing &ltcommand> [&ltargs>...]
 
@@ -67,26 +62,16 @@ Options:
     -v, --version        Print version information and quit
     -i &lthci>             HCI device
     --clean              Clean cached data of a remote device
-    --spoof-bd-addr      Spoof the BD_ADDR of a local controller
     --flash-micro-bit    Download the dedicated firmware to micro:bit(s)
 
 Commands:
     br         Basic Rate system, includes an optional Enhanced Data Rate (EDR) extension
     le         Low Energy system
     android    Android Bluetooth stack
+    spoof      Spoof with new local device information
     plugin     Manage plugins
 
 Run `bluing &ltcommand> --help` for more information on a command.
-</pre>
-</details>
-
-### `--spoof-bd-addr`：本地控制器 BD_ADDR 伪装
-
-<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> --spoof-bd-addr AA:BB:CC:DD:EE:FF</code></summary>
-
-<pre>
-[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
-[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
 </pre>
 </details>
 
@@ -525,6 +510,67 @@ btsnoop_hci.log: BTSnoop version 1, HCI UART (H4)
 </pre>
 </details>
 
+### `spoof` 命令：使用新的设备信息做欺骗
+
+<details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --help</code></summary>
+
+<pre>
+Usage:
+    bluing spoof [-h | --help]
+    bluing spoof [-i &lthci>] --bd-addr=&ltBD_ADDR>
+    bluing spoof [-i &lthci>] --cls-of-dev=&ltnum>
+    bluing spoof --host-name=&ltname>
+    bluing spoof [-i &lthci>] --alias=&ltalias>
+
+Options:
+    -h, --help             Print this help and quit
+    -i &lthci>               HCI device
+    --bd-addr=&ltBD_ADDR>    Spoof with a new BD_ADDR
+    --cls-of-dev=&ltnum>     Spoof with a new Class of Device
+    --host-name=&ltname>     Spoof with a new host name
+    --alias=&ltalias>        Spoof with a new alias
+</pre>
+</details>
+
+#### `--bd-addr=<BD_ADDR>`：使用新的设备地址做欺骗
+
+该功能当前基于 `spooftooph` 完成。如果在 Kali Linux 上使用它，先执行 `sudo apt install spooftooph` 即可完成安装。但在 Ubuntu 上使用时，则需要手动编译安装 [`spooftooph`](https://gitlab.com/kalilinux/packages/spooftooph)。
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --bd-addr=AA:BB:CC:DD:EE:FF</code></summary>
+
+<pre>
+[<span style="font-weight: bold; color: #ecc179">WARNING</span>] The original HCI device number may have been changed
+[<span style="font-weight: bold; color: #7da9c7">INFO</span>] BD_ADDR changed: 11:22:33:44:55:66 -&gt; <span style="font-weight: bold; color: #7da9c7">AA:BB:CC:DD:EE:FF</span>
+</pre>
+</details>
+
+#### `--cls-of-dev=<num>`：使用新的设备类型做欺骗
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --cls-of-dev=0x6c0100</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
+#### `--host-name=<name>`：使用新的主机名做欺骗
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --host-name=Bluing</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
+#### `--alias=<alias>`：使用新的控制器别名做欺骗
+
+<details><summary><code>$ sudo <span style="font-weight: bold; color: #9fab76">bluing</span> spoof --alias='Bluing Alias'</code></summary>
+
+<pre>
+No output when successful
+</pre>
+</details>
+
 ### `plugin` 命令：插件管理
 
 <details><summary><code>$ <span style="font-weight: bold; color: #9fab76">bluing</span> plugin --help</code></summary>
@@ -557,9 +603,9 @@ Commands:
 
 Bluing 在嗅探 advertising physical channel PDU 时 ([`le --sniff-adv`](https://fo-000.github.io/bluing/index-cn.html#--sniff-adv%E5%97%85%E6%8E%A2-advertising-physical-channel-pdu))，至少需要 1 块 [original micro:bit](https://microbit.org/get-started/user-guide/overview/#original-micro:bit)，且推荐同时使用 3 块。这些 micro:bit 需要运行 bluing 提供的专用固件。将 micro:bit 接入 Linux 后，执行如下命令便可刷写预先构建好的固件：
 
-```sh
-bluing --flash-micro-bit
-```
+<pre>
+<span style="font-weight: bold; color: #9fab76">bluing</span> --flash-micro-bit
+</pre>
 
 除了 original micro:bit，使用 nRF51822 的其他板子也可以被支持，比如 Adafruit Bluefruit LE Friend 和 BLE400 with Core51822，但可能需要修改串口引脚的对应关系。
 

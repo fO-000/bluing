@@ -21,7 +21,7 @@ def main(argv: list[str] = sys.argv):
                  "    args: {}".format(args))
 
     try:
-        if args['--collect-btsnoop-log']:
+        if args['--collect-btsnoop-log']: # Only can run once during a Bluetooth session.
             transport_ids = get_adb_transport_ids()
             if args['-t'] is None:
                 if len(transport_ids) == 0:

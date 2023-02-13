@@ -18,7 +18,7 @@ import sys
 from docopt import docopt
 from xpycommon.log import Logger
 
-from .. import BLUING_PKG_NAME, PKG_NAME as PLUGIN_PKG_NAME, BluingPluginManager
+from .. import BluingPluginManager
 from . import LOG_LEVEL, PKG_NAME
 
 
@@ -30,8 +30,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
 
     # In order to use `options_first=True` for strict compatibility with POSIX.
     # This replaces multi-level commands in `__doc__` with single-level commands.
-    args = docopt(__doc__.replace(' '.join([BLUING_PKG_NAME, PLUGIN_PKG_NAME, PKG_NAME]), 
-                                  PKG_NAME), 
+    args = docopt(__doc__.replace(PKG_NAME.replace('.', ' '), PKG_NAME.split('.')[-1]), 
                   argv, help=False, options_first=True)
     logger.debug("docopt() returned\n"
                  "    args:", args)

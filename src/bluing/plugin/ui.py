@@ -21,8 +21,6 @@ import sys
 from docopt import docopt
 from xpycommon.log import Logger
 
-from .. import PKG_NAME as BLUING_PKG_NAME
-
 from . import LOG_LEVEL, PKG_NAME
 
 
@@ -32,7 +30,7 @@ logger = Logger(__name__, LOG_LEVEL)
 def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
     logger.debug("Entered parse_cmdline(argv={})".format(argv))
 
-    args = docopt(__doc__.replace(' '.join([BLUING_PKG_NAME, PKG_NAME]), PKG_NAME), 
+    args = docopt(__doc__.replace(PKG_NAME.replace('.', ' '), PKG_NAME.split('.')[-1]), 
                   argv, help=False, options_first=True)
     logger.debug("docopt() returned\n"
                  "    args:", args)

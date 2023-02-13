@@ -42,11 +42,9 @@ from collections import Counter
 
 from xpycommon.log import Logger
 from xpycommon.ui import blue, yellow, red
-from xpycommon.bluetooth import verify_bd_addr
+from xpycommon.bluetooth import BD_ADDR
 from docopt import docopt
 from bthci import ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM, HCI
-
-from .. import PKG_NAME as BLUING_PKG_NAME
 
 from . import LOG_LEVEL, PKG_NAME
 from .le_scan import LeScanner
@@ -58,7 +56,7 @@ logger = Logger(__name__, LOG_LEVEL)
 def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
     logger.debug("Entered parse_cmdline(argv={})".format(argv))
 
-    args = docopt(__doc__.replace(' '.join([BLUING_PKG_NAME, PKG_NAME]), PKG_NAME), 
+    args = docopt(__doc__.replace(PKG_NAME.replace('.', ' '), PKG_NAME.split('.')[-1]), 
                   argv, help=False, options_first=True)
     logger.debug("docopt() returned\n"
                  "    args:", args)
@@ -107,7 +105,7 @@ def parse_cmdline(argv: list[str] = sys.argv[1:]) -> dict:
             raise ValueError("Invalid --io-cap: " + red(args['--io-cap']))
 
         if args['PEER_ADDR'] is not None:
-            if not verify_bd_addr(args['PEER_ADDR']):
+            if not BD_ADDR.verify(args['PEER_ADDR']):
                 raise ValueError("Invalid PEER_ADDR: " + red(args['BD_ADDR']))
             args['PEER_ADDR'] = args['PEER_ADDR'].upper()
 
