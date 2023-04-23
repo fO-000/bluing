@@ -19,7 +19,9 @@ ll_vers = {
     8:  'Bluetooth Core Specification 4.2',
     9:  'Bluetooth Core Specification 5.0',
     10: 'Bluetooth Core Specification 5.1',
-    11: 'Bluetooth Core Specification 5.2'
+    11: 'Bluetooth Core Specification 5.2',
+    12: 'Bluetooth Core Specification 5.3',
+    13: 'Bluetooth Core Specification 5.4'
 }
 
 # Advertising physical channel PDU header
